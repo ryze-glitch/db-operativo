@@ -1,0 +1,220 @@
+:root {
+    --bg-color: #020617;
+    --panel-bg: #0f172a;
+    --border-color: #1e293b;
+    --text-main: #f8fafc;
+    --text-muted: #94a3b8;
+    --accent-gold: #fbbf24;
+    --accent-blue: #3b82f6;
+    --accent-red: #ef4444;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Inter', sans-serif;
+}
+
+body {
+    background-color: var(--bg-color);
+    color: var(--text-main);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-image: radial-gradient(circle at center, #0f172a 0%, #020617 100%);
+}
+
+.terminal-container {
+    width: 100%;
+    max-width: 800px;
+    background: var(--panel-bg);
+    border: 1px solid var(--border-color);
+    border-top: 4px solid var(--accent-gold);
+    border-radius: 8px;
+    padding: 40px;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+    position: relative;
+    z-index: 10;
+}
+
+.police-header {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.logo-placeholder {
+    width: 80px;
+    height: 80px;
+    background: var(--border-color);
+    border: 2px solid var(--accent-gold);
+    border-radius: 50%;
+    margin: 0 auto 15px auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    color: var(--text-muted);
+}
+
+.police-header h1 {
+    font-weight: 800;
+    letter-spacing: 2px;
+    font-size: 24px;
+    color: var(--text-main);
+    margin-bottom: 5px;
+}
+
+.police-header p {
+    color: var(--text-muted);
+    font-size: 14px;
+}
+
+.grid-container {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+}
+
+.dept-btn {
+    background: #1e293b;
+    border: 1px solid #334155;
+    padding: 30px 20px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.dept-btn:hover {
+    background: #2dd4bf10;
+    border-color: var(--accent-gold);
+    transform: translateY(-5px);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
+}
+
+.dept-title {
+    color: var(--accent-gold);
+    font-weight: 600;
+    font-size: 18px;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+}
+
+.dept-subtitle {
+    color: var(--text-muted);
+    font-size: 12px;
+}
+
+/* Sezione Login */
+.hidden {
+    display: none !important;
+}
+
+#login-section {
+    max-width: 400px;
+    margin: 0 auto;
+    animation: fadeIn 0.4s ease-in-out;
+}
+
+#login-title {
+    text-align: center;
+    color: var(--accent-gold);
+    margin-bottom: 25px;
+    font-size: 20px;
+    text-transform: uppercase;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 10px;
+}
+
+.input-group {
+    margin-bottom: 20px;
+}
+
+.input-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 13px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.input-group input {
+    width: 100%;
+    padding: 12px;
+    background: #020617;
+    border: 1px solid #334155;
+    color: var(--text-main);
+    border-radius: 4px;
+    font-size: 16px;
+    transition: border-color 0.2s;
+}
+
+.input-group input:focus {
+    outline: none;
+    border-color: var(--accent-blue);
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+}
+
+.action-buttons {
+    display: flex;
+    gap: 15px;
+    margin-top: 30px;
+}
+
+.action-buttons button {
+    flex: 1;
+    padding: 12px;
+    border: none;
+    border-radius: 4px;
+    font-weight: 600;
+    cursor: pointer;
+    font-size: 14px;
+    text-transform: uppercase;
+    transition: opacity 0.2s;
+}
+
+.back-btn {
+    background: #334155;
+    color: var(--text-main);
+}
+
+.submit-btn {
+    background: var(--accent-blue);
+    color: white;
+}
+
+.action-buttons button:hover {
+    opacity: 0.9;
+}
+
+.system-footer {
+    margin-top: 40px;
+    text-align: center;
+    border-top: 1px solid var(--border-color);
+    padding-top: 15px;
+}
+
+.system-footer p {
+    color: #475569;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 768px) {
+    .grid-container {
+        grid-template-columns: 1fr;
+    }
+}
