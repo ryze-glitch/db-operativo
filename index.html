@@ -3,56 +3,127 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Terminale di Sicurezza | Accesso Dipartimentale</title>
+    <title>Terminale Operativo - Polizia di Stato IPRP</title>
+    
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
     <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
 </head>
 <body>
-    <div class="overlay"></div>
-    <div class="terminal-container">
-        <header class="police-header">
-            <div class="logo-placeholder">Stemma Ufficiale</div>
-            <h1>SISTEMA OPERATIVO CENTRALE</h1>
-            <p>Selezionare il dipartimento di competenza per l'autenticazione</p>
-        </header>
 
-        <main id="department-selector" class="grid-container">
-            <button class="dept-btn" onclick="showLogin('Squadra Mobile')">
-                <span class="dept-title">Squadra Mobile</span>
-                <span class="dept-subtitle">Accesso Operativo</span>
-            </button>
-            <button class="dept-btn" onclick="showLogin('DIGOS')">
-                <span class="dept-title">DIGOS</span>
-                <span class="dept-subtitle">Accesso Informazioni</span>
-            </button>
-            <button class="dept-btn" onclick="showLogin('NOS')">
-                <span class="dept-title">NOS</span>
-                <span class="dept-subtitle">Accesso Tattico</span>
-            </button>
-        </main>
+    <div class="navbar-wrapper">
+        <nav class="navbar">
+            <div class="nav-left">
+                <div class="nav-logo">
+                    <img src="https://i.imgur.com/SUM8B5x.png" alt="Logo">
+                    POLIZIA IPRP
+                </div>
+            </div>
+            
+            <div class="nav-center">
+                <a href="index.html"><i class="fas fa-home"></i> Home</a>
+                <a href="#"><i class="fas fa-bullhorn"></i> Notizie</a>
+                
+                <div class="dropdown">
+                    <a href="#"><i class="fas fa-search"></i> Chi Siamo <i class="fas fa-chevron-down" style="font-size: 0.7rem; margin-left: -2px;"></i></a>
+                    <div class="dropdown-menu">
+                        <a href="capo-polizia.html"><i class="fas fa-user-tie"></i> Il Capo della Polizia</a>
+                        <a href="#"><i class="fas fa-book"></i> Storia della Polizia</a>
+                    </div>
+                </div>
 
-        <section id="login-section" class="hidden">
-            <h2 id="login-title">Accesso Reparto</h2>
-            <form id="login-form">
-                <div class="input-group">
-                    <label for="badge">Numero di Matricola</label>
-                    <input type="text" id="badge" placeholder="Es: 12345" required>
-                </div>
-                <div class="input-group">
-                    <label for="password">Codice di Sicurezza</label>
-                    <input type="password" id="password" placeholder="••••••••" required>
-                </div>
-                <div class="action-buttons">
-                    <button type="button" class="back-btn" onclick="showSelector()">Indietro</button>
-                    <button type="submit" class="submit-btn">Autorizza</button>
-                </div>
-            </form>
-        </section>
+                <a href="qualifiche.html"><i class="fas fa-medal"></i> Qualifiche</a>
+                <a href="#"><i class="fas fa-calendar-check"></i> Prenota</a>
+                <a href="concorso.html"><i class="fas fa-trophy"></i> Concorso Pubblico</a>
+            </div>
 
-        <footer class="system-footer">
-            <p>Rete Operativa IPRP | Nodo di Rete: Pisa | Connessione Criptata</p>
-        </footer>
+            <div class="nav-right">
+                <button class="nav-login-btn">
+                    Login
+                    <div class="icon-circle">
+                        <i class="fas fa-lock"></i>
+                    </div>
+                </button>
+            </div>
+        </nav>
     </div>
+
+    <div class="hero-bg"></div>
+
+    <main class="login-wrapper">
+        <div class="glass-panel" id="main-panel">
+            
+            <div class="panel-header">
+                <img src="https://i.imgur.com/gRzOXM3.png" alt="Logo IPRP" class="logo">
+                <h1>SISTEMA OPERATIVO</h1>
+                <p>Seleziona il tuo reparto operativo</p>
+            </div>
+
+            <div id="department-selector">
+                <button class="dept-btn" onclick="showLogin('Squadra Mobile', 'fas fa-search')">
+                    <i class="fas fa-search icon-dept"></i>
+                    <div class="dept-info">
+                        <h3>Squadra Mobile</h3>
+                        <span>Rete Investigativa Centrale</span>
+                    </div>
+                    <i class="fas fa-chevron-right icon-arrow"></i>
+                </button>
+
+                <button class="dept-btn" onclick="showLogin('DIGOS', 'fas fa-shield-alt')">
+                    <i class="fas fa-shield-alt icon-dept"></i>
+                    <div class="dept-info">
+                        <h3>D.I.G.O.S.</h3>
+                        <span>Divisione Investigazioni Generali</span>
+                    </div>
+                    <i class="fas fa-chevron-right icon-arrow"></i>
+                </button>
+
+                <button class="dept-btn" onclick="showLogin('NOS', 'fas fa-crosshairs')">
+                    <i class="fas fa-crosshairs icon-dept"></i>
+                    <div class="dept-info">
+                        <h3>N.O.S.</h3>
+                        <span>Nucleo Operativo Sicurezza</span>
+                    </div>
+                    <i class="fas fa-chevron-right icon-arrow"></i>
+                </button>
+            </div>
+
+            <div id="login-section" class="hidden">
+                <div class="active-dept-header">
+                    <i id="active-dept-icon" class="fas fa-lock"></i>
+                    <h2 id="login-title">Accesso Reparto</h2>
+                </div>
+
+                <form id="login-form">
+                    <div class="input-group">
+                        <label for="badge"><i class="fas fa-id-badge"></i> Matricola Operatore</label>
+                        <input type="text" id="badge" placeholder="Inserisci numero di matricola" required>
+                    </div>
+                    <div class="input-group">
+                        <label for="password"><i class="fas fa-key"></i> Codice di Sicurezza</label>
+                        <input type="password" id="password" placeholder="••••••••" required>
+                    </div>
+                    
+                    <div class="action-buttons">
+                        <button type="button" class="btn-back" onclick="showSelector()">
+                            <i class="fas fa-arrow-left"></i> Indietro
+                        </button>
+                        <button type="submit" class="btn-submit">
+                            Autorizza <i class="fas fa-sign-in-alt"></i>
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+        
+        <footer class="login-footer">
+            <p>Rete Criptata Polizia di Stato - Server IPRP</p>
+        </footer>
+    </main>
 
     <script src="script.js"></script>
 </body>
