@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Terminale Operativo - Polizia di Stato IPRP</title>
+    <title>Accesso Terminale - Polizia di Stato IPRP</title>
     
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -22,11 +22,9 @@
                     POLIZIA IPRP
                 </div>
             </div>
-            
             <div class="nav-center">
                 <a href="index.html"><i class="fas fa-home"></i> Home</a>
                 <a href="#"><i class="fas fa-bullhorn"></i> Notizie</a>
-                
                 <div class="dropdown">
                     <a href="#"><i class="fas fa-search"></i> Chi Siamo <i class="fas fa-chevron-down" style="font-size: 0.7rem; margin-left: -2px;"></i></a>
                     <div class="dropdown-menu">
@@ -34,12 +32,10 @@
                         <a href="#"><i class="fas fa-book"></i> Storia della Polizia</a>
                     </div>
                 </div>
-
                 <a href="qualifiche.html"><i class="fas fa-medal"></i> Qualifiche</a>
                 <a href="#"><i class="fas fa-calendar-check"></i> Prenota</a>
                 <a href="concorso.html"><i class="fas fa-trophy"></i> Concorso Pubblico</a>
             </div>
-
             <div class="nav-right">
                 <button class="nav-login-btn">
                     Login
@@ -53,39 +49,39 @@
 
     <div class="hero-bg"></div>
 
-    <main class="login-wrapper">
+    <div class="login-page-wrapper">
         <div class="glass-panel" id="main-panel">
             
             <div class="panel-header">
                 <img src="https://i.imgur.com/gRzOXM3.png" alt="Logo IPRP" class="logo">
                 <h1>SISTEMA OPERATIVO</h1>
-                <p>Seleziona il tuo reparto operativo</p>
+                <p>Identificazione Richiesta</p>
             </div>
 
             <div id="department-selector">
                 <button class="dept-btn" onclick="showLogin('Squadra Mobile', 'fas fa-search')">
-                    <i class="fas fa-search icon-dept"></i>
+                    <div class="dept-icon-box"><i class="fas fa-search"></i></div>
                     <div class="dept-info">
                         <h3>Squadra Mobile</h3>
-                        <span>Rete Investigativa Centrale</span>
+                        <span>Sezione Investigativa</span>
                     </div>
                     <i class="fas fa-chevron-right icon-arrow"></i>
                 </button>
 
                 <button class="dept-btn" onclick="showLogin('DIGOS', 'fas fa-shield-alt')">
-                    <i class="fas fa-shield-alt icon-dept"></i>
+                    <div class="dept-icon-box"><i class="fas fa-shield-alt"></i></div>
                     <div class="dept-info">
                         <h3>D.I.G.O.S.</h3>
-                        <span>Divisione Investigazioni Generali</span>
+                        <span>Divisione Generale</span>
                     </div>
                     <i class="fas fa-chevron-right icon-arrow"></i>
                 </button>
 
                 <button class="dept-btn" onclick="showLogin('NOS', 'fas fa-crosshairs')">
-                    <i class="fas fa-crosshairs icon-dept"></i>
+                    <div class="dept-icon-box"><i class="fas fa-crosshairs"></i></div>
                     <div class="dept-info">
                         <h3>N.O.S.</h3>
-                        <span>Nucleo Operativo Sicurezza</span>
+                        <span>Nucleo Sicurezza</span>
                     </div>
                     <i class="fas fa-chevron-right icon-arrow"></i>
                 </button>
@@ -93,18 +89,26 @@
 
             <div id="login-section" class="hidden">
                 <div class="active-dept-header">
-                    <i id="active-dept-icon" class="fas fa-lock"></i>
-                    <h2 id="login-title">Accesso Reparto</h2>
+                    <div class="glow-icon">
+                        <i id="active-dept-icon" class="fas fa-lock"></i>
+                    </div>
+                    <h2 id="login-title">Accesso</h2>
                 </div>
 
                 <form id="login-form">
                     <div class="input-group">
-                        <label for="badge"><i class="fas fa-id-badge"></i> Matricola Operatore</label>
-                        <input type="text" id="badge" placeholder="Inserisci numero di matricola" required>
+                        <label for="badge">Matricola Operatore</label>
+                        <div class="input-wrapper">
+                            <i class="fas fa-id-badge"></i>
+                            <input type="text" id="badge" placeholder="Inserisci matricola" required>
+                        </div>
                     </div>
                     <div class="input-group">
-                        <label for="password"><i class="fas fa-key"></i> Codice di Sicurezza</label>
-                        <input type="password" id="password" placeholder="••••••••" required>
+                        <label for="password">Codice di Sicurezza</label>
+                        <div class="input-wrapper">
+                            <i class="fas fa-key"></i>
+                            <input type="password" id="password" placeholder="••••••••" required>
+                        </div>
                     </div>
                     
                     <div class="action-buttons">
@@ -119,11 +123,7 @@
             </div>
 
         </div>
-        
-        <footer class="login-footer">
-            <p>Rete Criptata Polizia di Stato - Server IPRP</p>
-        </footer>
-    </main>
+    </div>
 
     <script src="script.js"></script>
 </body>
