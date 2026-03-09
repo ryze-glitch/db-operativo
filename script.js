@@ -1,38 +1,51 @@
 const selectorSection = document.getElementById('department-selector');
 const loginSection = document.getElementById('login-section');
 const loginTitle = document.getElementById('login-title');
+const activeDeptIcon = document.getElementById('active-dept-icon');
 const loginForm = document.getElementById('login-form');
 
-// Funzione per mostrare il login del dipartimento selezionato
-function showLogin(departmentName) {
-    // Nascondi i selettori
+// Mostra il login specifico
+function showLogin(departmentName, iconClass) {
+    // Nasconde la scelta dei dipartimenti
     selectorSection.classList.add('hidden');
     
-    // Aggiorna il titolo del login
-    loginTitle.textContent = `Accesso: ${departmentName}`;
+    // Aggiorna nome e icona del reparto selezionato
+    loginTitle.textContent = departmentName;
+    activeDeptIcon.className = iconClass;
     
     // Mostra il form
     loginSection.classList.remove('hidden');
 }
 
-// Funzione per tornare indietro alla selezione
+// Torna indietro alla selezione
 function showSelector() {
-    // Nascondi il form
     loginSection.classList.add('hidden');
-    
-    // Svuota i campi di input
     loginForm.reset();
-    
-    // Mostra i selettori
     selectorSection.classList.remove('hidden');
 }
 
-// Previene il ricaricamento della pagina all'invio del form (utile per test)
+// Gestione invio modulo
 loginForm.addEventListener('submit', function(e) {
     e.preventDefault();
     const matricola = document.getElementById('badge').value;
+    const btnSubmit = document.querySelector('.btn-submit');
     
-    // Qui andrà la logica per il collegamento al database/backend
-    console.log(`Tentativo di accesso. Matricola: ${matricola}`);
-    alert("Credenziali inviate al server centrale per la verifica.");
+    // Effetto di caricamento visivo (Feedback visivo)
+    const originalText = btnSubmit.innerHTML;
+    btnSubmit.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> Connessione...';
+    btnSubmit.style.opacity = '0.8';
+    btnSubmit.disabled = true;
+
+    // Simulazione di collegamento al server
+    setTimeout(() => {
+        alert("Autenticazione richiesta al server IPRP per matricola: " + matricola + "\nReparto: " + loginTitle.textContent);
+        
+        // Ripristina il bottone
+        btnSubmit.innerHTML = originalText;
+        btnSubmit.style.opacity = '1';
+        btnSubmit.disabled = false;
+        
+        // Qui potrai inserire il redirect alla dashboard, esempio:
+        // window.location.href = "dashboard.html";
+    }, 1500);
 });
