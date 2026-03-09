@@ -3,355 +3,57 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Terminale SM / DIGOS | Database Attenzionati</title>
-    
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
-
-    <style>
-        :root {
-            --bg-color: #0f1115;
-            --panel-bg: #1a1d24;
-            --primary-blue: #0052cc;
-            --primary-blue-hover: #0043a8;
-            --text-main: #e2e8f0;
-            --text-muted: #94a3b8;
-            --border-color: #2d3748;
-            --danger-red: #e53e3e;
-            --warning-yellow: #d69e2e;
-            --safe-green: #38a169;
-        }
-
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-
-        body {
-            background-color: var(--bg-color);
-            color: var(--text-main);
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        header {
-            width: 100%;
-            max-width: 1200px;
-            padding: 20px;
-            background: linear-gradient(90deg, var(--panel-bg) 0%, #10192b 100%);
-            border-left: 5px solid var(--primary-blue);
-            border-radius: 8px;
-            margin-bottom: 30px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .header-title h1 {
-            font-size: 24px;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-        }
-
-        .header-title p {
-            color: var(--text-muted);
-            font-size: 14px;
-            margin-top: 5px;
-        }
-
-        .container {
-            width: 100%;
-            max-width: 1200px;
-            display: grid;
-            grid-template-columns: 1fr 2fr;
-            gap: 20px;
-        }
-
-        /* Form Section */
-        .form-section {
-            background-color: var(--panel-bg);
-            padding: 25px;
-            border-radius: 8px;
-            border: 1px solid var(--border-color);
-            height: fit-content;
-        }
-
-        .form-section h2 {
-            margin-bottom: 20px;
-            font-size: 18px;
-            border-bottom: 1px solid var(--border-color);
-            padding-bottom: 10px;
-        }
-
-        .form-group {
-            margin-bottom: 15px;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 5px;
-            font-size: 14px;
-            color: var(--text-muted);
-        }
-
-        .form-group input, 
-        .form-group select, 
-        .form-group textarea {
-            width: 100%;
-            padding: 10px;
-            background-color: var(--bg-color);
-            border: 1px solid var(--border-color);
-            color: var(--text-main);
-            border-radius: 4px;
-            outline: none;
-            transition: border-color 0.2s;
-        }
-
-        .form-group input:focus, 
-        .form-group select:focus, 
-        .form-group textarea:focus {
-            border-color: var(--primary-blue);
-        }
-
-        button {
-            width: 100%;
-            padding: 12px;
-            background-color: var(--primary-blue);
-            color: white;
-            border: none;
-            border-radius: 4px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: background-color 0.2s;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        button:hover {
-            background-color: var(--primary-blue-hover);
-        }
-
-        /* Table Section */
-        .table-section {
-            background-color: var(--panel-bg);
-            padding: 25px;
-            border-radius: 8px;
-            border: 1px solid var(--border-color);
-            overflow-x: auto;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        th, td {
-            padding: 12px 15px;
-            text-align: left;
-            border-bottom: 1px solid var(--border-color);
-        }
-
-        th {
-            background-color: rgba(0, 82, 204, 0.1);
-            color: var(--primary-blue);
-            font-weight: 600;
-            text-transform: uppercase;
-            font-size: 12px;
-            letter-spacing: 0.5px;
-        }
-
-        tr:hover {
-            background-color: rgba(255, 255, 255, 0.02);
-        }
-
-        .badge {
-            padding: 4px 8px;
-            border-radius: 4px;
-            font-size: 12px;
-            font-weight: bold;
-            text-transform: uppercase;
-        }
-
-        .badge.basso { background-color: rgba(56, 161, 105, 0.2); color: var(--safe-green); }
-        .badge.medio { background-color: rgba(214, 158, 46, 0.2); color: var(--warning-yellow); }
-        .badge.alto { background-color: rgba(229, 62, 62, 0.2); color: var(--danger-red); }
-
-        .delete-btn {
-            background-color: transparent;
-            color: var(--danger-red);
-            padding: 5px;
-            width: auto;
-            border: 1px solid var(--danger-red);
-        }
-
-        .delete-btn:hover {
-            background-color: var(--danger-red);
-            color: white;
-        }
-
-        @media (max-width: 768px) {
-            .container {
-                grid-template-columns: 1fr;
-            }
-        }
-    </style>
+    <title>Terminale di Sicurezza | Accesso Dipartimentale</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
 </head>
 <body>
+    <div class="overlay"></div>
+    <div class="terminal-container">
+        <header class="police-header">
+            <div class="logo-placeholder">Stemma Ufficiale</div>
+            <h1>SISTEMA OPERATIVO CENTRALE</h1>
+            <p>Selezionare il dipartimento di competenza per l'autenticazione</p>
+        </header>
 
-    <header>
-        <div class="header-title">
-            <h1>Terminale Investigativo DIGOS</h1>
-            <p>Database Centrale Soggetti Attenzionati - Server FiveM</p>
-        </div>
-        <div>
-            <span style="color: var(--danger-red); font-weight: bold;">LIVELLO SICUREZZA: CLASSIFICATO</span>
-        </div>
-    </header>
+        <main id="department-selector" class="grid-container">
+            <button class="dept-btn" onclick="showLogin('Squadra Mobile')">
+                <span class="dept-title">Squadra Mobile</span>
+                <span class="dept-subtitle">Accesso Operativo</span>
+            </button>
+            <button class="dept-btn" onclick="showLogin('DIGOS')">
+                <span class="dept-title">DIGOS</span>
+                <span class="dept-subtitle">Accesso Informazioni</span>
+            </button>
+            <button class="dept-btn" onclick="showLogin('NOS')">
+                <span class="dept-title">NOS</span>
+                <span class="dept-subtitle">Accesso Tattico</span>
+            </button>
+        </main>
 
-    <div class="container">
-        <div class="form-section">
-            <h2>Inserisci Nuovo Soggetto</h2>
-            <form id="addForm">
-                <div class="form-group">
-                    <label>Nome e Cognome (o Nickname)</label>
-                    <input type="text" id="nome" required placeholder="Es. Mario Rossi">
+        <section id="login-section" class="hidden">
+            <h2 id="login-title">Accesso Reparto</h2>
+            <form id="login-form">
+                <div class="input-group">
+                    <label for="badge">Numero di Matricola</label>
+                    <input type="text" id="badge" placeholder="Es: 12345" required>
                 </div>
-                <div class="form-group">
-                    <label>ID in Gioco</label>
-                    <input type="number" id="ingameId" required placeholder="Es. 142">
+                <div class="input-group">
+                    <label for="password">Codice di Sicurezza</label>
+                    <input type="password" id="password" placeholder="••••••••" required>
                 </div>
-                <div class="form-group">
-                    <label>Affiliazione / Fazione</label>
-                    <input type="text" id="fazione" placeholder="Es. Nessuna, Cartello, ecc.">
+                <div class="action-buttons">
+                    <button type="button" class="back-btn" onclick="showSelector()">Indietro</button>
+                    <button type="submit" class="submit-btn">Autorizza</button>
                 </div>
-                <div class="form-group">
-                    <label>Livello di Pericolosità</label>
-                    <select id="pericolo" required>
-                        <option value="basso">Basso</option>
-                        <option value="medio">Medio</option>
-                        <option value="alto">Alto</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label>Motivo Attenzione / Note</label>
-                    <textarea id="motivo" rows="4" required placeholder="Descrivere dettagliatamente i sospetti..."></textarea>
-                </div>
-                <button type="submit">Aggiungi al Database</button>
             </form>
-        </div>
+        </section>
 
-        <div class="table-section">
-            <table id="dataTable">
-                <thead>
-                    <tr>
-                        <th>ID Gioco</th>
-                        <th>Soggetto</th>
-                        <th>Affiliazione</th>
-                        <th>Livello</th>
-                        <th>Motivo</th>
-                        <th>Azioni</th>
-                    </tr>
-                </thead>
-                <tbody id="tableBody">
-                    </tbody>
-            </table>
-        </div>
+        <footer class="system-footer">
+            <p>Rete Operativa IPRP | Nodo di Rete: Pisa | Connessione Criptata</p>
+        </footer>
     </div>
 
-    <script>
-        // 1. Inserisci qui la tua configurazione di Firebase
-        const firebaseConfig = {
-            apiKey: "YOUR_API_KEY",
-            authDomain: "YOUR_AUTH_DOMAIN",
-            projectId: "YOUR_PROJECT_ID", // database-sqmobile-digos
-            storageBucket: "YOUR_STORAGE_BUCKET",
-            messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-            appId: "YOUR_APP_ID"
-        };
-
-        // 2. Inizializza Firebase
-        if (!firebase.apps.length) {
-            firebase.initializeApp(firebaseConfig);
-        }
-        const db = firebase.firestore();
-
-        // 3. Gestione del Form di Inserimento
-        const addForm = document.getElementById('addForm');
-        
-        addForm.addEventListener('submit', (e) => {
-            e.preventDefault(); // Evita il ricaricamento della pagina
-
-            // Raccogli i dati dal form
-            const nome = document.getElementById('nome').value;
-            const ingameId = document.getElementById('ingameId').value;
-            const fazione = document.getElementById('fazione').value || 'Nessuna';
-            const pericolo = document.getElementById('pericolo').value;
-            const motivo = document.getElementById('motivo').value;
-
-            // Salva su Firestore nella collezione "attenzionati"
-            db.collection("attenzionati").add({
-                nome: nome,
-                ingameId: ingameId,
-                fazione: fazione,
-                pericolo: pericolo,
-                motivo: motivo,
-                dataInserimento: firebase.firestore.FieldValue.serverTimestamp()
-            })
-            .then(() => {
-                alert("Soggetto aggiunto con successo al database!");
-                addForm.reset(); // Svuota il form
-            })
-            .catch((error) => {
-                console.error("Errore durante l'aggiunta: ", error);
-                alert("Errore di connessione al database.");
-            });
-        });
-
-        // 4. Lettura e visualizzazione dei dati in tempo reale
-        const tableBody = document.getElementById('tableBody');
-
-        db.collection("attenzionati").orderBy("dataInserimento", "desc").onSnapshot((querySnapshot) => {
-            tableBody.innerHTML = ''; // Pulisci la tabella
-
-            querySnapshot.forEach((doc) => {
-                const data = doc.data();
-                const docId = doc.id;
-
-                // Crea la riga della tabella
-                const tr = document.createElement('tr');
-                
-                tr.innerHTML = `
-                    <td style="font-weight: bold; color: var(--text-muted);">#${data.ingameId}</td>
-                    <td>${data.nome}</td>
-                    <td>${data.fazione}</td>
-                    <td><span class="badge ${data.pericolo}">${data.pericolo}</span></td>
-                    <td style="max-width: 250px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="${data.motivo}">
-                        ${data.motivo}
-                    </td>
-                    <td>
-                        <button class="delete-btn" onclick="eliminaSoggetto('${docId}')">Elimina</button>
-                    </td>
-                `;
-                
-                tableBody.appendChild(tr);
-            });
-        });
-
-        // 5. Funzione per eliminare un record
-        function eliminaSoggetto(id) {
-            if(confirm("Sei sicuro di voler rimuovere questo soggetto dal database?")) {
-                db.collection("attenzionati").doc(id).delete().then(() => {
-                    console.log("Documento eliminato con successo!");
-                }).catch((error) => {
-                    console.error("Errore durante l'eliminazione: ", error);
-                });
-            }
-        }
-    </script>
+    <script src="script.js"></script>
 </body>
 </html>
