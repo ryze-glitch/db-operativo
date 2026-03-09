@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Accesso Terminale - Polizia di Stato IPRP</title>
+    <title>Terminale Operativo - IPRP</title>
     
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -26,103 +26,115 @@
                 <a href="index.html"><i class="fas fa-home"></i> Home</a>
                 <a href="#"><i class="fas fa-bullhorn"></i> Notizie</a>
                 <div class="dropdown">
-                    <a href="#"><i class="fas fa-search"></i> Chi Siamo <i class="fas fa-chevron-down" style="font-size: 0.7rem; margin-left: -2px;"></i></a>
+                    <a href="#"><i class="fas fa-search"></i> Chi Siamo <i class="fas fa-chevron-down" style="font-size: 0.7rem;"></i></a>
                     <div class="dropdown-menu">
                         <a href="capo-polizia.html"><i class="fas fa-user-tie"></i> Il Capo della Polizia</a>
-                        <a href="#"><i class="fas fa-book"></i> Storia della Polizia</a>
                     </div>
                 </div>
                 <a href="qualifiche.html"><i class="fas fa-medal"></i> Qualifiche</a>
                 <a href="#"><i class="fas fa-calendar-check"></i> Prenota</a>
-                <a href="concorso.html"><i class="fas fa-trophy"></i> Concorso Pubblico</a>
             </div>
             <div class="nav-right">
                 <button class="nav-login-btn">
-                    Login
-                    <div class="icon-circle">
-                        <i class="fas fa-lock"></i>
-                    </div>
+                    Login <div class="icon-circle"><i class="fas fa-lock"></i></div>
                 </button>
             </div>
         </nav>
     </div>
 
-    <div class="hero-bg"></div>
-
-    <div class="login-page-wrapper">
-        <div class="glass-panel" id="main-panel">
-            
-            <div class="panel-header">
-                <img src="https://i.imgur.com/gRzOXM3.png" alt="Logo IPRP" class="logo">
-                <h1>SISTEMA OPERATIVO</h1>
-                <p>Identificazione Richiesta</p>
+    <div class="split-layout">
+        
+        <div class="split-left">
+            <div class="left-content">
+                <img src="https://i.imgur.com/gRzOXM3.png" alt="Logo IPRP" class="big-logo">
+                <h1>SISTEMA OPERATIVO<br><span>CENTRALE</span></h1>
+                <p>Accesso riservato al personale autorizzato della Polizia di Stato. Rete criptata con protocollo di sicurezza IPRP.</p>
             </div>
+        </div>
 
-            <div id="department-selector">
-                <button class="dept-btn" onclick="showLogin('Squadra Mobile', 'fas fa-search')">
-                    <div class="dept-icon-box"><i class="fas fa-search"></i></div>
-                    <div class="dept-info">
-                        <h3>Squadra Mobile</h3>
-                        <span>Sezione Investigativa</span>
+        <div class="split-right">
+            <div class="auth-container">
+                
+                <div id="department-selector">
+                    <div class="auth-header">
+                        <h2>Identificazione Richiesta</h2>
+                        <p>Seleziona il tuo reparto di appartenenza</p>
                     </div>
-                    <i class="fas fa-chevron-right icon-arrow"></i>
-                </button>
 
-                <button class="dept-btn" onclick="showLogin('DIGOS', 'fas fa-shield-alt')">
-                    <div class="dept-icon-box"><i class="fas fa-shield-alt"></i></div>
-                    <div class="dept-info">
-                        <h3>D.I.G.O.S.</h3>
-                        <span>Divisione Generale</span>
-                    </div>
-                    <i class="fas fa-chevron-right icon-arrow"></i>
-                </button>
+                    <div class="cards-grid">
+                        <button class="modern-card" onclick="showLogin('Squadra Mobile', 'https://i.imgur.com/J3T1Kot.png')">
+                            <div class="card-img-wrapper">
+                                <img src="https://i.imgur.com/J3T1Kot.png" alt="Squadra Mobile">
+                            </div>
+                            <div class="card-content">
+                                <h3>Squadra Mobile</h3>
+                                <span>Sezione Investigativa</span>
+                            </div>
+                            <div class="card-arrow"><i class="fas fa-arrow-right"></i></div>
+                        </button>
 
-                <button class="dept-btn" onclick="showLogin('NOS', 'fas fa-crosshairs')">
-                    <div class="dept-icon-box"><i class="fas fa-crosshairs"></i></div>
-                    <div class="dept-info">
-                        <h3>N.O.S.</h3>
-                        <span>Nucleo Sicurezza</span>
-                    </div>
-                    <i class="fas fa-chevron-right icon-arrow"></i>
-                </button>
-            </div>
+                        <button class="modern-card" onclick="showLogin('DIGOS', 'https://i.imgur.com/rgGjsgX.png')">
+                            <div class="card-img-wrapper">
+                                <img src="https://i.imgur.com/rgGjsgX.png" alt="DIGOS">
+                            </div>
+                            <div class="card-content">
+                                <h3>D.I.G.O.S.</h3>
+                                <span>Divisione Generale</span>
+                            </div>
+                            <div class="card-arrow"><i class="fas fa-arrow-right"></i></div>
+                        </button>
 
-            <div id="login-section" class="hidden">
-                <div class="active-dept-header">
-                    <div class="glow-icon">
-                        <i id="active-dept-icon" class="fas fa-lock"></i>
+                        <button class="modern-card" onclick="showLogin('NOS', 'https://i.imgur.com/gy3HsSH.png')">
+                            <div class="card-img-wrapper">
+                                <img src="https://i.imgur.com/gy3HsSH.png" alt="NOS">
+                            </div>
+                            <div class="card-content">
+                                <h3>N.O.S.</h3>
+                                <span>Nucleo Sicurezza</span>
+                            </div>
+                            <div class="card-arrow"><i class="fas fa-arrow-right"></i></div>
+                        </button>
                     </div>
-                    <h2 id="login-title">Accesso</h2>
                 </div>
 
-                <form id="login-form">
-                    <div class="input-group">
-                        <label for="badge">Matricola Operatore</label>
-                        <div class="input-wrapper">
-                            <i class="fas fa-id-badge"></i>
-                            <input type="text" id="badge" placeholder="Inserisci matricola" required>
+                <div id="login-section" class="hidden">
+                    <div class="auth-header">
+                        <button class="back-link" onclick="showSelector()"><i class="fas fa-arrow-left"></i> Cambia Reparto</button>
+                        <div class="selected-dept-display">
+                            <div class="card-img-wrapper large">
+                                <img id="active-dept-icon" src="" alt="Reparto">
+                            </div>
+                            <h2 id="login-title">Accesso</h2>
                         </div>
                     </div>
-                    <div class="input-group">
-                        <label for="password">Codice di Sicurezza</label>
-                        <div class="input-wrapper">
-                            <i class="fas fa-key"></i>
-                            <input type="password" id="password" placeholder="••••••••" required>
-                        </div>
-                    </div>
-                    
-                    <div class="action-buttons">
-                        <button type="button" class="btn-back" onclick="showSelector()">
-                            <i class="fas fa-arrow-left"></i> Indietro
-                        </button>
-                        <button type="submit" class="btn-submit">
-                            Autorizza <i class="fas fa-sign-in-alt"></i>
-                        </button>
-                    </div>
-                </form>
-            </div>
 
+                    <form id="login-form" class="modern-form">
+                        <div class="input-block">
+                            <label>Matricola Operatore</label>
+                            <div class="input-container">
+                                <i class="fas fa-id-badge"></i>
+                                <input type="text" id="badge" placeholder="Es. 12345" required>
+                            </div>
+                        </div>
+
+                        <div class="input-block">
+                            <label>Codice di Sicurezza</label>
+                            <div class="input-container">
+                                <i class="fas fa-lock"></i>
+                                <input type="password" id="password" placeholder="••••••••" required>
+                            </div>
+                        </div>
+                        
+                        <button type="submit" class="cyber-btn">
+                            <span>Inizializza Connessione</span>
+                            <i class="fas fa-fingerprint"></i>
+                        </button>
+                    </form>
+                </div>
+
+            </div>
         </div>
+
     </div>
 
     <script src="script.js"></script>
