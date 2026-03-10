@@ -1,98 +1,61 @@
-// --- CONFIGURAZIONE DIRETTA GOOGLE SHEETS ---
-const DTA_ENDPOINT = "https://script.google.com/macros/s/AKfycbw9PfzjM0E7pmQQK2FSmiWZry9tDQTLsRF6Rv_WEbeHrrOrLG5jdtj8YLk7tFKOcBw2/exec"; 
+// 1. Importa Firebase
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-app.js";
+import { getFirestore, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-firestore.js";
 
-// --- OROLOGIO DI SISTEMA ---
-setInterval(() => {
-    const clock = document.getElementById('system-clock');
-    if(clock) clock.textContent = new Date().toLocaleTimeString('it-IT');
-}, 1000);
-
-// --- SISTEMA NOTIFICHE TOAST ---
-function showToast(title, message, type = 'info') {
-    const container = document.getElementById('toast-container');
-    if(!container) return; // Protezione se manca il div nell'html
-
-    const toast = document.createElement('div');
-    toast.className = `toast ${type}`;
-    toast.innerHTML = `<strong>${title}</strong><p style="font-size:0.8rem">${message}</p>`;
-    
-    container.appendChild(toast);
-    
-    // Animazione di uscita e rimozione
-    setTimeout(() => { 
-        toast.style.opacity = '0'; 
-        setTimeout(() => toast.remove(), 400); 
-    }, 4000);
-}
-
-// --- FUNZIONI DI NAVIGAZIONE ---
-window.showLogin = (name, img) => {
-    document.getElementById('department-selector').classList.add('hidden');
-    document.getElementById('login-title').textContent = name;
-    document.getElementById('active-dept-icon').src = img;
-    // Se hai un'immagine anche nella dashboard, la aggiorniamo qui
-    const dashLogo = document.getElementById('dash-logo-reparto');
-    if(dashLogo) dashLogo.src = img;
-    
-    document.getElementById('login-section').classList.remove('hidden');
+// 2. La tua configurazione
+const firebaseConfig = {
+    apiKey: "AIzaSyDPyEfr0KbWtYDeM5-EFTl3s3VGVB_8Yi8",
+    authDomain: "database-dta.firebaseapp.com",
+    projectId: "database-dta",
+    storageBucket: "database-dta.firebasestorage.app",
+    messagingSenderId: "229305773627",
+    appId: "1:229305773627:web:ec3d17f5fcb3c65fdb761e"
 };
 
-window.showSelector = () => {
-    document.getElementById('login-section').classList.add('hidden');
-    document.getElementById('department-selector').classList.remove('hidden');
-};
+// 3. Avvia il Database
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
 
-window.logout = () => location.reload();
+// 4. La funzione di Login
+async function validaLogin(event) {
+    if (event) event.preventDefault(); // Evita che la pagina si ricarichi se usi un <form>
 
-// --- LOGICA LOGIN REAL-TIME ---
-document.getElementById('login-form').addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const btn = document.getElementById('btn-submit');
-    const mat = document.getElementById('badge').value.trim();
-    const pwd = document.getElementById('password').value.trim();
+    const matricolaInput = document.getElementById('matricola').value;
+    const passwordInput = document.getElementById('password').value;
+    const erroreMsg = document.getElementById('messaggio-errore'); // Assicurati di avere un div con questo ID nel tuo HTML
 
-    // Feedback visivo sul pulsante
-    btn.disabled = true;
-    btn.innerHTML = 'Verifica DTA in corso... <i class="fas fa-spinner fa-spin"></i>';
+    if (erroreMsg) erroreMsg.innerText = "Controllo credenziali in corso...";
 
     try {
-        // Chiamata GET a Google Sheets
-        const response = await fetch(`${DTA_ENDPOINT}?matricola=${encodeURIComponent(mat)}&password=${encodeURIComponent(pwd)}`);
-        const result = await response.json();
+        const q = query(
+            collection(db, "agenti"), 
+            where("matricola", "==", matricolaInput), 
+            where("password", "==", passwordInput)
+        );
 
-        if (result.success) {
-            // Successo: Popoliamo la UI con i dati del Foglio Google
-            document.getElementById('logged-user-name').textContent = result.nome;
-            document.getElementById('logged-user-rank').textContent = result.grado;
-            document.getElementById('logged-user-badge').textContent = "Matricola: " + mat;
-            
-            const deptDisplay = document.getElementById('dash-dept-display');
-            if(deptDisplay) deptDisplay.textContent = result.reparto.toUpperCase();
-            
-            const welcomeMsg = document.getElementById('welcome-message');
-            if(welcomeMsg) welcomeMsg.textContent = "Terminale Operativo: " + result.grado + " " + result.nome;
-            
-            showToast("ACCESSO AUTORIZZATO", "Connessione sicura stabilita con successo.", "success");
+        const querySnapshot = await getDocs(q);
 
-            // Transizione alla Dashboard
-            setTimeout(() => {
-                document.getElementById('auth-screen').classList.add('hidden');
-                const dash = document.getElementById('dashboard-section');
-                dash.style.display = 'flex'; // Forza il flex per la sidebar
-                dash.classList.remove('hidden');
-                
-                const navbar = document.getElementById('main-navbar');
-                if(navbar) navbar.classList.add('hidden');
-            }, 1000);
+        if (!querySnapshot.empty) {
+            // Successo! Prendi i dati e salva (Incluso il GRADO)
+            const datiAgente = querySnapshot.docs[0].data();
+            localStorage.setItem('utenteLoggato', JSON.stringify(datiAgente));
             
+            // Vai alla dashboard (assicurati che il nome del file sia corretto)
+            window.location.href = 'dashboard.html';
         } else {
-            showToast("ACCESSO NEGATO", "Credenziali non trovate nel database centrale.", "error");
+            if (erroreMsg) erroreMsg.innerText = "Accesso Negato: Credenziali errate.";
+            else alert("Accesso Negato: Credenziali errate.");
         }
-    } catch (err) {
-        console.error("Errore connessione:", err);
-        showToast("ERRORE DATABASE", "Impossibile contattare il server Google Sheets.", "error");
-    } finally {
-        btn.disabled = false;
-        btn.innerHTML = 'Inizializza Connessione <i class="fas fa-fingerprint"></i>';
+    } catch (error) {
+        console.error("Errore DB:", error);
+        if (erroreMsg) erroreMsg.innerText = "Errore di connessione al database.";
+    }
+}
+
+// 5. Collega il bottone appena la pagina è caricata
+document.addEventListener('DOMContentLoaded', () => {
+    const btnLogin = document.getElementById('btn-login');
+    if (btnLogin) {
+        btnLogin.addEventListener('click', validaLogin);
     }
 });
