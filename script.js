@@ -1,6 +1,9 @@
+// Importa Firebase
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-app.js";
-import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-firestore.js";
+// ATTENZIONE: ho importato anche 'collection' e 'getDocs' per il sistema di diagnostica
+import { getFirestore, doc, getDoc, collection, getDocs } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-firestore.js";
 
+// --- LA TUA CONFIGURAZIONE FIREBASE REALE ---
 const firebaseConfig = {
     apiKey: "AIzaSyAYsesmrIxPL0_UJctwfRKLpQcElpeMRcU",
     authDomain: "database-sqmobile-digos.firebaseapp.com",
@@ -13,95 +16,143 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-// OROLOGIO
-setInterval(() => {
-    const clock = document.getElementById('system-clock');
-    if(clock) clock.textContent = new Date().toLocaleTimeString('it-IT');
-}, 1000);
+// Costanti UI
+const selectorSection = document.getElementById('department-selector');
+const loginSection = document.getElementById('login-section');
+const loginTitle = document.getElementById('login-title');
+const activeDeptIcon = document.getElementById('active-dept-icon');
+const loginForm = document.getElementById('login-form');
+const authScreen = document.getElementById('auth-screen');
+const mainNavbar = document.getElementById('main-navbar');
+const dashboardSection = document.getElementById('dashboard-section');
 
-// NOTIFICHE
+// --- OROLOGIO DI SISTEMA ---
+function updateClock() {
+    const clockElement = document.getElementById('system-clock');
+    if(clockElement) clockElement.textContent = new Date().toLocaleTimeString('it-IT', { hour12: false });
+}
+setInterval(updateClock, 1000);
+updateClock();
+
+// --- NOTIFICHE TOAST ---
 function showToast(title, message, type = 'info') {
     const container = document.getElementById('toast-container');
     const toast = document.createElement('div');
     toast.className = `toast ${type}`;
-    toast.innerHTML = `<strong>${title}</strong><p style="font-size:0.8rem">${message}</p>`;
+    
+    let iconClass = 'fa-info-circle';
+    if (type === 'success') iconClass = 'fa-check-circle';
+    if (type === 'error') iconClass = 'fa-exclamation-triangle';
+
+    toast.innerHTML = `
+        <div class="toast-icon"><i class="fas ${iconClass}"></i></div>
+        <div class="toast-content">
+            <div class="toast-title">${title}</div>
+            <div class="toast-message">${message}</div>
+        </div>
+    `;
+
     container.appendChild(toast);
-    setTimeout(() => { 
-        toast.style.opacity = '0'; 
+    setTimeout(() => {
+        toast.style.opacity = '0';
         setTimeout(() => toast.remove(), 400); 
     }, 4500);
 }
 
-// NAVIGAZIONE
-window.showLogin = (name, img) => {
-    document.getElementById('department-selector').classList.add('hidden');
-    document.getElementById('login-title').textContent = name;
-    document.getElementById('active-dept-icon').src = img;
-    document.getElementById('login-section').classList.remove('hidden');
+// --- NAVIGAZIONE ---
+window.showLogin = (departmentName, imageSrc) => {
+    selectorSection.classList.add('hidden');
+    loginTitle.textContent = departmentName;
+    activeDeptIcon.src = imageSrc;
+    loginSection.classList.remove('hidden');
 };
 
 window.showSelector = () => {
-    document.getElementById('login-section').classList.add('hidden');
-    document.getElementById('department-selector').classList.remove('hidden');
+    loginSection.classList.add('hidden');
+    loginForm.reset();
+    selectorSection.classList.remove('hidden');
 };
 
 window.logout = () => location.reload();
 
-// TIMER
-const tenDays = new Date().getTime() + (10 * 24 * 60 * 60 * 1000);
+// --- TIMER 10 GIORNI ---
+const tenDaysFromNow = new Date().getTime() + (10 * 24 * 60 * 60 * 1000);
 setInterval(() => {
-    const diff = tenDays - new Date().getTime();
-    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-    const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-    const txt = `${days}g ${hours}h`;
-    document.getElementById('timer-digos').textContent = "Sblocco: " + txt;
-    document.getElementById('timer-nos').textContent = "Sblocco: " + txt;
+    const distance = tenDaysFromNow - new Date().getTime();
+    const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    const text = `${days}g ${hours}h`;
+    document.getElementById("timer-digos").innerText = "Sblocco in: " + text;
+    document.getElementById("timer-nos").innerText = "Sblocco in: " + text;
 }, 1000);
 
-// LOGIN
-document.getElementById('login-form').addEventListener('submit', async (e) => {
+// --- LOGICA LOGIN & SISTEMA DI DIAGNOSTICA ---
+loginForm.addEventListener('submit', async (e) => {
     e.preventDefault();
-    const matricola = document.getElementById('badge').value.trim();
-    const password = document.getElementById('password').value.trim();
-    const btn = document.getElementById('btn-submit');
-
-    btn.disabled = true;
-    btn.innerHTML = 'Verifica in corso... <i class="fas fa-spinner fa-spin"></i>';
+    
+    const matricolaInput = document.getElementById('badge').value.trim();
+    const passwordInput = document.getElementById('password').value.trim();
+    const btnSubmit = document.getElementById('btn-submit');
+    
+    const originalContent = btnSubmit.innerHTML;
+    btnSubmit.innerHTML = '<span>Verifica Identità...</span> <i class="fas fa-circle-notch fa-spin"></i>';
+    btnSubmit.disabled = true;
 
     try {
-        // CERCA NELLA RACCOLTA "utenti" (senza spazi)
-        const userRef = doc(db, "utenti", matricola);
+        const userRef = doc(db, "utenti", matricolaInput);
         const userSnap = await getDoc(userRef);
 
         if (userSnap.exists()) {
-            const data = userSnap.data();
-            if (data.password === password) {
-                // Caricamento Dati Profilo
-                document.getElementById('logged-user-name').textContent = data.nome || "Operatore";
-                document.getElementById('logged-user-rank').textContent = data.grado || "Grado n.d.";
-                document.getElementById('logged-user-badge').textContent = "ID Matr: " + matricola;
-                document.getElementById('dash-dept-display').textContent = data.reparto || "P. DI STATO";
-                document.getElementById('welcome-message').textContent = "Bentornato, " + (data.nome || "Agente");
+            const userData = userSnap.data();
+            
+            if (userData.password === passwordInput) {
+                // Successo
+                document.getElementById('logged-user-name').textContent = userData.nome || "Operatore";
+                document.getElementById('logged-user-rank').textContent = userData.grado || "Grado n.d.";
+                document.getElementById('logged-user-badge').textContent = "ID Matr: " + matricolaInput;
+                document.getElementById('dash-dept-display').textContent = userData.reparto || "P. DI STATO";
+                document.getElementById('welcome-message').textContent = "Bentornato, " + (userData.grado || "Agente") + " " + (userData.nome || "");
 
-                showToast("Accesso Autorizzato", "Benvenuto nel terminale operativo.", "success");
+                showToast("Accesso Autorizzato", "Credenziali verificate. Benvenuto.", "success");
                 
                 setTimeout(() => {
-                    document.getElementById('auth-screen').classList.add('hidden');
-                    document.getElementById('dashboard-section').classList.remove('hidden');
-                    document.getElementById('main-navbar').classList.add('hidden');
+                    authScreen.classList.add('hidden');
+                    mainNavbar.classList.add('hidden');
+                    dashboardSection.classList.remove('hidden');
                 }, 1000);
             } else {
-                showToast("Errore di Sicurezza", "Codice di sicurezza errato.", "error");
+                showToast("Errore di Sicurezza", "Il codice di sicurezza inserito non è corretto.", "error");
             }
         } else {
-            showToast("Soggetto Ignoto", "Matricola non trovata nel database centrale.", "error");
-            console.log("Database non ha trovato il documento:", matricola, "nella raccolta 'utenti'");
+            // ERRORE: MATRICOLA NON TROVATA
+            showToast("Soggetto Ignoto", "Matricola non trovata. Premi F12 per dettagli.", "error");
+            
+            // --- DIAGNOSTICA AUTOMATICA (Stampata nella console F12) ---
+            console.error(`❌ ERRORE: Il documento ID "${matricolaInput}" non esiste nella raccolta "utenti".`);
+            console.log("🔍 Eseguo una scansione del database per vedere cosa contiene...");
+            
+            try {
+                const querySnapshot = await getDocs(collection(db, "utenti"));
+                let foundDocs = [];
+                querySnapshot.forEach((docItem) => {
+                    foundDocs.push(`"${docItem.id}"`);
+                });
+                
+                if(foundDocs.length === 0) {
+                    console.warn("⚠️ Firebase dice che la raccolta 'utenti' è COMPLETAMENTE VUOTA. Sicuro di averla chiamata 'utenti' tutta in minuscolo?");
+                } else {
+                    console.log(`✅ Documenti che Firebase riesce a vedere in 'utenti':`, foundDocs.join(", "));
+                    console.log(`💡 Se il nome che hai scritto non è nell'elenco qui sopra, non potrai mai loggare!`);
+                }
+            } catch(scanErr) {
+                console.error("Non ho i permessi per scansionare. Le regole di Firebase non sono corrette.", scanErr);
+            }
         }
-    } catch (err) {
-        showToast("Errore Sistema", "Impossibile contattare il server. Verifica permessi.", "error");
-        console.error(err);
+    } catch (error) {
+        showToast("Errore di Rete", "Impossibile collegarsi al database.", "error");
+        console.error(error);
     } finally {
-        btn.disabled = false;
-        btn.innerHTML = 'Inizializza Connessione <i class="fas fa-fingerprint"></i>';
+        btnSubmit.innerHTML = originalContent;
+        btnSubmit.disabled = false;
     }
 });
