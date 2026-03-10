@@ -1,15 +1,40 @@
-// Costanti UI Login
+// Importa Firebase (SDK Versione 12.10.0)
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-app.js";
+import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-firestore.js";
+import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-analytics.js";
+
+// --- LA TUA CONFIGURAZIONE FIREBASE REALE ---
+const firebaseConfig = {
+    apiKey: "AIzaSyAYsesmrIxPL0_UJctwfRKLpQcElpeMRcU",
+    authDomain: "database-sqmobile-digos.firebaseapp.com",
+    projectId: "database-sqmobile-digos",
+    storageBucket: "database-sqmobile-digos.firebasestorage.app",
+    messagingSenderId: "510053226005",
+    appId: "1:510053226005:web:aed636bc19a7e23b34e01c",
+    measurementId: "G-W3F69LZP07"
+};
+
+// Inizializza l'app, il database Firestore e Analytics
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+const analytics = getAnalytics(app);
+
+// Costanti UI
 const selectorSection = document.getElementById('department-selector');
 const loginSection = document.getElementById('login-section');
 const loginTitle = document.getElementById('login-title');
 const activeDeptIcon = document.getElementById('active-dept-icon');
 const loginForm = document.getElementById('login-form');
-
-// Costanti UI Cambio View
 const authScreen = document.getElementById('auth-screen');
 const mainNavbar = document.getElementById('main-navbar');
 const dashboardSection = document.getElementById('dashboard-section');
+
+// Elementi Profilo Dashboard
+const loggedUserName = document.getElementById('logged-user-name');
+const loggedUserRank = document.getElementById('logged-user-rank');
 const loggedUserBadge = document.getElementById('logged-user-badge');
+const dashDeptDisplay = document.getElementById('dash-dept-display');
+const welcomeMsg = document.getElementById('welcome-message');
 
 // --- SISTEMA DI NOTIFICHE CUSTOM ---
 function showToast(title, message, type = 'info') {
@@ -17,11 +42,9 @@ function showToast(title, message, type = 'info') {
     const toast = document.createElement('div');
     toast.className = `toast ${type}`;
     
-    // Seleziona icona in base al tipo
     let iconClass = 'fa-info-circle';
     if (type === 'success') iconClass = 'fa-check-circle';
     if (type === 'error') iconClass = 'fa-exclamation-triangle';
-    if (type === 'warning') iconClass = 'fa-shield-alt';
 
     toast.innerHTML = `
         <div class="toast-icon"><i class="fas ${iconClass}"></i></div>
@@ -33,27 +56,29 @@ function showToast(title, message, type = 'info') {
 
     container.appendChild(toast);
 
-    // Rimuove la notifica dopo 4.5 secondi
     setTimeout(() => {
         toast.style.animation = 'fadeOutToast 0.4s ease-out forwards';
-        setTimeout(() => toast.remove(), 400); // aspetta che finisca l'animazione css prima di eliminare il nodo
+        setTimeout(() => toast.remove(), 400); 
     }, 4500);
 }
 
-// Mostra il form di login con i dati del reparto scelto
-function showLogin(departmentName, imageSrc) {
+// Esposizione funzioni globali per HTML (Necessario con type="module")
+window.showLogin = (departmentName, imageSrc) => {
     selectorSection.classList.add('hidden');
     loginTitle.textContent = departmentName;
     activeDeptIcon.src = imageSrc;
     loginSection.classList.remove('hidden');
-}
+};
 
-// Torna alla schermata di selezione
-function showSelector() {
+window.showSelector = () => {
     loginSection.classList.add('hidden');
     loginForm.reset();
     selectorSection.classList.remove('hidden');
-}
+};
+
+window.logout = () => {
+    location.reload(); 
+};
 
 // --- LOGICA TIMER 10 GIORNI (DIGOS / NOS) ---
 const tenDaysFromNow = new Date().getTime() + (10 * 24 * 60 * 60 * 1000);
@@ -79,76 +104,58 @@ const countdownTimer = setInterval(() => {
     }
 }, 1000);
 
-// --- CREDENZIALI DI ACCESSO SQUADRA MOBILE ---
-const VALID_CREDENTIALS = {
-    matricola: "SYSTEM-ADMIN-243292302",
-    password: "CEYF7F832EYdiw9fdew"
-};
 
-// --- LOGICA DI ACCESSO E TRANSIZIONE DASHBOARD ---
-loginForm.addEventListener('submit', function(e) {
+// --- LOGICA LOGIN CON FIRESTORE ---
+loginForm.addEventListener('submit', async (e) => {
     e.preventDefault();
     
-    // Raccogli i valori inseriti dall'utente
     const matricolaInput = document.getElementById('badge').value.trim();
     const passwordInput = document.getElementById('password').value.trim();
+    const btnSubmit = document.getElementById('btn-submit');
     
-    const btnSubmit = document.querySelector('.cyber-btn');
     const originalContent = btnSubmit.innerHTML;
-    
-    // Animazione di caricamento sul bottone
-    btnSubmit.innerHTML = '<span>Verifica Credenziali in corso...</span> <i class="fas fa-circle-notch fa-spin"></i>';
-    btnSubmit.style.opacity = '0.8';
+    btnSubmit.innerHTML = '<span>Verifica Identità...</span> <i class="fas fa-circle-notch fa-spin"></i>';
     btnSubmit.disabled = true;
 
-    // Simula connessione sicura di 1.2 secondi
-    setTimeout(() => {
-        // Ripristina lo stato del bottone
-        btnSubmit.innerHTML = originalContent;
-        btnSubmit.style.opacity = '1';
-        btnSubmit.disabled = false;
-        
-        // --- CONTROLLO DELLE CREDENZIALI ---
-        if(matricolaInput === VALID_CREDENTIALS.matricola && passwordInput === VALID_CREDENTIALS.password) {
-            
-            // Credenziali corrette
-            showToast("Identità Verificata", "Connessione sicura stabilita. Accesso autorizzato al terminale.", "success");
-            
-            // Estrai l'ID finale per pulizia (es. prende solo "243292302" da "SYSTEM-ADMIN-243292302")
-            const idNumero = matricolaInput.split('-').pop();
-            loggedUserBadge.textContent = "Agente: " + idNumero;
+    try {
+        // Cerca il documento nella collezione 'utenti' usando la matricola come ID
+        const userRef = doc(db, "utenti", matricolaInput);
+        const userSnap = await getDoc(userRef);
 
-            // Entra nella dashboard nascondendo il resto
-            authScreen.classList.add('hidden');
-            mainNavbar.classList.add('hidden');
-            dashboardSection.classList.remove('hidden');
+        if (userSnap.exists()) {
+            const userData = userSnap.data();
             
-            loginForm.reset();
-            
+            // Verifica che il campo "password" nel database corrisponda a quello inserito
+            if (userData.password === passwordInput) {
+                
+                // Popolamento dei dati dinamici dal database nella Dashboard
+                loggedUserName.textContent = userData.nome || "Operatore Sconosciuto";
+                loggedUserRank.textContent = userData.grado || "Grado n.d.";
+                loggedUserBadge.textContent = "ID Matr: " + matricolaInput;
+                dashDeptDisplay.textContent = userData.reparto || "P. DI STATO";
+                welcomeMsg.textContent = "Bentornato, " + (userData.grado || "Agente") + " " + (userData.nome || "");
+
+                showToast("Accesso Autorizzato", "Credenziali verificate. Benvenuto nel sistema.", "success");
+                
+                // Cambia visualizzazione da Login a Dashboard
+                setTimeout(() => {
+                    authScreen.classList.add('hidden');
+                    mainNavbar.classList.add('hidden');
+                    dashboardSection.classList.remove('hidden');
+                }, 1000);
+                
+            } else {
+                showToast("Errore di Sicurezza", "Il codice di sicurezza inserito non è corretto.", "error");
+            }
         } else {
-            // Credenziali errate
-            showToast("Accesso Negato", "Matricola o Codice di Sicurezza non validi. Il tentativo è stato registrato.", "error");
-            
-            // Svuota solo il campo password per riprovare
-            document.getElementById('password').value = '';
+            showToast("Soggetto Ignoto", "La matricola inserita non risulta registrata nel database.", "error");
         }
-
-    }, 1200);
+    } catch (error) {
+        showToast("Errore di Sistema", "Problema di connessione al database. Verifica la configurazione.", "error");
+        console.error(error);
+    } finally {
+        // Ripristina il bottone
+        btnSubmit.innerHTML = originalContent;
+        btnSubmit.disabled = false;
+    }
 });
-
-// --- DISCONNESSIONE ---
-// Funzione richiamata dal bottone "Disconnetti" nella sidebar della Dashboard
-function logout() {
-    // Rimuovi la classe active dagli altri tab e mettila su "Terminale Base" se necessario (opzionale)
-    
-    // Torna alla schermata principale
-    dashboardSection.classList.add('hidden');
-    authScreen.classList.remove('hidden');
-    mainNavbar.classList.remove('hidden');
-    
-    // Ritorna alla selezione dei reparti
-    showSelector();
-
-    // Notifica di chiusura
-    showToast("Disconnessione", "Chiusura sessione criptata completata con successo.", "info");
-}
