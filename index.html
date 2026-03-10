@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Terminale Operativo - IPRP</title>
+    <title>Terminale Operativo - DTA</title>
     
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -19,7 +19,7 @@
     <div class="system-status-bar" id="main-navbar">
         <div class="status-left">
             <img src="https://i.imgur.com/SUM8B5x.png" alt="Logo">
-            <span>POLIZIA IPRP - DB CENTRALE</span>
+            <span>POLIZIA DTA - DB CENTRALE</span>
         </div>
         <div class="status-center">
             <span class="server-status"><span class="pulse-dot"></span> STATO SERVER: OPERATIVO</span>
@@ -33,9 +33,9 @@
         
         <div class="split-left">
             <div class="left-content">
-                <img src="https://i.imgur.com/gRzOXM3.png" alt="Logo IPRP" class="big-logo">
+                <img src="https://i.imgur.com/gRzOXM3.png" alt="Logo DTA" class="big-logo">
                 <h1>SISTEMA OPERATIVO<br><span>CENTRALE</span></h1>
-                <p>Accesso riservato al personale autorizzato della Polizia di Stato. Rete protetta IPRP.</p>
+                <p>Accesso riservato al personale autorizzato della Polizia di Stato. Rete protetta DTA.</p>
             </div>
         </div>
 
@@ -97,7 +97,7 @@
                         </div>
                     </div>
 
-                    <form id="login-form" class="modern-form">
+                    <form id="login-form">
                         <div class="input-block">
                             <label>Matricola Operatore</label>
                             <div class="input-container">
@@ -129,7 +129,7 @@
     <div id="dashboard-section" class="hidden">
         <div class="dashboard-sidebar">
             <div class="sidebar-logo">
-                <img src="https://i.imgur.com/J3T1Kot.png" alt="Squadra Mobile">
+                <img src="https://i.imgur.com/J3T1Kot.png" alt="Logo Reparto">
                 <h2 id="dash-dept-display">REPARTO</h2>
             </div>
             <ul class="sidebar-menu">
@@ -181,6 +181,8 @@
         </div>
     </div>
 
-    <script type="module" src="script.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
+    <script src="script.js"></script>
 </body>
 </html>
