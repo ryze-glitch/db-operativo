@@ -117,7 +117,7 @@
                             <label>Matricola Operatore</label>
                             <div class="input-container">
                                 <i class="fas fa-id-badge"></i>
-                                <input type="text" id="badge" placeholder="Es. SYSTEM-ADMIN-..." required>
+                                <input type="text" id="badge" placeholder="Inserisci matricola..." required>
                             </div>
                         </div>
 
@@ -129,7 +129,7 @@
                             </div>
                         </div>
                         
-                        <button type="submit" class="cyber-btn">
+                        <button type="submit" class="cyber-btn" id="btn-submit">
                             <span>Inizializza Connessione</span>
                             <i class="fas fa-fingerprint"></i>
                         </button>
@@ -144,7 +144,7 @@
         <div class="dashboard-sidebar">
             <div class="sidebar-logo">
                 <img src="https://i.imgur.com/J3T1Kot.png" alt="Squadra Mobile">
-                <h2>SQ. MOBILE</h2>
+                <h2 id="dash-dept-display">SQ. MOBILE</h2>
             </div>
             <ul class="sidebar-menu">
                 <li class="active"><i class="fas fa-desktop"></i> <span>Terminale Base</span></li>
@@ -162,14 +162,17 @@
                     <input type="text" placeholder="Cerca nel database...">
                 </div>
                 <div class="header-user">
-                    <span id="logged-user-badge">Matricola: ----</span>
+                    <div class="user-info-text" style="text-align: right; margin-right: 15px;">
+                        <div id="logged-user-name" style="font-weight: 700; font-size: 0.9rem;">Nome Utente</div>
+                        <div id="logged-user-rank" style="font-size: 0.75rem; color: var(--text-muted);">Grado Operatore</div>
+                    </div>
                     <div class="user-avatar"><i class="fas fa-user-shield"></i></div>
                 </div>
             </header>
             
             <div class="dashboard-content">
-                <h2>Bentornato nel Sistema, Agente</h2>
-                <p>Seleziona un'operazione per procedere con le indagini.</p>
+                <h2 id="welcome-message">Sistema Operativo Attivo</h2>
+                <p id="logged-user-badge" style="color: var(--accent-blue); font-family: monospace; margin-bottom: 30px;">Matricola: ----</p>
                 
                 <div class="dashboard-cards">
                     <div class="dash-card">
@@ -192,6 +195,6 @@
         </div>
     </div>
 
-    <script src="script.js"></script>
+    <script type="module" src="script.js"></script>
 </body>
 </html>
