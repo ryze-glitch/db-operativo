@@ -3,220 +3,197 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DTA - Sistema Operativo</title>
+    <title>Terminale Accesso - IPRP</title>
+    
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
     <style>
-        /* =========================================
-           LA TUA GRAFICA ORIGINALE (SCREENSHOT)
-           ========================================= */
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #1a1a24; /* Sfondo scuro originale */
-            color: #ffffff;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
+        :root {
+            --bg-dark: #07090f;
+            --bg-panel: #10141f;
+            --border-color: rgba(255, 255, 255, 0.08);
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --accent-blue: #2563eb; 
+            --accent-hover: #1d4ed8;
         }
 
-        /* --- SCHERMATA LOGIN --- */
-        #sezione-login {
-            background-color: #121e36; /* Colore riquadro originale */
-            padding: 40px;
-            border-radius: 8px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
-            width: 100%;
-            max-width: 320px;
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Lexend', sans-serif; }
+        body { background-color: var(--bg-dark); color: var(--text-main); overflow-x: hidden; }
+
+        /* SFONDO LOGIN */
+        .hero-bg {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(circle at top right, #1e293b 0%, var(--bg-dark) 60%); z-index: 1;
         }
 
-        #sezione-login h2 {
-            text-align: center;
-            margin-top: 0;
-            margin-bottom: 30px;
-            letter-spacing: 2px;
-            font-size: 22px;
+        /* CONTENITORE CENTRALE */
+        .login-page-wrapper {
+            position: relative; z-index: 2; min-height: 100vh;
+            display: flex; justify-content: center; align-items: center; padding: 20px;
         }
 
-        .input-group {
-            margin-bottom: 20px;
+        .glass-panel {
+            background: rgba(15, 17, 26, 0.85); backdrop-filter: blur(25px);
+            border: 1px solid var(--border-color); border-radius: 24px;
+            padding: 45px 40px; width: 100%; max-width: 440px;
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.6);
         }
 
-        .input-group label {
-            display: block;
-            font-size: 13px;
-            color: #8c9baf;
-            margin-bottom: 8px;
-        }
+        .panel-header { text-align: center; margin-bottom: 35px; }
+        .panel-header .logo { width: 75px; margin-bottom: 15px; filter: drop-shadow(0 0 15px rgba(37, 99, 235, 0.5)); }
+        .panel-header h1 { font-size: 1.5rem; font-weight: 800; color: var(--text-main); margin-bottom: 5px; }
+        .panel-header p { color: var(--accent-blue); font-size: 0.85rem; font-weight: 600; text-transform: uppercase; letter-spacing: 2px; }
 
-        .input-group input {
-            width: 100%;
-            padding: 12px;
-            border: none;
-            border-radius: 4px;
-            background-color: #f0f2f5;
-            color: #333;
-            box-sizing: border-box;
-            font-weight: bold;
+        /* BOTTONI REPARTO */
+        .dept-btn {
+            background: rgba(255, 255, 255, 0.02); border: 1px solid var(--border-color);
+            border-radius: 16px; padding: 18px 20px; width: 100%; margin-bottom: 16px;
+            color: var(--text-main); cursor: pointer; transition: all 0.3s;
+            display: flex; align-items: center; text-align: left;
         }
+        .dept-btn:hover { background: rgba(37, 99, 235, 0.08); border-color: var(--accent-blue); transform: translateY(-4px); }
+        
+        .dept-icon-box {
+            background: rgba(15, 23, 42, 0.5); width: 45px; height: 45px;
+            border-radius: 12px; display: flex; align-items: center; justify-content: center;
+            margin-right: 18px; border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .dept-img { width: 30px; height: 30px; object-fit: contain; }
+        .dept-info h3 { font-size: 1.1rem; font-weight: 600; margin-bottom: 2px; }
+        .dept-info span { font-size: 0.8rem; color: var(--text-muted); }
 
-        #btn-login {
-            width: 100%;
-            padding: 14px;
-            background-color: #103667; /* Blu scuro bottone originale */
-            color: white;
-            border: none;
-            border-radius: 4px;
-            font-size: 15px;
-            font-weight: bold;
-            cursor: pointer;
-            margin-top: 10px;
-            transition: background-color 0.3s;
-            letter-spacing: 1px;
+        /* SEZIONE FORM LOGIN */
+        .hidden { display: none !important; }
+        .active-dept-header { text-align: center; margin-bottom: 30px; }
+        .glow-icon {
+            width: 65px; height: 65px; margin: 0 auto 15px auto;
+            background: rgba(15, 23, 42, 0.6); border-radius: 50%;
+            border: 1px solid rgba(255,255,255,0.1); display: flex; align-items: center; justify-content: center;
         }
+        .glow-icon img { width: 45px; height: 45px; object-fit: contain; }
+        .active-dept-header h2 { font-size: 1.3rem; font-weight: 700; color: var(--text-main); text-transform: uppercase; }
 
-        #btn-login:hover {
-            background-color: #1a4b8c;
+        .input-group { margin-bottom: 22px; }
+        .input-group label { display: block; margin-bottom: 8px; font-size: 0.85rem; color: var(--text-muted); font-weight: 500; text-transform: uppercase; }
+        .input-wrapper { position: relative; display: flex; align-items: center; }
+        .input-wrapper i { position: absolute; left: 15px; color: var(--text-muted); font-size: 1rem; }
+        .input-wrapper input {
+            width: 100%; background: rgba(0, 0, 0, 0.5); border: 1px solid var(--border-color);
+            color: var(--text-main); padding: 14px 15px 14px 45px; border-radius: 12px; font-size: 1rem; transition: all 0.3s ease;
         }
+        .input-wrapper input:focus { outline: none; border-color: var(--accent-blue); background: rgba(0, 0, 0, 0.7); box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.15); }
 
-        #messaggio-errore {
-            color: #ff4d4d;
-            margin-top: 15px;
-            font-size: 13px;
-            text-align: center;
-            font-weight: bold;
-            min-height: 18px;
+        .action-buttons { display: flex; gap: 15px; margin-top: 35px; }
+        .action-buttons button {
+            flex: 1; padding: 14px; border: none; border-radius: 12px; font-weight: 600; font-size: 0.95rem;
+            cursor: pointer; transition: all 0.3s ease; display: flex; align-items: center; justify-content: center; gap: 8px;
         }
-
-        /* --- SCHERMATA DASHBOARD (Nascosta all'inizio) --- */
-        #sezione-dashboard {
-            display: none; /* Appare solo dopo il login */
-            width: 100%;
-            max-width: 800px;
-            padding: 20px;
-            box-sizing: border-box;
-        }
-
-        .dashboard-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background-color: #121e36;
-            padding: 20px 30px;
-            border-radius: 8px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
-            margin-bottom: 20px;
-        }
-
-        .dashboard-header h1 {
-            margin: 0;
-            font-size: 20px;
-            letter-spacing: 1px;
-        }
-
-        #btn-logout {
-            background-color: #8c1a1a;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-weight: bold;
-        }
-
-        #btn-logout:hover {
-            background-color: #b32424;
-        }
-
-        .dashboard-card {
-            background-color: #1e2a45;
-            padding: 30px;
-            border-radius: 8px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-            border-left: 5px solid #103667;
-        }
-
-        .info-row {
-            display: flex;
-            margin-bottom: 15px;
-            font-size: 16px;
-            border-bottom: 1px solid #2a3b5c;
-            padding-bottom: 10px;
-        }
-
-        .info-label {
-            font-weight: bold;
-            width: 150px;
-            color: #8c9baf;
-        }
-
-        .info-value {
-            font-weight: bold;
-            color: #ffffff;
-        }
-
-        .status-ok {
-            color: #4cd137;
-        }
+        .btn-back { background: rgba(255, 255, 255, 0.05); color: var(--text-main); border: 1px solid var(--border-color); }
+        .btn-back:hover { background: rgba(255, 255, 255, 0.1); }
+        .btn-submit { background: var(--accent-blue); color: white; }
+        .btn-submit:hover { background: var(--accent-hover); }
+        
+        #messaggio-errore { color: #ef4444; font-size: 0.85rem; text-align: center; margin-top: 15px; font-weight: 600; }
     </style>
 </head>
 <body>
 
-    <div id="sezione-login">
-        <h2>PORTALE D.T.A.</h2>
-        
-        <div class="input-group">
-            <label for="matricola">Matricola Operativa</label>
-            <input type="text" id="matricola" placeholder="Es. SM-001" autocomplete="off">
+    <div class="hero-bg"></div>
+
+    <div class="login-page-wrapper">
+        <div class="glass-panel" id="main-panel">
+            
+            <div class="panel-header">
+                <img src="https://i.imgur.com/gRzOXM3.png" alt="Logo IPRP" class="logo">
+                <h1>SISTEMA OPERATIVO</h1>
+                <p>Identificazione Richiesta</p>
+            </div>
+
+            <div id="department-selector">
+                <button class="dept-btn" onclick="mostraForm('Squadra Mobile', 'https://i.imgur.com/J3T1Kot.png')">
+                    <div class="dept-icon-box"><img src="https://i.imgur.com/J3T1Kot.png" class="dept-img" alt="SM"></div>
+                    <div class="dept-info"><h3>Squadra Mobile</h3><span>Sezione Investigativa</span></div>
+                </button>
+
+                <button class="dept-btn" onclick="mostraForm('DIGOS', 'https://i.imgur.com/rgGjsgX.png')">
+                    <div class="dept-icon-box"><img src="https://i.imgur.com/rgGjsgX.png" class="dept-img" alt="DIGOS"></div>
+                    <div class="dept-info"><h3>D.I.G.O.S.</h3><span>Divisione Generale</span></div>
+                </button>
+
+                <button class="dept-btn" onclick="mostraForm('NOS', 'https://i.imgur.com/gy3HsSH.png')">
+                    <div class="dept-icon-box"><img src="https://i.imgur.com/gy3HsSH.png" class="dept-img" alt="NOS"></div>
+                    <div class="dept-info"><h3>N.O.S.</h3><span>Nucleo Sicurezza</span></div>
+                </button>
+            </div>
+
+            <div id="login-section" class="hidden">
+                <div class="active-dept-header">
+                    <div class="glow-icon"><img id="active-dept-icon" src="" alt="Reparto"></div>
+                    <h2 id="login-title">Accesso</h2>
+                </div>
+
+                <form id="login-form">
+                    <div class="input-group">
+                        <label for="matricola">Matricola Operatore</label>
+                        <div class="input-wrapper">
+                            <i class="fas fa-id-badge"></i>
+                            <input type="text" id="matricola" placeholder="Es. SM-001" required autocomplete="off">
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <label for="password">Codice di Sicurezza</label>
+                        <div class="input-wrapper">
+                            <i class="fas fa-key"></i>
+                            <input type="password" id="password" placeholder="••••••••" required>
+                        </div>
+                    </div>
+                    
+                    <div class="action-buttons">
+                        <button type="button" class="btn-back" onclick="nascondiForm()">
+                            <i class="fas fa-arrow-left"></i> Indietro
+                        </button>
+                        <button type="submit" class="btn-submit" id="btn-login">
+                            Autorizza <i class="fas fa-sign-in-alt"></i>
+                        </button>
+                    </div>
+                    <div id="messaggio-errore"></div>
+                </form>
+            </div>
+
         </div>
-        
-        <div class="input-group">
-            <label for="password">Codice di Sicurezza</label>
-            <input type="password" id="password" placeholder="Inserisci Password">
-        </div>
-        
-        <button id="btn-login">AUTENTICAZIONE</button>
-        <div id="messaggio-errore"></div>
     </div>
 
+    <script>
+        const selectorSection = document.getElementById('department-selector');
+        const loginSection = document.getElementById('login-section');
+        const loginTitle = document.getElementById('login-title');
+        const activeDeptIcon = document.getElementById('active-dept-icon');
+        const erroreMsg = document.getElementById('messaggio-errore');
 
-    <div id="sezione-dashboard">
-        <div class="dashboard-header">
-            <h1 id="saluto-header">Portale D.T.A.</h1>
-            <button id="btn-logout">DISCONNETTI</button>
-        </div>
+        function mostraForm(nomeReparto, imgUrl) {
+            selectorSection.classList.add('hidden');
+            loginTitle.textContent = nomeReparto;
+            activeDeptIcon.src = imgUrl;
+            loginSection.classList.remove('hidden');
+            erroreMsg.innerText = ""; // Pulisce errori precedenti
+        }
 
-        <div class="dashboard-card">
-            <h2 style="margin-top: 0; color: #8c9baf;">Profilo Operativo</h2>
-            
-            <div class="info-row">
-                <div class="info-label">Nome Agente:</div>
-                <div class="info-value" id="nome-agente">---</div>
-            </div>
-            
-            <div class="info-row">
-                <div class="info-label">Grado:</div>
-                <div class="info-value" id="grado-agente">---</div>
-            </div>
-
-            <div class="info-row">
-                <div class="info-label">Matricola:</div>
-                <div class="info-value" id="matricola-agente">---</div>
-            </div>
-
-            <div class="info-row">
-                <div class="info-label">Stato Sistema:</div>
-                <div class="info-value status-ok">ATTIVO E AUTORIZZATO</div>
-            </div>
-        </div>
-    </div>
-
+        function nascondiForm() {
+            loginSection.classList.add('hidden');
+            document.getElementById('login-form').reset();
+            selectorSection.classList.remove('hidden');
+            erroreMsg.innerText = "";
+        }
+    </script>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-app.js";
         import { getFirestore, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-firestore.js";
 
-        // Le tue chiavi esatte
         const firebaseConfig = {
             apiKey: "AIzaSyDPyEfr0KbWtYDeM5-EFTl3s3VGVB_8Yi8",
             authDomain: "database-dta.firebaseapp.com",
@@ -230,61 +207,48 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-        // Funzione di Login
-        document.getElementById('btn-login').addEventListener('click', async () => {
+        document.getElementById('login-form').addEventListener('submit', async function(e) {
+            e.preventDefault(); // Evita il ricaricamento della pagina
+            
             const matricola = document.getElementById('matricola').value;
             const password = document.getElementById('password').value;
-            const btn = document.getElementById('btn-login');
-            const erroreMsg = document.getElementById('messaggio-errore');
-
-            if (!matricola || !password) {
-                erroreMsg.innerText = "Inserisci Matricola e Password.";
-                return;
-            }
-
+            const repartoScelto = document.getElementById('login-title').textContent;
+            
+            const btnSubmit = document.getElementById('btn-login');
+            const originaleText = btnSubmit.innerHTML;
+            
+            // UI Caricamento
+            btnSubmit.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> Verifica...';
+            btnSubmit.disabled = true;
             erroreMsg.innerText = "";
-            btn.innerText = "VERIFICA IN CORSO...";
 
             try {
-                // Cerca in Firebase
+                // Interroga Firebase
                 const q = query(collection(db, "agenti"), where("matricola", "==", matricola), where("password", "==", password));
                 const querySnapshot = await getDocs(q);
 
                 if (!querySnapshot.empty) {
+                    // Prende i dati dell'agente trovato
                     const agente = querySnapshot.docs[0].data();
                     
-                    // Riempie la dashboard con i dati del database
-                    document.getElementById('saluto-header').innerText = `Benvenuto, ${agente.grado} ${agente.nome}`;
-                    document.getElementById('nome-agente').innerText = agente.nome;
-                    document.getElementById('grado-agente').innerText = agente.grado;
-                    document.getElementById('matricola-agente').innerText = agente.matricola;
+                    // Salva in memoria anche il reparto scelto (utile per la dashboard)
+                    agente.reparto = repartoScelto;
+                    localStorage.setItem('utenteLoggato', JSON.stringify(agente));
                     
-                    // Nasconde il login, mostra la dashboard
-                    document.getElementById('sezione-login').style.display = 'none';
-                    document.getElementById('sezione-dashboard').style.display = 'block';
-                    
-                    // Pulisce i campi per sicurezza
-                    document.getElementById('matricola').value = "";
-                    document.getElementById('password').value = "";
+                    // Redirige alla dashboard
+                    window.location.href = 'dashboard.html';
                 } else {
-                    erroreMsg.innerText = "Accesso Negato: Credenziali errate.";
+                    erroreMsg.innerText = "Accesso Negato: Matricola o Password errate.";
+                    btnSubmit.innerHTML = originaleText;
+                    btnSubmit.disabled = false;
                 }
             } catch (error) {
                 console.error(error);
-                erroreMsg.innerText = "Errore Server (Controlla le Regole Firebase)";
+                erroreMsg.innerText = "Errore Server (Controlla le regole di Firebase).";
+                btnSubmit.innerHTML = originaleText;
+                btnSubmit.disabled = false;
             }
-            
-            btn.innerText = "AUTENTICAZIONE";
-        });
-
-        // Funzione di Logout
-        document.getElementById('btn-logout').addEventListener('click', () => {
-            // Nasconde la dashboard, mostra il login
-            document.getElementById('sezione-dashboard').style.display = 'none';
-            document.getElementById('sezione-login').style.display = 'block';
-            document.getElementById('messaggio-errore').innerText = "";
         });
     </script>
-
 </body>
 </html>
