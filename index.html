@@ -88,9 +88,7 @@
 
                 <div id="login-section" class="hidden">
                     <div class="auth-header">
-                        <button class="back-link" onclick="showSelector()">
-                            <i class="fas fa-arrow-left"></i> Cambia Reparto
-                        </button>
+                        <button class="back-link" onclick="showSelector()"><i class="fas fa-arrow-left"></i> Cambia Reparto</button>
                         <div class="selected-dept-display">
                             <div class="card-img-wrapper large">
                                 <img id="active-dept-icon" src="" alt="Reparto">
@@ -99,7 +97,7 @@
                         </div>
                     </div>
 
-                    <form id="login-form">
+                    <form id="login-form" class="modern-form">
                         <div class="input-block">
                             <label>Matricola Operatore</label>
                             <div class="input-container">
@@ -125,13 +123,13 @@
 
             </div>
         </div>
+
     </div>
 
     <div id="dashboard-section" class="hidden">
-        
         <div class="dashboard-sidebar">
             <div class="sidebar-logo">
-                <img src="https://i.imgur.com/J3T1Kot.png" alt="Logo Reparto">
+                <img src="https://i.imgur.com/J3T1Kot.png" alt="Squadra Mobile">
                 <h2 id="dash-dept-display">REPARTO</h2>
             </div>
             <ul class="sidebar-menu">
@@ -151,7 +149,7 @@
                 </div>
                 <div class="header-user">
                     <div class="user-info-text" style="text-align: right; margin-right: 15px;">
-                        <div id="logged-user-name" style="font-weight: 700; font-size: 0.9rem;">Nome Utente</div>
+                        <div id="logged-user-name" style="font-weight: 700; font-size: 0.9rem;">Nome</div>
                         <div id="logged-user-rank" style="font-size: 0.75rem; color: var(--text-muted);">Grado</div>
                     </div>
                     <div class="user-avatar"><i class="fas fa-user-shield"></i></div>
@@ -171,11 +169,6 @@
                     <div class="dash-card">
                         <h3><i class="fas fa-car"></i> Visura Targa</h3>
                         <p>Controllo intestatario veicolo, copertura assicurativa e stato del mezzo.</p>
-                        <button class="cyber-btn small">Apri Modulo</button>
-                    </div>
-                    <div class="dash-card">
-                        <h3><i class="fas fa-folder-open"></i> Fascicoli Aperti</h3>
-                        <p>Gestisci e aggiorna i fascicoli investigativi in corso della Squadra Mobile.</p>
                         <button class="cyber-btn small">Apri Modulo</button>
                     </div>
                 </div>
