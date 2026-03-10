@@ -1,25 +1,41 @@
+// Importa Firebase (Senza Analytics per evitare i blocchi dell'AdBlocker/Tracking Prevention)
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-app.js";
-import { getFirestore, doc, getDoc, collection, getDocs } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-firestore.js";
+import { getFirestore, doc, collection, getDocFromServer, getDocsFromServer } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-firestore.js";
 
+// --- LA TUA CONFIGURAZIONE FIREBASE UFFICIALE ---
 const firebaseConfig = {
     apiKey: "AIzaSyAYsesmrIxPL0_UJctwfRKLpQcElpeMRcU",
     authDomain: "database-sqmobile-digos.firebaseapp.com",
     projectId: "database-sqmobile-digos",
     storageBucket: "database-sqmobile-digos.firebasestorage.app",
     messagingSenderId: "510053226005",
-    appId: "1:510053226005:web:aed636bc19a7e23b34e01c"
+    appId: "1:510053226005:web:aed636bc19a7e23b34e01c",
+    measurementId: "G-W3F69LZP07"
 };
 
+// Inizializza l'app e il database
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-// OROLOGIO
-setInterval(() => {
-    const clock = document.getElementById('system-clock');
-    if(clock) clock.textContent = new Date().toLocaleTimeString('it-IT');
-}, 1000);
+// Costanti UI
+const selectorSection = document.getElementById('department-selector');
+const loginSection = document.getElementById('login-section');
+const loginTitle = document.getElementById('login-title');
+const activeDeptIcon = document.getElementById('active-dept-icon');
+const loginForm = document.getElementById('login-form');
+const authScreen = document.getElementById('auth-screen');
+const mainNavbar = document.getElementById('main-navbar');
+const dashboardSection = document.getElementById('dashboard-section');
 
-// NOTIFICHE
+// --- OROLOGIO DI SISTEMA ---
+function updateClock() {
+    const clockElement = document.getElementById('system-clock');
+    if(clockElement) clockElement.textContent = new Date().toLocaleTimeString('it-IT', { hour12: false });
+}
+setInterval(updateClock, 1000);
+updateClock();
+
+// --- SISTEMA DI NOTIFICHE TOAST ---
 function showToast(title, message, type = 'info') {
     const container = document.getElementById('toast-container');
     const toast = document.createElement('div');
@@ -44,98 +60,108 @@ function showToast(title, message, type = 'info') {
     }, 4500);
 }
 
-// NAVIGAZIONE
+// --- NAVIGAZIONE INTERFACCIA ---
 window.showLogin = (name, img) => {
-    document.getElementById('department-selector').classList.add('hidden');
-    document.getElementById('login-title').textContent = name;
-    document.getElementById('active-dept-icon').src = img;
-    document.getElementById('login-section').classList.remove('hidden');
+    selectorSection.classList.add('hidden');
+    loginTitle.textContent = name;
+    activeDeptIcon.src = img;
+    loginSection.classList.remove('hidden');
 };
 
 window.showSelector = () => {
-    document.getElementById('login-section').classList.add('hidden');
-    document.getElementById('department-selector').classList.remove('hidden');
+    loginSection.classList.add('hidden');
+    loginForm.reset();
+    selectorSection.classList.remove('hidden');
 };
 
-window.logout = () => location.reload();
+window.logout = () => {
+    location.reload(); 
+};
 
-// TIMER
-const tenDays = new Date().getTime() + (10 * 24 * 60 * 60 * 1000);
+// --- TIMER 10 GIORNI ---
+const tenDaysFromNow = new Date().getTime() + (10 * 24 * 60 * 60 * 1000);
 setInterval(() => {
-    const diff = tenDays - new Date().getTime();
-    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-    const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    const distance = tenDaysFromNow - new Date().getTime();
+    const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
     const txt = `${days}g ${hours}h`;
     document.getElementById('timer-digos').textContent = "Sblocco in: " + txt;
     document.getElementById('timer-nos').textContent = "Sblocco in: " + txt;
 }, 1000);
 
-// LOGIN
-document.getElementById('login-form').addEventListener('submit', async (e) => {
+// --- LOGICA LOGIN AL DATABASE ---
+loginForm.addEventListener('submit', async (e) => {
     e.preventDefault();
-    const matricola = document.getElementById('badge').value.trim();
-    const password = document.getElementById('password').value.trim();
-    const btn = document.getElementById('btn-submit');
+    
+    const matricolaInput = document.getElementById('badge').value.trim();
+    const passwordInput = document.getElementById('password').value.trim();
+    const btnSubmit = document.getElementById('btn-submit');
 
-    btn.disabled = true;
-    btn.innerHTML = 'Verifica in corso... <i class="fas fa-spinner fa-spin"></i>';
+    const originalContent = btnSubmit.innerHTML;
+    btnSubmit.disabled = true;
+    btnSubmit.innerHTML = '<span>Verifica Identità in corso...</span> <i class="fas fa-circle-notch fa-spin"></i>';
 
     try {
-        const userRef = doc(db, "utenti", matricola);
-        const userSnap = await getDoc(userRef);
+        const userRef = doc(db, "utenti", matricolaInput);
+        
+        // GETDOCFROMSERVER: Obbliga il browser a chiedere al database vero e proprio, bypassando la cache!
+        const userSnap = await getDocFromServer(userRef);
 
         if (userSnap.exists()) {
-            const data = userSnap.data();
-            if (data.password === password) {
-                // Login Riuscito
-                document.getElementById('logged-user-name').textContent = data.nome || "Operatore";
-                document.getElementById('logged-user-rank').textContent = data.grado || "Grado n.d.";
-                document.getElementById('logged-user-badge').textContent = "ID: " + matricola;
-                document.getElementById('dash-dept-display').textContent = data.reparto || "P. DI STATO";
-                document.getElementById('welcome-message').textContent = "Bentornato, " + (data.nome || "Agente");
+            const userData = userSnap.data();
+            
+            if (userData.password === passwordInput) {
+                // Successo
+                document.getElementById('logged-user-name').textContent = userData.nome || "Operatore";
+                document.getElementById('logged-user-rank').textContent = userData.grado || "Grado n.d.";
+                document.getElementById('logged-user-badge').textContent = "ID Matr: " + matricolaInput;
+                document.getElementById('dash-dept-display').textContent = userData.reparto || "P. DI STATO";
+                document.getElementById('welcome-message').textContent = "Bentornato, " + (userData.grado || "Agente") + " " + (userData.nome || "");
 
-                showToast("Accesso Autorizzato", "Identità confermata.", "success");
+                showToast("Accesso Autorizzato", "Identità confermata. Benvenuto nel sistema.", "success");
                 
                 setTimeout(() => {
-                    document.getElementById('auth-screen').classList.add('hidden');
-                    document.getElementById('dashboard-section').classList.remove('hidden');
-                    document.getElementById('main-navbar').classList.add('hidden');
+                    authScreen.classList.add('hidden');
+                    mainNavbar.classList.add('hidden');
+                    dashboardSection.classList.remove('hidden');
                 }, 1000);
             } else {
-                showToast("Errore di Sicurezza", "Password errata.", "error");
+                showToast("Errore di Sicurezza", "Il codice di sicurezza inserito non è corretto.", "error");
             }
         } else {
-            // ERRORE: MATRICOLA NON TROVATA - ESEGUO SCANNER DIAGNOSTICO
-            showToast("Soggetto Ignoto", "Matricola non trovata. Leggi la console F12.", "error");
+            // Documento non trovato
+            showToast("Soggetto Ignoto", "Matricola non trovata. Controlla la console (F12).", "error");
             
+            // --- DIAGNOSTICA SERVER ---
             console.log("--------------------------------------------------");
-            console.log(`❌ ERRORE: Il sistema non trova la matricola "${matricola}".`);
-            console.log("🔍 Avvio lo scanner per leggere tutta la raccolta 'utenti'...");
+            console.log(`❌ ERRORE: Non trovo il documento "${matricolaInput}". Avvio la lettura forzata dal server...`);
             
             try {
-                const querySnapshot = await getDocs(collection(db, "utenti"));
+                // Legge TUTTI i documenti ignorando la cache
+                const querySnapshot = await getDocsFromServer(collection(db, "utenti"));
                 const tuttiDocumenti = [];
+                
                 querySnapshot.forEach((docItem) => {
                     tuttiDocumenti.push(`[${docItem.id}]`);
                 });
                 
                 if(tuttiDocumenti.length === 0) {
-                    console.log("⚠️ La raccolta 'utenti' risulta COMPLETAMENTE VUOTA. Firebase non vede nessun documento.");
+                    console.warn("⚠️ IL SERVER DICE CHE LA RACCOLTA 'utenti' È COMPLETAMENTE VUOTA.");
                 } else {
-                    console.log("✅ RISULTATO DELLO SCANNER. Ecco l'ID esatto (tra le parentesi quadre) dei documenti trovati:");
+                    console.log("✅ LISTA DEI DOCUMENTI EFFETTIVAMENTE VISTI DAL SITO:");
                     console.log(tuttiDocumenti.join(" , "));
-                    console.log("💡 Suggerimento: Se il nome non è identico, copia il nome dalle parentesi quadre.");
+                    console.log("Se la tua matricola è nella lista qui sopra, assicurati di scriverla esattamente uguale (maiuscole/minuscole comprese).");
                 }
             } catch(e) {
-                console.log("⚠️ Impossibile eseguire lo scanner. Permessi insufficienti o raccolta inesistente.", e);
+                console.error("⚠️ Non ho i permessi per scansionare.", e);
             }
             console.log("--------------------------------------------------");
         }
-    } catch (err) {
-        showToast("Errore di Sistema", "Errore di rete. Controlla la console.", "error");
-        console.error(err);
+    } catch (error) {
+        showToast("Errore di Rete", "Errore di connessione. Ricarica la pagina con CTRL + F5.", "error");
+        console.error(error);
     } finally {
-        btn.disabled = false;
-        btn.innerHTML = 'Inizializza Connessione <i class="fas fa-fingerprint"></i>';
+        btnSubmit.disabled = false;
+        btnSubmit.innerHTML = originalContent;
     }
 });
