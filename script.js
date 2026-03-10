@@ -1,7 +1,7 @@
-// Importa Firebase (SDK Versione 12.10.0)
+// Importa Firebase (SDK Versione 12.10.0) 
+// NIENTE Analytics per evitare l'errore dell'AdBlocker!
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-app.js";
 import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-firestore.js";
-import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-analytics.js";
 
 // --- LA TUA CONFIGURAZIONE FIREBASE REALE ---
 const firebaseConfig = {
@@ -10,16 +10,14 @@ const firebaseConfig = {
     projectId: "database-sqmobile-digos",
     storageBucket: "database-sqmobile-digos.firebasestorage.app",
     messagingSenderId: "510053226005",
-    appId: "1:510053226005:web:aed636bc19a7e23b34e01c",
-    measurementId: "G-W3F69LZP07"
+    appId: "1:510053226005:web:aed636bc19a7e23b34e01c"
 };
 
-// Inizializza l'app, il database Firestore e Analytics
+// Inizializza l'app e il database Firestore
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
-const analytics = getAnalytics(app);
 
-// Costanti UI
+// Costanti UI - Pagine e Layout
 const selectorSection = document.getElementById('department-selector');
 const loginSection = document.getElementById('login-section');
 const loginTitle = document.getElementById('login-title');
@@ -29,14 +27,26 @@ const authScreen = document.getElementById('auth-screen');
 const mainNavbar = document.getElementById('main-navbar');
 const dashboardSection = document.getElementById('dashboard-section');
 
-// Elementi Profilo Dashboard
+// Costanti UI - Profilo Dashboard
 const loggedUserName = document.getElementById('logged-user-name');
 const loggedUserRank = document.getElementById('logged-user-rank');
 const loggedUserBadge = document.getElementById('logged-user-badge');
 const dashDeptDisplay = document.getElementById('dash-dept-display');
 const welcomeMsg = document.getElementById('welcome-message');
 
-// --- SISTEMA DI NOTIFICHE CUSTOM ---
+// --- OROLOGIO DI SISTEMA (Nuova Status Bar) ---
+function updateClock() {
+    const clockElement = document.getElementById('system-clock');
+    if(clockElement) {
+        const now = new Date();
+        const timeString = now.toLocaleTimeString('it-IT', { hour12: false });
+        clockElement.textContent = timeString;
+    }
+}
+setInterval(updateClock, 1000);
+updateClock();
+
+// --- SISTEMA DI NOTIFICHE CUSTOM (Toast) ---
 function showToast(title, message, type = 'info') {
     const container = document.getElementById('toast-container');
     const toast = document.createElement('div');
@@ -62,21 +72,32 @@ function showToast(title, message, type = 'info') {
     }, 4500);
 }
 
-// Esposizione funzioni globali per HTML (Necessario con type="module")
+// --- NAVIGAZIONE INTERFACCIA ---
 window.showLogin = (departmentName, imageSrc) => {
     selectorSection.classList.add('hidden');
     loginTitle.textContent = departmentName;
-    activeDeptIcon.src = imageSrc;
+    document.getElementById('active-dept-icon').src = imageSrc;
     loginSection.classList.remove('hidden');
+    
+    // Riavvia l'animazione
+    loginSection.style.animation = 'none';
+    loginSection.offsetHeight; 
+    loginSection.style.animation = 'slideInRight 0.4s ease-out forwards';
 };
 
 window.showSelector = () => {
     loginSection.classList.add('hidden');
     loginForm.reset();
     selectorSection.classList.remove('hidden');
+    
+    // Riavvia l'animazione
+    selectorSection.style.animation = 'none';
+    selectorSection.offsetHeight; 
+    selectorSection.style.animation = 'slideInRight 0.4s ease-out forwards';
 };
 
 window.logout = () => {
+    // Il logout ricarica la pagina per azzerare i dati in memoria
     location.reload(); 
 };
 
@@ -104,8 +125,7 @@ const countdownTimer = setInterval(() => {
     }
 }, 1000);
 
-
-// --- LOGICA LOGIN CON FIRESTORE ---
+// --- LOGICA LOGIN AL DATABASE FIRESTORE ---
 loginForm.addEventListener('submit', async (e) => {
     e.preventDefault();
     
@@ -114,21 +134,23 @@ loginForm.addEventListener('submit', async (e) => {
     const btnSubmit = document.getElementById('btn-submit');
     
     const originalContent = btnSubmit.innerHTML;
+    
+    // Effetto visivo di caricamento
     btnSubmit.innerHTML = '<span>Verifica Identità...</span> <i class="fas fa-circle-notch fa-spin"></i>';
     btnSubmit.disabled = true;
 
     try {
-        // Cerca il documento nella collezione 'utenti' usando la matricola come ID
+        // Cerca il documento nella collezione 'utenti'
         const userRef = doc(db, "utenti", matricolaInput);
         const userSnap = await getDoc(userRef);
 
         if (userSnap.exists()) {
             const userData = userSnap.data();
             
-            // Verifica che il campo "password" nel database corrisponda a quello inserito
+            // Verifica che la password coincida
             if (userData.password === passwordInput) {
                 
-                // Popolamento dei dati dinamici dal database nella Dashboard
+                // Popolamento dei dati dinamici nella Dashboard (Backend)
                 loggedUserName.textContent = userData.nome || "Operatore Sconosciuto";
                 loggedUserRank.textContent = userData.grado || "Grado n.d.";
                 loggedUserBadge.textContent = "ID Matr: " + matricolaInput;
@@ -137,7 +159,7 @@ loginForm.addEventListener('submit', async (e) => {
 
                 showToast("Accesso Autorizzato", "Credenziali verificate. Benvenuto nel sistema.", "success");
                 
-                // Cambia visualizzazione da Login a Dashboard
+                // Effettua la transizione verso il backend
                 setTimeout(() => {
                     authScreen.classList.add('hidden');
                     mainNavbar.classList.add('hidden');
@@ -151,10 +173,10 @@ loginForm.addEventListener('submit', async (e) => {
             showToast("Soggetto Ignoto", "La matricola inserita non risulta registrata nel database.", "error");
         }
     } catch (error) {
-        showToast("Errore di Sistema", "Problema di connessione al database. Verifica la configurazione.", "error");
-        console.error(error);
+        showToast("Errore di Sistema", "Accesso al database negato. Hai configurato le regole su Firebase?", "error");
+        console.error("Dettaglio Errore:", error);
     } finally {
-        // Ripristina il bottone
+        // Ripristina sempre il bottone
         btnSubmit.innerHTML = originalContent;
         btnSubmit.disabled = false;
     }
