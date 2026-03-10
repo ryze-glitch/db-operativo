@@ -22,7 +22,7 @@
             <span>POLIZIA IPRP - DB CENTRALE</span>
         </div>
         <div class="status-center">
-            <span class="secure-badge"><i class="fas fa-shield-alt"></i> CONNESSIONE CRIPTATA AES-256</span>
+            <span class="server-status"><span class="pulse-dot"></span> STATO SERVER: OPERATIVO</span>
         </div>
         <div class="status-right">
             <span id="system-clock">00:00:00</span>
@@ -35,7 +35,7 @@
             <div class="left-content">
                 <img src="https://i.imgur.com/gRzOXM3.png" alt="Logo IPRP" class="big-logo">
                 <h1>SISTEMA OPERATIVO<br><span>CENTRALE</span></h1>
-                <p>Accesso riservato al personale autorizzato della Polizia di Stato. Rete criptata con protocollo di sicurezza IPRP.</p>
+                <p>Accesso riservato al personale autorizzato della Polizia di Stato. Rete protetta IPRP.</p>
             </div>
         </div>
 
@@ -99,12 +99,12 @@
                         </div>
                     </div>
 
-                    <form id="login-form" class="modern-form">
+                    <form id="login-form">
                         <div class="input-block">
                             <label>Matricola Operatore</label>
                             <div class="input-container">
                                 <i class="fas fa-id-badge"></i>
-                                <input type="text" id="badge" placeholder="Inserisci matricola..." required>
+                                <input type="text" id="badge" placeholder="Es. SM-001" required>
                             </div>
                         </div>
 
@@ -151,7 +151,7 @@
                 </div>
                 <div class="header-user">
                     <div class="user-info-text" style="text-align: right; margin-right: 15px;">
-                        <div id="logged-user-name" style="font-weight: 700; font-size: 0.9rem;">Caricamento...</div>
+                        <div id="logged-user-name" style="font-weight: 700; font-size: 0.9rem;">Nome Utente</div>
                         <div id="logged-user-rank" style="font-size: 0.75rem; color: var(--text-muted);">Grado</div>
                     </div>
                     <div class="user-avatar"><i class="fas fa-user-shield"></i></div>
