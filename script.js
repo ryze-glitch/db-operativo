@@ -2,11 +2,11 @@
 const SUPABASE_URL = "https://dyzezjsclrqhgmhsvcjz.supabase.co"; 
 const SUPABASE_KEY = "sb_publishable_Ehe0xXuVzh831bAADsjZig_8sB1yj0N";
 
-// Inizializzazione Client Supabase (CON BYPASS ANTI-BLOCCO EDGE/BRAVE)
+// Inizializzazione Client Supabase
 const { createClient } = supabase;
 const supabaseClient = createClient(SUPABASE_URL, SUPABASE_KEY, {
     auth: {
-        persistSession: false // Questo spegne il salvataggio in memoria e impedisce il blocco (errori gialli)
+        persistSession: false 
     }
 });
 
@@ -58,7 +58,6 @@ document.getElementById('login-form').addEventListener('submit', async (e) => {
     btn.innerHTML = 'Verifica DTA in corso... <i class="fas fa-spinner fa-spin"></i>';
 
     try {
-        // Interrogazione alla tabella 'utenti'
         const { data, error } = await supabaseClient
             .from('utenti')
             .select('*')
@@ -70,14 +69,13 @@ document.getElementById('login-form').addEventListener('submit', async (e) => {
         if (!data) {
             showToast("Soggetto Ignoto", "Matricola non censita nel sistema DTA.", "error");
         } else {
-            // Controllo Password
             if (data.password === passwordInput) {
                 // Popolamento Dashboard
-                document.getElementById('logged-user-name').textContent = data.nome;
-                document.getElementById('logged-user-rank').textContent = data.grado;
-                document.getElementById('logged-user-badge').textContent = "Matricola: " + data.matricola;
-                document.getElementById('dash-dept-display').textContent = data.reparto;
-                document.getElementById('welcome-message').textContent = "Terminale Operativo: " + data.grado + " " + data.nome;
+                document.getElementById('logged-user-name').textContent = data.nome || "Utente";
+                document.getElementById('logged-user-rank').textContent = data.grado || "Grado N.D.";
+                document.getElementById('logged-user-badge').textContent = "Matricola: " + (data.matricola || matricolaInput);
+                document.getElementById('dash-dept-display').textContent = data.reparto || "DTA";
+                document.getElementById('welcome-message').textContent = "Terminale Operativo: " + (data.grado || "") + " " + (data.nome || "");
                 
                 showToast("DTA - Accesso Autorizzato", "Connessione sicura stabilita.", "success");
                 
@@ -91,8 +89,7 @@ document.getElementById('login-form').addEventListener('submit', async (e) => {
             }
         }
     } catch (err) {
-        console.error("Errore Supabase:", err);
-        showToast("Errore Server", "Problema di comunicazione. Verifica la RLS Policy su Supabase.", "error");
+        showToast("Errore Server", "Problema di comunicazione con il database.", "error");
     } finally {
         btn.disabled = false;
         btn.innerHTML = 'Inizializza Connessione <i class="fas fa-fingerprint"></i>';
