@@ -11,6 +11,35 @@ const mainNavbar = document.getElementById('main-navbar');
 const dashboardSection = document.getElementById('dashboard-section');
 const loggedUserBadge = document.getElementById('logged-user-badge');
 
+// --- SISTEMA DI NOTIFICHE CUSTOM ---
+function showToast(title, message, type = 'info') {
+    const container = document.getElementById('toast-container');
+    const toast = document.createElement('div');
+    toast.className = `toast ${type}`;
+    
+    // Seleziona icona in base al tipo
+    let iconClass = 'fa-info-circle';
+    if (type === 'success') iconClass = 'fa-check-circle';
+    if (type === 'error') iconClass = 'fa-exclamation-triangle';
+    if (type === 'warning') iconClass = 'fa-shield-alt';
+
+    toast.innerHTML = `
+        <div class="toast-icon"><i class="fas ${iconClass}"></i></div>
+        <div class="toast-content">
+            <div class="toast-title">${title}</div>
+            <div class="toast-message">${message}</div>
+        </div>
+    `;
+
+    container.appendChild(toast);
+
+    // Rimuove la notifica dopo 4.5 secondi
+    setTimeout(() => {
+        toast.style.animation = 'fadeOutToast 0.4s ease-out forwards';
+        setTimeout(() => toast.remove(), 400); // aspetta che finisca l'animazione css prima di eliminare il nodo
+    }, 4500);
+}
+
 // Mostra il form di login con i dati del reparto scelto
 function showLogin(departmentName, imageSrc) {
     selectorSection.classList.add('hidden');
@@ -26,15 +55,13 @@ function showSelector() {
     selectorSection.classList.remove('hidden');
 }
 
-// === LOGICA TIMER 10 GIORNI (DIGOS / NOS) ===
-// Imposta la data a 10 giorni da adesso (modificabile)
+// --- LOGICA TIMER 10 GIORNI (DIGOS / NOS) ---
 const tenDaysFromNow = new Date().getTime() + (10 * 24 * 60 * 60 * 1000);
 
 const countdownTimer = setInterval(() => {
     const now = new Date().getTime();
     const distance = tenDaysFromNow - now;
 
-    // Calcoli per giorni, ore, minuti e secondi
     const days = Math.floor(distance / (1000 * 60 * 60 * 24));
     const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
     const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
@@ -52,44 +79,76 @@ const countdownTimer = setInterval(() => {
     }
 }, 1000);
 
-// === LOGICA DI ACCESSO E TRANSIZIONE DASHBOARD ===
+// --- CREDENZIALI DI ACCESSO SQUADRA MOBILE ---
+const VALID_CREDENTIALS = {
+    matricola: "SYSTEM-ADMIN-243292302",
+    password: "CEYF7F832EYdiw9fdew"
+};
+
+// --- LOGICA DI ACCESSO E TRANSIZIONE DASHBOARD ---
 loginForm.addEventListener('submit', function(e) {
     e.preventDefault();
-    const matricola = document.getElementById('badge').value;
-    const btnSubmit = document.querySelector('.cyber-btn');
     
-    // Salva il contenuto originale del bottone
+    // Raccogli i valori inseriti dall'utente
+    const matricolaInput = document.getElementById('badge').value.trim();
+    const passwordInput = document.getElementById('password').value.trim();
+    
+    const btnSubmit = document.querySelector('.cyber-btn');
     const originalContent = btnSubmit.innerHTML;
     
-    // Cambia il bottone in stato di caricamento
-    btnSubmit.innerHTML = '<span>Verifica Credenziali...</span> <i class="fas fa-circle-notch fa-spin"></i>';
+    // Animazione di caricamento sul bottone
+    btnSubmit.innerHTML = '<span>Verifica Credenziali in corso...</span> <i class="fas fa-circle-notch fa-spin"></i>';
     btnSubmit.style.opacity = '0.8';
     btnSubmit.disabled = true;
 
-    // Simula connessione database di 1.5 secondi
+    // Simula connessione sicura di 1.2 secondi
     setTimeout(() => {
         // Ripristina lo stato del bottone
         btnSubmit.innerHTML = originalContent;
         btnSubmit.style.opacity = '1';
         btnSubmit.disabled = false;
         
-        // Imposta la matricola nella dashboard
-        loggedUserBadge.textContent = "Matr. " + matricola;
+        // --- CONTROLLO DELLE CREDENZIALI ---
+        if(matricolaInput === VALID_CREDENTIALS.matricola && passwordInput === VALID_CREDENTIALS.password) {
+            
+            // Credenziali corrette
+            showToast("Identità Verificata", "Connessione sicura stabilita. Accesso autorizzato al terminale.", "success");
+            
+            // Estrai l'ID finale per pulizia (es. prende solo "243292302" da "SYSTEM-ADMIN-243292302")
+            const idNumero = matricolaInput.split('-').pop();
+            loggedUserBadge.textContent = "Agente: " + idNumero;
 
-        // Entra nella dashboard nascondendo il resto (nello stesso file HTML)
-        authScreen.classList.add('hidden');
-        mainNavbar.classList.add('hidden');
-        dashboardSection.classList.remove('hidden');
-        
-        // Resetta form in background
-        loginForm.reset();
-        showSelector();
-    }, 1500);
+            // Entra nella dashboard nascondendo il resto
+            authScreen.classList.add('hidden');
+            mainNavbar.classList.add('hidden');
+            dashboardSection.classList.remove('hidden');
+            
+            loginForm.reset();
+            
+        } else {
+            // Credenziali errate
+            showToast("Accesso Negato", "Matricola o Codice di Sicurezza non validi. Il tentativo è stato registrato.", "error");
+            
+            // Svuota solo il campo password per riprovare
+            document.getElementById('password').value = '';
+        }
+
+    }, 1200);
 });
 
-// Funzione di Disconnessione (torna alla home)
+// --- DISCONNESSIONE ---
+// Funzione richiamata dal bottone "Disconnetti" nella sidebar della Dashboard
 function logout() {
+    // Rimuovi la classe active dagli altri tab e mettila su "Terminale Base" se necessario (opzionale)
+    
+    // Torna alla schermata principale
     dashboardSection.classList.add('hidden');
     authScreen.classList.remove('hidden');
     mainNavbar.classList.remove('hidden');
+    
+    // Ritorna alla selezione dei reparti
+    showSelector();
+
+    // Notifica di chiusura
+    showToast("Disconnessione", "Chiusura sessione criptata completata con successo.", "info");
 }
