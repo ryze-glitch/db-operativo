@@ -16,32 +16,17 @@
 
     <div id="toast-container" class="toast-container"></div>
 
-    <div class="navbar-wrapper" id="main-navbar">
-        <nav class="navbar">
-            <div class="nav-left">
-                <div class="nav-logo">
-                    <img src="https://i.imgur.com/SUM8B5x.png" alt="Logo">
-                    POLIZIA IPRP
-                </div>
-            </div>
-            <div class="nav-center">
-                <a href="index.html"><i class="fas fa-home"></i> Home</a>
-                <a href="#"><i class="fas fa-bullhorn"></i> Notizie</a>
-                <div class="dropdown">
-                    <a href="#"><i class="fas fa-search"></i> Chi Siamo <i class="fas fa-chevron-down" style="font-size: 0.7rem;"></i></a>
-                    <div class="dropdown-menu">
-                        <a href="capo-polizia.html"><i class="fas fa-user-tie"></i> Il Capo della Polizia</a>
-                    </div>
-                </div>
-                <a href="qualifiche.html"><i class="fas fa-medal"></i> Qualifiche</a>
-                <a href="#"><i class="fas fa-calendar-check"></i> Prenota</a>
-            </div>
-            <div class="nav-right">
-                <button class="nav-login-btn">
-                    Login <div class="icon-circle"><i class="fas fa-lock"></i></div>
-                </button>
-            </div>
-        </nav>
+    <div class="system-status-bar" id="main-navbar">
+        <div class="status-left">
+            <img src="https://i.imgur.com/SUM8B5x.png" alt="Logo">
+            <span>POLIZIA IPRP - DB CENTRALE</span>
+        </div>
+        <div class="status-center">
+            <span class="secure-badge"><i class="fas fa-shield-alt"></i> CONNESSIONE CRIPTATA AES-256</span>
+        </div>
+        <div class="status-right">
+            <span id="system-clock">00:00:00</span>
+        </div>
     </div>
 
     <div class="split-layout" id="auth-screen">
@@ -103,7 +88,9 @@
 
                 <div id="login-section" class="hidden">
                     <div class="auth-header">
-                        <button class="back-link" onclick="showSelector()"><i class="fas fa-arrow-left"></i> Cambia Reparto</button>
+                        <button class="back-link" onclick="showSelector()">
+                            <i class="fas fa-arrow-left"></i> Cambia Reparto
+                        </button>
                         <div class="selected-dept-display">
                             <div class="card-img-wrapper large">
                                 <img id="active-dept-icon" src="" alt="Reparto">
@@ -141,10 +128,11 @@
     </div>
 
     <div id="dashboard-section" class="hidden">
+        
         <div class="dashboard-sidebar">
             <div class="sidebar-logo">
-                <img src="https://i.imgur.com/J3T1Kot.png" alt="Squadra Mobile">
-                <h2 id="dash-dept-display">SQ. MOBILE</h2>
+                <img src="https://i.imgur.com/J3T1Kot.png" alt="Logo Reparto">
+                <h2 id="dash-dept-display">REPARTO</h2>
             </div>
             <ul class="sidebar-menu">
                 <li class="active"><i class="fas fa-desktop"></i> <span>Terminale Base</span></li>
@@ -163,8 +151,8 @@
                 </div>
                 <div class="header-user">
                     <div class="user-info-text" style="text-align: right; margin-right: 15px;">
-                        <div id="logged-user-name" style="font-weight: 700; font-size: 0.9rem;">Nome Utente</div>
-                        <div id="logged-user-rank" style="font-size: 0.75rem; color: var(--text-muted);">Grado Operatore</div>
+                        <div id="logged-user-name" style="font-weight: 700; font-size: 0.9rem;">Caricamento...</div>
+                        <div id="logged-user-rank" style="font-size: 0.75rem; color: var(--text-muted);">Grado</div>
                     </div>
                     <div class="user-avatar"><i class="fas fa-user-shield"></i></div>
                 </div>
