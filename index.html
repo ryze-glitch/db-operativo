@@ -3,78 +3,161 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DTA - Sistema Operativo Unificato</title>
+    <title>DTA - Sistema Operativo</title>
     <style>
-        /* STILI GENERALI */
+        /* =========================================
+           LA TUA GRAFICA ORIGINALE (SCREENSHOT)
+           ========================================= */
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #1a1a2e; /* Sfondo scuro per il login */
-            margin: 0; padding: 0;
+            background-color: #1a1a24; /* Sfondo scuro originale */
+            color: #ffffff;
+            margin: 0;
+            padding: 0;
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            transition: background-color 0.5s;
         }
 
-        /* --- STILI SCHERMATA DI LOGIN --- */
+        /* --- SCHERMATA LOGIN --- */
         #sezione-login {
-            background-color: #16213e;
-            color: #fff;
+            background-color: #121e36; /* Colore riquadro originale */
             padding: 40px;
-            border-radius: 10px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.8);
+            border-radius: 8px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
             width: 100%;
-            max-width: 350px;
-            text-align: center;
-            border-top: 5px solid #0f3460;
+            max-width: 320px;
         }
-        #sezione-login h2 { margin-top: 0; margin-bottom: 25px; letter-spacing: 2px; }
-        .input-group { margin-bottom: 20px; text-align: left; }
-        .input-group label { display: block; font-size: 14px; margin-bottom: 5px; color: #a9a9a9; }
-        .input-group input {
-            width: 100%; padding: 10px; border: none; border-radius: 5px;
-            background-color: #e9ecef; color: #333; box-sizing: border-box; font-weight: bold;
-        }
-        #btn-login {
-            width: 100%; padding: 12px; background-color: #0f3460; color: white;
-            border: none; border-radius: 5px; font-size: 16px; cursor: pointer;
-            font-weight: bold; letter-spacing: 1px; transition: 0.3s;
-        }
-        #btn-login:hover { background-color: #e94560; }
-        #messaggio-errore { color: #e94560; margin-top: 15px; font-weight: bold; font-size: 14px; min-height: 20px; }
 
-        /* --- STILI SCHERMATA DASHBOARD (Nascosta all'inizio) --- */
-        #sezione-dashboard {
-            display: none; /* NASCOSTA DI DEFAULT */
+        #sezione-login h2 {
+            text-align: center;
+            margin-top: 0;
+            margin-bottom: 30px;
+            letter-spacing: 2px;
+            font-size: 22px;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        .input-group label {
+            display: block;
+            font-size: 13px;
+            color: #8c9baf;
+            margin-bottom: 8px;
+        }
+
+        .input-group input {
             width: 100%;
-            min-height: 100vh;
-            background-color: #e9ecef; /* Sfondo chiaro per la dashboard */
+            padding: 12px;
+            border: none;
+            border-radius: 4px;
+            background-color: #f0f2f5;
             color: #333;
-            align-items: flex-start;
+            box-sizing: border-box;
+            font-weight: bold;
         }
-        .dashboard-content { width: 100%; }
-        header {
-            background-color: #0f3460; color: white; padding: 20px;
-            display: flex; justify-content: space-between; align-items: center;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+
+        #btn-login {
+            width: 100%;
+            padding: 14px;
+            background-color: #103667; /* Blu scuro bottone originale */
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 15px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: background-color 0.3s;
+            letter-spacing: 1px;
         }
-        header h1 { margin: 0; font-size: 24px; letter-spacing: 1px; }
+
+        #btn-login:hover {
+            background-color: #1a4b8c;
+        }
+
+        #messaggio-errore {
+            color: #ff4d4d;
+            margin-top: 15px;
+            font-size: 13px;
+            text-align: center;
+            font-weight: bold;
+            min-height: 18px;
+        }
+
+        /* --- SCHERMATA DASHBOARD (Nascosta all'inizio) --- */
+        #sezione-dashboard {
+            display: none; /* Appare solo dopo il login */
+            width: 100%;
+            max-width: 800px;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #121e36;
+            padding: 20px 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+            margin-bottom: 20px;
+        }
+
+        .dashboard-header h1 {
+            margin: 0;
+            font-size: 20px;
+            letter-spacing: 1px;
+        }
+
         #btn-logout {
-            background-color: #e94560; color: white; border: none;
-            padding: 10px 20px; border-radius: 5px; cursor: pointer; font-weight: bold;
+            background-color: #8c1a1a;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
         }
-        #btn-logout:hover { background-color: #d1304b; }
-        .container { max-width: 800px; margin: 40px auto; padding: 20px; }
-        .card {
-            background: white; padding: 30px; border-radius: 8px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05); border-left: 5px solid #0f3460;
+
+        #btn-logout:hover {
+            background-color: #b32424;
         }
-        .card h2 { color: #0f3460; margin-top: 0; border-bottom: 2px solid #eee; padding-bottom: 10px; }
-        .info-row { display: flex; margin-bottom: 15px; font-size: 16px; }
-        .info-label { font-weight: bold; width: 150px; color: #555; }
-        .info-value { color: #111; font-weight: bold; }
-        .status { color: green; font-weight: bold; }
+
+        .dashboard-card {
+            background-color: #1e2a45;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            border-left: 5px solid #103667;
+        }
+
+        .info-row {
+            display: flex;
+            margin-bottom: 15px;
+            font-size: 16px;
+            border-bottom: 1px solid #2a3b5c;
+            padding-bottom: 10px;
+        }
+
+        .info-label {
+            font-weight: bold;
+            width: 150px;
+            color: #8c9baf;
+        }
+
+        .info-value {
+            font-weight: bold;
+            color: #ffffff;
+        }
+
+        .status-ok {
+            color: #4cd137;
+        }
     </style>
 </head>
 <body>
@@ -98,36 +181,32 @@
 
 
     <div id="sezione-dashboard">
-        <div class="dashboard-content">
-            <header>
-                <h1 id="saluto-header">Portale D.T.A.</h1>
-                <button id="btn-logout">Disconnetti</button>
-            </header>
+        <div class="dashboard-header">
+            <h1 id="saluto-header">Portale D.T.A.</h1>
+            <button id="btn-logout">DISCONNETTI</button>
+        </div>
 
-            <div class="container">
-                <div class="card">
-                    <h2>Profilo Operativo</h2>
-                    
-                    <div class="info-row">
-                        <div class="info-label">Nome Agente:</div>
-                        <div class="info-value" id="nome-agente">---</div>
-                    </div>
-                    
-                    <div class="info-row">
-                        <div class="info-label">Grado:</div>
-                        <div class="info-value" id="grado-agente">---</div>
-                    </div>
+        <div class="dashboard-card">
+            <h2 style="margin-top: 0; color: #8c9baf;">Profilo Operativo</h2>
+            
+            <div class="info-row">
+                <div class="info-label">Nome Agente:</div>
+                <div class="info-value" id="nome-agente">---</div>
+            </div>
+            
+            <div class="info-row">
+                <div class="info-label">Grado:</div>
+                <div class="info-value" id="grado-agente">---</div>
+            </div>
 
-                    <div class="info-row">
-                        <div class="info-label">Matricola:</div>
-                        <div class="info-value" id="matricola-agente">---</div>
-                    </div>
+            <div class="info-row">
+                <div class="info-label">Matricola:</div>
+                <div class="info-value" id="matricola-agente">---</div>
+            </div>
 
-                    <div class="info-row">
-                        <div class="info-label">Stato Sistema:</div>
-                        <div class="info-value status">ATTIVO E AUTORIZZATO</div>
-                    </div>
-                </div>
+            <div class="info-row">
+                <div class="info-label">Stato Sistema:</div>
+                <div class="info-value status-ok">ATTIVO E AUTORIZZATO</div>
             </div>
         </div>
     </div>
@@ -137,7 +216,7 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-app.js";
         import { getFirestore, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-firestore.js";
 
-        // Configurazione Firebase
+        // Le tue chiavi esatte
         const firebaseConfig = {
             apiKey: "AIzaSyDPyEfr0KbWtYDeM5-EFTl3s3VGVB_8Yi8",
             authDomain: "database-dta.firebaseapp.com",
@@ -151,43 +230,15 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-        // Elementi della pagina
-        const sezLogin = document.getElementById('sezione-login');
-        const sezDashboard = document.getElementById('sezione-dashboard');
-        const bodyEl = document.body;
-
-        // Funzione per mostrare la Dashboard
-        function mostraDashboard(agente) {
-            // Cambia i testi con i dati veri
-            document.getElementById('saluto-header').innerText = `Benvenuto, ${agente.grado} ${agente.nome}`;
-            document.getElementById('nome-agente').innerText = agente.nome;
-            document.getElementById('grado-agente').innerText = agente.grado;
-            document.getElementById('matricola-agente').innerText = agente.matricola;
-            
-            // Nascondi Login, Mostra Dashboard
-            sezLogin.style.display = 'none';
-            sezDashboard.style.display = 'flex';
-            bodyEl.style.backgroundColor = '#e9ecef'; // Sfondo chiaro
-        }
-
-        // Controllo automatico all'apertura della pagina
-        window.onload = () => {
-            const utenteLoggato = localStorage.getItem('utenteDTA');
-            if (utenteLoggato) {
-                // Se è già loggato, salta il login e mostra la dashboard
-                mostraDashboard(JSON.parse(utenteLoggato));
-            }
-        };
-
-        // Funzione di Autenticazione
+        // Funzione di Login
         document.getElementById('btn-login').addEventListener('click', async () => {
             const matricola = document.getElementById('matricola').value;
             const password = document.getElementById('password').value;
-            const erroreMsg = document.getElementById('messaggio-errore');
             const btn = document.getElementById('btn-login');
+            const erroreMsg = document.getElementById('messaggio-errore');
 
             if (!matricola || !password) {
-                erroreMsg.innerText = "Inserire Matricola e Password.";
+                erroreMsg.innerText = "Inserisci Matricola e Password.";
                 return;
             }
 
@@ -195,17 +246,24 @@
             btn.innerText = "VERIFICA IN CORSO...";
 
             try {
-                // Chiedi a Firebase
+                // Cerca in Firebase
                 const q = query(collection(db, "agenti"), where("matricola", "==", matricola), where("password", "==", password));
                 const querySnapshot = await getDocs(q);
 
                 if (!querySnapshot.empty) {
-                    // Trovato!
                     const agente = querySnapshot.docs[0].data();
-                    localStorage.setItem('utenteDTA', JSON.stringify(agente));
-                    mostraDashboard(agente);
                     
-                    // Resetta i campi per il prossimo login
+                    // Riempie la dashboard con i dati del database
+                    document.getElementById('saluto-header').innerText = `Benvenuto, ${agente.grado} ${agente.nome}`;
+                    document.getElementById('nome-agente').innerText = agente.nome;
+                    document.getElementById('grado-agente').innerText = agente.grado;
+                    document.getElementById('matricola-agente').innerText = agente.matricola;
+                    
+                    // Nasconde il login, mostra la dashboard
+                    document.getElementById('sezione-login').style.display = 'none';
+                    document.getElementById('sezione-dashboard').style.display = 'block';
+                    
+                    // Pulisce i campi per sicurezza
                     document.getElementById('matricola').value = "";
                     document.getElementById('password').value = "";
                 } else {
@@ -213,24 +271,20 @@
                 }
             } catch (error) {
                 console.error(error);
-                erroreMsg.innerText = "Errore Server (Hai pubblicato le Regole DB?)";
+                erroreMsg.innerText = "Errore Server (Controlla le Regole Firebase)";
             }
             
             btn.innerText = "AUTENTICAZIONE";
         });
 
-        // Funzione per il Tasto Disconnetti
+        // Funzione di Logout
         document.getElementById('btn-logout').addEventListener('click', () => {
-            // Cancella i dati
-            localStorage.removeItem('utenteDTA');
-            
-            // Nascondi Dashboard, Mostra Login
-            sezDashboard.style.display = 'none';
-            sezLogin.style.display = 'block';
-            bodyEl.style.backgroundColor = '#1a1a2e'; // Torna sfondo scuro
+            // Nasconde la dashboard, mostra il login
+            document.getElementById('sezione-dashboard').style.display = 'none';
+            document.getElementById('sezione-login').style.display = 'block';
             document.getElementById('messaggio-errore').innerText = "";
         });
-
     </script>
+
 </body>
 </html>
