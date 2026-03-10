@@ -3,213 +3,247 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard - Squadra Mobile</title>
+    <title>Terminale Operativo - Squadra Mobile</title>
     
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
     <style>
         :root {
-            --bg-dark: #07090f;
-            --bg-panel: #10141f;
+            --bg-base: #050810;
+            --bg-panel: rgba(15, 17, 26, 0.85); /* Effetto Vetro Scuro */
+            --primary: #1d4ed8;
+            --primary-light: #3b82f6;
             --text-main: #f8fafc;
-            --text-muted: #94a3b8;
-            --accent-blue: #2563eb; 
-            --accent-hover: #1d4ed8;
-            --border-color: rgba(255, 255, 255, 0.08);
-            --sidebar-width: 320px;
+            --text-dim: #94a3b8;
+            --border: rgba(255,255,255,0.08);
+            --danger: #ef4444;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Lexend', sans-serif; }
-        body { background-color: var(--bg-dark); color: var(--text-main); display: flex; height: 100vh; overflow: hidden; }
+        
+        body { 
+            background-color: var(--bg-base); 
+            color: var(--text-main); 
+            min-height: 100vh; 
+            display: flex; 
+            flex-direction: column; 
+            overflow-x: hidden; 
+        }
+
         a { text-decoration: none; color: inherit; }
 
-        /* --- SIDEBAR LATERALE (Stile .split-left) --- */
-        .dashboard-sidebar {
-            width: var(--sidebar-width);
-            position: relative;
+        /* --- SFONDO FOTOGRAFICO SFUMATO (Stile Login) --- */
+        .bg-layer {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1;
             background-image: url('https://i.imgur.com/HYyxG9W.jpg');
-            background-size: cover;
-            background-position: center;
-            display: flex;
-            flex-direction: column;
-            border-right: 1px solid var(--border-color);
+            background-size: cover; background-position: center;
+            filter: blur(8px) brightness(0.35);
+        }
+
+        /* --- NAVBAR ALTA (Stile Intranet) --- */
+        .top-nav {
+            background: rgba(10, 13, 20, 0.9);
+            border-bottom: 1px solid var(--border);
+            padding: 15px 40px; 
+            display: flex; justify-content: space-between; align-items: center;
+            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            z-index: 100; position: sticky; top: 0;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
         }
         
-        .dashboard-sidebar::after {
-            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: linear-gradient(135deg, rgba(7, 9, 15, 0.95) 0%, rgba(37, 99, 235, 0.25) 100%);
-            z-index: 0;
-        }
+        .nav-brand { display: flex; align-items: center; gap: 15px; }
+        .nav-brand img { height: 50px; object-fit: contain; filter: drop-shadow(0 0 10px rgba(255,255,255,0.2)); }
+        .nav-brand-text h1 { font-size: 1.3rem; font-weight: 700; letter-spacing: 1px; margin-bottom: 2px; }
+        .nav-brand-text span { color: var(--primary-light); font-size: 0.85rem; text-transform: uppercase; font-weight: 600; }
 
-        .sidebar-content {
-            position: relative; z-index: 1; display: flex; flex-direction: column;
-            height: 100%; padding: 40px 30px;
-        }
-
-        .dept-header { display: flex; align-items: center; gap: 15px; margin-bottom: 40px; }
-        .dept-header img { width: 45px; height: 45px; object-fit: contain; filter: drop-shadow(0 0 10px rgba(255,255,255,0.2)); }
-        .dept-header h2 { font-size: 1.2rem; font-weight: 700; color: var(--text-main); line-height: 1.2; }
-        .dept-header span { font-size: 0.8rem; color: var(--accent-blue); text-transform: uppercase; letter-spacing: 1px; }
-
-        .user-profile-box {
-            background: rgba(15, 17, 26, 0.6); border: 1px solid var(--border-color);
-            border-radius: 16px; padding: 20px; display: flex; align-items: center; gap: 15px;
-            margin-bottom: 40px; backdrop-filter: blur(10px);
-        }
-        .user-avatar { width: 50px; height: 50px; background: rgba(37, 99, 235, 0.2); border: 2px solid var(--accent-blue); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; color: var(--accent-blue); }
-        .user-details h3 { font-size: 1rem; margin-bottom: 4px; }
-        .user-details .matricola { font-size: 0.85rem; color: var(--text-muted); display: block; margin-bottom: 5px; }
-        .status-online { display: inline-flex; align-items: center; gap: 6px; font-size: 0.75rem; color: #10b981; background: rgba(16, 185, 129, 0.1); padding: 3px 8px; border-radius: 999px; }
-        .dot { width: 6px; height: 6px; background: #10b981; border-radius: 50%; box-shadow: 0 0 5px #10b981; }
-
-        .sidebar-nav { display: flex; flex-direction: column; gap: 10px; flex: 1; }
-        .nav-item {
-            display: flex; align-items: center; gap: 15px; padding: 15px; border-radius: 12px;
-            color: var(--text-muted); font-size: 0.95rem; font-weight: 500; transition: all 0.3s;
-            border: 1px solid transparent;
-        }
-        .nav-item i { font-size: 1.1rem; width: 24px; text-align: center; }
-        .nav-item:hover, .nav-item.active { background: rgba(37, 99, 235, 0.15); color: var(--text-main); border-color: rgba(37, 99, 235, 0.3); }
-        .nav-item.active i { color: var(--accent-blue); }
-
+        .nav-user { display: flex; align-items: center; gap: 20px; }
+        .user-info { text-align: right; }
+        .user-name { font-weight: 600; font-size: 1rem; color: white; }
+        .user-role { font-size: 0.85rem; color: var(--text-dim); }
+        
         .btn-logout {
-            width: 100%; padding: 15px; background: rgba(239, 68, 68, 0.1); color: #ef4444;
-            border: 1px solid rgba(239, 68, 68, 0.3); border-radius: 12px; font-weight: 600; font-size: 0.95rem;
-            cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; transition: all 0.3s;
+            background: rgba(239, 68, 68, 0.1); color: var(--danger); border: 1px solid rgba(239, 68, 68, 0.2);
+            padding: 10px 18px; border-radius: 8px; cursor: pointer; font-weight: 600; transition: all 0.3s;
+            display: flex; align-items: center; gap: 8px;
         }
-        .btn-logout:hover { background: #ef4444; color: white; box-shadow: 0 5px 15px rgba(239, 68, 68, 0.4); }
+        .btn-logout:hover { background: var(--danger); color: white; box-shadow: 0 5px 15px rgba(239, 68, 68, 0.3); }
 
-        /* --- AREA PRINCIPALE (Stile .split-right e .modern-card) --- */
-        .dashboard-main { flex: 1; background: var(--bg-panel); padding: 50px; overflow-y: auto; }
+        /* --- CONTENITORE CENTRALE --- */
+        .dashboard-container {
+            flex: 1; padding: 60px 20px; display: flex; flex-direction: column; align-items: center;
+        }
 
-        .main-header { margin-bottom: 40px; border-bottom: 1px solid var(--border-color); padding-bottom: 30px; }
-        .main-header h1 { font-size: 2.2rem; font-weight: 700; margin-bottom: 8px; }
-        .main-header p { color: var(--text-muted); font-size: 1.05rem; }
+        /* IL GRANDE PANNELLO DI VETRO */
+        .glass-panel {
+            background: var(--bg-panel); 
+            backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
+            border: 1px solid var(--border); border-radius: 24px;
+            width: 100%; max-width: 1300px; padding: 50px;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+        }
 
-        .cards-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 20px; }
+        .dashboard-header { 
+            margin-bottom: 50px; text-align: center; 
+            border-bottom: 1px solid var(--border); padding-bottom: 30px; 
+        }
+        .dashboard-header h2 { font-size: 2.5rem; font-weight: 700; margin-bottom: 10px; }
+        .dashboard-header h2 span { color: var(--primary-light); }
+        .dashboard-header p { color: var(--text-dim); font-size: 1.15rem; }
         
-        /* Stesse card del tuo file CSS */
-        .modern-card { background: #161b26; border: 1px solid var(--border-color); border-radius: 16px; padding: 25px; display: flex; align-items: center; cursor: pointer; transition: all 0.3s ease; text-align: left; width: 100%; color: var(--text-main); }
-        .modern-card:hover { background: #1e2433; border-color: var(--accent-blue); transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.3); }
-        .card-icon-wrapper { background: rgba(37, 99, 235, 0.1); border: 1px solid rgba(37, 99, 235, 0.2); min-width: 60px; height: 60px; border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-right: 20px; font-size: 1.5rem; color: var(--accent-blue); }
-        .card-content h3 { font-size: 1.15rem; margin-bottom: 5px; font-weight: 600; }
-        .card-content p { font-size: 0.85rem; color: var(--text-muted); line-height: 1.4; }
+        /* --- GRIGLIA MODULI OPERATIVI --- */
+        .modules-grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); 
+            gap: 30px; 
+        }
+        
+        .module-card {
+            background: rgba(255,255,255,0.02); border: 1px solid var(--border); border-radius: 20px;
+            padding: 40px 30px; display: flex; flex-direction: column; align-items: center; text-align: center;
+            cursor: pointer; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); position: relative; overflow: hidden;
+        }
+        
+        .module-card::before {
+            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 4px; background: var(--border); transition: 0.3s;
+        }
 
+        .module-card:hover {
+            background: rgba(37, 99, 235, 0.05); border-color: var(--primary); transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+        }
+        .module-card:hover::before { background: var(--primary); }
+
+        .module-icon {
+            width: 85px; height: 85px; background: rgba(37, 99, 235, 0.1); border-radius: 50%;
+            display: flex; align-items: center; justify-content: center; font-size: 2.8rem; color: var(--primary-light);
+            margin-bottom: 25px; border: 1px solid rgba(37, 99, 235, 0.2); transition: all 0.3s;
+        }
+        
+        .module-card:hover .module-icon { 
+            transform: scale(1.15); background: var(--primary); color: white; border-color: var(--primary);
+            box-shadow: 0 0 20px rgba(37, 99, 235, 0.4);
+        }
+
+        .module-card h3 { font-size: 1.4rem; margin-bottom: 12px; color: var(--text-main); font-weight: 700; }
+        .module-card p { font-size: 1rem; color: var(--text-dim); line-height: 1.6; }
+
+        /* Card Speciale (Rossa) */
+        .module-card.danger:hover { border-color: var(--danger); background: rgba(239, 68, 68, 0.05); }
+        .module-card.danger:hover::before { background: var(--danger); }
+        .module-card.danger .module-icon { color: var(--danger); background: rgba(239, 68, 68, 0.1); border-color: rgba(239, 68, 68, 0.2); }
+        .module-card.danger:hover .module-icon { background: var(--danger); color: white; box-shadow: 0 0 20px rgba(239, 68, 68, 0.4); }
+
+        /* --- RESPONSIVE MOBILE --- */
+        @media (max-width: 768px) {
+            .top-nav { padding: 15px 20px; flex-direction: column; gap: 20px; }
+            .nav-brand { flex-direction: column; text-align: center; }
+            .nav-user { width: 100%; justify-content: space-between; border-top: 1px solid var(--border); padding-top: 15px; }
+            .dashboard-container { padding: 30px 15px; }
+            .glass-panel { padding: 30px 20px; }
+            .dashboard-header h2 { font-size: 1.8rem; }
+            .module-icon { width: 70px; height: 70px; font-size: 2.2rem; }
+        }
     </style>
 </head>
 <body>
 
-    <aside class="dashboard-sidebar">
-        <div class="sidebar-content">
-            
-            <div class="dept-header">
-                <img id="logo-reparto" src="https://i.imgur.com/J3T1Kot.png" alt="Reparto">
-                <div>
-                    <h2 id="titolo-reparto">Caricamento...</h2>
-                    <span>Terminale Centrale</span>
-                </div>
+    <div class="bg-layer"></div>
+
+    <nav class="top-nav">
+        <div class="nav-brand">
+            <img id="logo-reparto" src="https://i.imgur.com/J3T1Kot.png" alt="Logo Reparto">
+            <div class="nav-brand-text">
+                <h1 id="titolo-reparto">CARICAMENTO...</h1>
+                <span>Rete Operativa Centrale</span>
             </div>
-
-            <div class="user-profile-box">
-                <div class="user-avatar"><i class="fas fa-user-shield"></i></div>
-                <div class="user-details">
-                    <h3 id="display-nome">Agente Sconosciuto</h3>
-                    <span class="matricola" id="display-matricola">Matricola: ---</span>
-                    <span class="status-online"><div class="dot"></div> Rete Sicura</span>
-                </div>
-            </div>
-
-            <nav class="sidebar-nav">
-                <a href="#" class="nav-item active"><i class="fas fa-desktop"></i> Plancia Operativa</a>
-                <a href="#" class="nav-item"><i class="fas fa-address-card"></i> Schedati & Profili</a>
-                <a href="#" class="nav-item"><i class="fas fa-file-contract"></i> Rapporti Indagine</a>
-                <a href="#" class="nav-item"><i class="fas fa-gavel"></i> Mandati Arresto</a>
-            </nav>
-
-            <button class="btn-logout" id="btn-logout">
-                <span>Disconnetti</span> <i class="fas fa-power-off"></i>
-            </button>
-
         </div>
-    </aside>
 
-    <main class="dashboard-main">
-        <header class="main-header">
-            <h1 id="saluto-welcome">Caricamento in corso...</h1>
-            <p>Seleziona un modulo operativo dalla griglia sottostante per procedere.</p>
-        </header>
+        <div class="nav-user">
+            <div class="user-info">
+                <div class="user-name" id="display-nome">Agente Sconosciuto</div>
+                <div class="user-role" id="display-matricola">Matricola ---</div>
+            </div>
+            <button class="btn-logout" id="btn-logout">
+                <i class="fas fa-power-off"></i> <span>Disconnetti</span>
+            </button>
+        </div>
+    </nav>
 
-        <div class="cards-grid">
+    <main class="dashboard-container">
+        <div class="glass-panel">
             
-            <button class="modern-card">
-                <div class="card-icon-wrapper"><i class="fas fa-search"></i></div>
-                <div class="card-content">
-                    <h3>Ricerca Globale</h3>
-                    <p>Interroga il database centrale per targhe, nomi o documenti.</p>
-                </div>
-            </button>
+            <div class="dashboard-header">
+                <h2>Bentornato, <span id="saluto-nome">Agente</span></h2>
+                <p>Seleziona il modulo dipartimentale a cui desideri accedere.</p>
+            </div>
 
-            <button class="modern-card">
-                <div class="card-icon-wrapper"><i class="fas fa-folder-plus"></i></div>
-                <div class="card-content">
-                    <h3>Nuovo Rapporto</h3>
-                    <p>Compila un resoconto formale per l'ultima operazione effettuata.</p>
-                </div>
-            </button>
+            <div class="modules-grid">
+                
+                <a href="#" class="module-card">
+                    <div class="module-icon"><i class="fas fa-address-card"></i></div>
+                    <h3>Database Schedati</h3>
+                    <p>Interroga il server centrale per profili criminali, precedenti e fascicoli aperti.</p>
+                </a>
 
-            <button class="modern-card">
-                <div class="card-icon-wrapper" style="color: #ef4444; background: rgba(239, 68, 68, 0.1); border-color: rgba(239, 68, 68, 0.2);"><i class="fas fa-exclamation-triangle"></i></div>
-                <div class="card-content">
-                    <h3 style="color: #ef4444;">Soggetti Ricercati</h3>
-                    <p>Visualizza la lista aggiornata dei mandati di cattura attivi.</p>
-                </div>
-            </button>
+                <a href="#" class="module-card">
+                    <div class="module-icon"><i class="fas fa-file-signature"></i></div>
+                    <h3>Rapporti Operativi</h3>
+                    <p>Compila o visualizza i resoconti formali delle indagini e degli arresti.</p>
+                </a>
 
-            <button class="modern-card">
-                <div class="card-icon-wrapper"><i class="fas fa-car-side"></i></div>
-                <div class="card-content">
+                <a href="#" class="module-card">
+                    <div class="module-icon"><i class="fas fa-car"></i></div>
                     <h3>Registro Veicoli</h3>
-                    <p>Archivio MCTC per la consultazione dei veicoli segnalati.</p>
-                </div>
-            </button>
+                    <p>Accedi al database MCTC per targhe, proprietari e veicoli segnalati.</p>
+                </a>
+
+                <a href="#" class="module-card danger">
+                    <div class="module-icon"><i class="fas fa-crosshairs"></i></div>
+                    <h3>Mandati di Cattura</h3>
+                    <p>Visualizza la lista aggiornata dei soggetti ricercati e dei mandati attivi.</p>
+                </a>
+
+            </div>
 
         </div>
     </main>
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
+            // 1. Controllo di Sicurezza
             const utenteString = localStorage.getItem('utenteLoggato');
             
-            // Seleziona se l'utente non è connesso
             if (!utenteString) {
-                alert("Sessione non valida o scaduta. Effettua nuovamente il login.");
+                alert("Accesso Negato: Connessione non autorizzata. Torna al Login.");
                 window.location.href = 'index.html'; 
                 return;
             }
 
             const utente = JSON.parse(utenteString);
 
-            // Popola i dati recuperati da Firebase
+            // 2. Inserimento Dati nella UI
             document.getElementById('display-nome').innerText = `${utente.grado} ${utente.nome}`;
             document.getElementById('display-matricola').innerText = `Matricola: ${utente.matricola}`;
-            document.getElementById('saluto-welcome').innerText = `Benvenuto, ${utente.nome}`;
+            document.getElementById('saluto-nome').innerText = utente.nome;
             
-            // Imposta reparto e logo in base alla scelta nel login
+            // 3. Adatta Loghi e Titoli in base al Reparto Scelto
             if(utente.reparto) {
                 document.getElementById('titolo-reparto').innerText = utente.reparto;
+                
                 const logoEl = document.getElementById('logo-reparto');
                 if(utente.reparto === 'Squadra Mobile') logoEl.src = 'https://i.imgur.com/J3T1Kot.png';
                 if(utente.reparto === 'DIGOS') logoEl.src = 'https://i.imgur.com/rgGjsgX.png';
                 if(utente.reparto === 'NOS') logoEl.src = 'https://i.imgur.com/gy3HsSH.png';
             }
 
-            // Funzione di Logout
+            // 4. Logout e pulizia cache
             document.getElementById('btn-logout').addEventListener('click', () => {
                 localStorage.removeItem('utenteLoggato');
                 window.location.href = 'index.html';
             });
         });
     </script>
+
 </body>
 </html>
