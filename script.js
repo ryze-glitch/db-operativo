@@ -2,9 +2,13 @@
 const SUPABASE_URL = "https://dyzezjsclrqhgmhsvcjz.supabase.co"; 
 const SUPABASE_KEY = "sb_publishable_Ehe0xXuVzh831bAADsjZig_8sB1yj0N";
 
-// Inizializzazione Client Supabase
+// Inizializzazione Client Supabase (CON BYPASS ANTI-BLOCCO EDGE/BRAVE)
 const { createClient } = supabase;
-const supabaseClient = createClient(SUPABASE_URL, SUPABASE_KEY);
+const supabaseClient = createClient(SUPABASE_URL, SUPABASE_KEY, {
+    auth: {
+        persistSession: false // Questo spegne il salvataggio in memoria e impedisce il blocco (errori gialli)
+    }
+});
 
 // --- OROLOGIO DI SISTEMA DTA ---
 setInterval(() => {
