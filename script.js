@@ -1,13 +1,11 @@
 // --- CONFIGURAZIONE SUPABASE DB OPERATIVO - DTA ---
 const SUPABASE_URL = "https://dyzezjsclrqhgmhsvcjz.supabase.co"; 
-const SUPABASE_KEY = "sb_publishable_Ehe0xXuVzh831bAADsjZig_8sB1yj0N";
+const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR5emV6anNjbHJxaGdtaHN2Y2p6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMxMzEyMjUsImV4cCI6MjA4ODcwNzIyNX0.MkVhSRieNBd2EylrRTfSp-PRDosV6FjmzdznnVgG7g4";
 
-// Inizializzazione Client Supabase
+// Inizializzazione Client
 const { createClient } = supabase;
 const supabaseClient = createClient(SUPABASE_URL, SUPABASE_KEY, {
-    auth: {
-        persistSession: false 
-    }
+    auth: { persistSession: false }
 });
 
 // --- OROLOGIO DI SISTEMA DTA ---
