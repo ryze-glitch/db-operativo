@@ -1,5 +1,5 @@
 // --- CONFIGURAZIONE DIRETTA GOOGLE SHEETS ---
-const DTA_ENDPOINT = "https://script.google.com/macros/s/AKfycbxjzUaY4ct9arDMCJPFFmqcz9vWVTReY3n9rBjwYRrNSemq0OAA14GM-mppcrRBViN-/exec"; 
+const DTA_ENDPOINT = "https://script.google.com/macros/s/AKfycbw9PfzjM0E7pmQQK2FSmiWZry9tDQTLsRF6Rv_WEbeHrrOrLG5jdtj8YLk7tFKOcBw2/exec"; 
 
 // --- OROLOGIO DI SISTEMA ---
 setInterval(() => {
