@@ -3,184 +3,119 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Terminale Operativo - DTA</title>
-    
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    
-    <link rel="stylesheet" href="style.css">
+    <title>DTA - Accesso Sistema Operativo</title>
+    <style>
+        /* La tua grafica integrata */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #1a1a2e;
+            color: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .login-container {
+            background-color: #16213e;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+            width: 100%;
+            max-width: 350px;
+            text-align: center;
+            border-top: 5px solid #0f3460;
+        }
+        .login-container h2 { margin-top: 0; margin-bottom: 25px; letter-spacing: 2px; }
+        .input-group { margin-bottom: 20px; text-align: left; }
+        .input-group label { display: block; font-size: 14px; margin-bottom: 5px; color: #a9a9a9; }
+        .input-group input {
+            width: 100%; padding: 10px; border: none; border-radius: 5px;
+            background-color: #e9ecef; color: #333; box-sizing: border-box; font-weight: bold;
+        }
+        button {
+            width: 100%; padding: 12px; background-color: #0f3460; color: white;
+            border: none; border-radius: 5px; font-size: 16px; cursor: pointer;
+            transition: background-color 0.3s; font-weight: bold; letter-spacing: 1px;
+        }
+        button:hover { background-color: #e94560; }
+        #messaggio-errore { color: #e94560; margin-top: 15px; font-weight: bold; font-size: 14px; height: 20px; }
+    </style>
 </head>
 <body>
 
-    <div id="toast-container" class="toast-container"></div>
-
-    <div class="system-status-bar" id="main-navbar">
-        <div class="status-left">
-            <img src="https://i.imgur.com/SUM8B5x.png" alt="Logo">
-            <span>POLIZIA DTA - DB CENTRALE</span>
-        </div>
-        <div class="status-center">
-            <span class="server-status"><span class="pulse-dot"></span> CONNESSIONE CRIPTATA GOOGLE CLOUD</span>
-        </div>
-        <div class="status-right">
-            <span id="system-clock">00:00:00</span>
-        </div>
-    </div>
-
-    <div class="split-layout" id="auth-screen">
+    <div class="login-container">
+        <h2>PORTALE D.T.A.</h2>
         
-        <div class="split-left">
-            <div class="left-content">
-                <div class="logo-glow-container">
-                    <img src="https://i.imgur.com/gRzOXM3.png" alt="Logo DTA" class="big-logo">
-                </div>
-                <h1>SISTEMA OPERATIVO<br><span>CENTRALE</span></h1>
-                <p>Accesso riservato. La rete è monitorata dal nucleo cybersecurity DTA.</p>
-            </div>
-        </div>
-
-        <div class="split-right">
-            <div class="auth-container">
-                
-                <div id="department-selector">
-                    <div class="auth-header">
-                        <h2>Identificazione</h2>
-                        <p>Seleziona il tuo reparto di appartenenza</p>
-                    </div>
-
-                    <div class="cards-grid">
-                        <button class="modern-card" onclick="showLogin('Squadra Mobile', 'https://i.imgur.com/J3T1Kot.png')">
-                            <div class="card-img-wrapper">
-                                <img src="https://i.imgur.com/J3T1Kot.png" alt="Squadra Mobile">
-                            </div>
-                            <div class="card-content">
-                                <h3>Squadra Mobile</h3>
-                                <span>Sezione Investigativa</span>
-                            </div>
-                            <div class="card-arrow"><i class="fas fa-arrow-right"></i></div>
-                        </button>
-
-                        <button class="modern-card" onclick="showLogin('D.I.G.O.S.', 'https://i.imgur.com/rgGjsgX.png')">
-                            <div class="card-img-wrapper">
-                                <img src="https://i.imgur.com/rgGjsgX.png" alt="DIGOS">
-                            </div>
-                            <div class="card-content">
-                                <h3>D.I.G.O.S.</h3>
-                                <span>Informazioni Speciali</span>
-                            </div>
-                            <div class="card-arrow"><i class="fas fa-arrow-right"></i></div>
-                        </button>
-
-                        <button class="modern-card" onclick="showLogin('N.O.S.', 'https://i.imgur.com/gy3HsSH.png')">
-                            <div class="card-img-wrapper">
-                                <img src="https://i.imgur.com/gy3HsSH.png" alt="NOS">
-                            </div>
-                            <div class="card-content">
-                                <h3>N.O.S.</h3>
-                                <span>Nucleo Operativo Sicurezza</span>
-                            </div>
-                            <div class="card-arrow"><i class="fas fa-arrow-right"></i></div>
-                        </button>
-                    </div>
-                </div>
-
-                <div id="login-section" class="hidden">
-                    <div class="auth-header">
-                        <button class="back-link" onclick="showSelector()"><i class="fas fa-arrow-left"></i> Cambia Reparto</button>
-                        <div class="selected-dept-display">
-                            <div class="card-img-wrapper large">
-                                <img id="active-dept-icon" src="" alt="Reparto">
-                            </div>
-                            <h2 id="login-title">Accesso</h2>
-                        </div>
-                    </div>
-
-                    <form id="login-form">
-                        <div class="input-block">
-                            <label>Matricola Operatore</label>
-                            <div class="input-container">
-                                <i class="fas fa-id-badge"></i>
-                                <input type="text" id="badge" placeholder="ID Operatore" required>
-                            </div>
-                        </div>
-
-                        <div class="input-block">
-                            <label>Codice di Sicurezza</label>
-                            <div class="input-container">
-                                <i class="fas fa-lock"></i>
-                                <input type="password" id="password" placeholder="••••••••" required>
-                            </div>
-                        </div>
-                        
-                        <button type="submit" class="cyber-btn" id="btn-submit">
-                            <span>Inizializza Connessione</span>
-                            <i class="fas fa-fingerprint"></i>
-                        </button>
-                    </form>
-                </div>
-
-            </div>
-        </div>
-    </div>
-
-    <div id="dashboard-section" class="hidden">
-        <div class="dashboard-sidebar">
-            <div class="sidebar-logo">
-                <img id="dash-logo-reparto" src="https://i.imgur.com/J3T1Kot.png" alt="Logo">
-                <h2 id="dash-dept-display">REPARTO</h2>
-            </div>
-            <ul class="sidebar-menu">
-                <li class="active"><i class="fas fa-desktop"></i> <span>Terminale Base</span></li>
-                <li><i class="fas fa-users"></i> <span>Banca Dati SDI</span></li>
-                <li><i class="fas fa-car"></i> <span>Motorizzazione</span></li>
-                <li><i class="fas fa-file-alt"></i> <span>Rapporti Penali</span></li>
-                <li class="logout" onclick="logout()"><i class="fas fa-sign-out-alt"></i> <span>Disconnetti</span></li>
-            </ul>
+        <div class="input-group">
+            <label for="matricola">Matricola Operativa</label>
+            <input type="text" id="matricola" placeholder="Es. SM-001" autocomplete="off">
         </div>
         
-        <div class="dashboard-main">
-            <header class="dashboard-header">
-                <div class="header-search">
-                    <i class="fas fa-search"></i>
-                    <input type="text" placeholder="Cerca nel database DTA...">
-                </div>
-                <div class="header-user">
-                    <div class="user-info-text">
-                        <div id="logged-user-name">Caricamento...</div>
-                        <div id="logged-user-rank">Grado</div>
-                    </div>
-                    <div class="user-avatar"><i class="fas fa-user-shield"></i></div>
-                </div>
-            </header>
-            
-            <div class="dashboard-content">
-                <h2 id="welcome-message">Inizializzazione Sistema...</h2>
-                <p id="logged-user-badge" class="badge-display">ID: ----</p>
-                
-                <div class="dashboard-cards-grid">
-                    <div class="dash-card">
-                        <div class="dash-card-icon"><i class="fas fa-search-plus"></i></div>
-                        <h3>Ricerca Soggetto</h3>
-                        <p>Accesso immediato all'anagrafe criminale e mandati.</p>
-                        <button class="dash-btn-action">Apri Modulo</button>
-                    </div>
-                    <div class="dash-card">
-                        <div class="dash-card-icon"><i class="fas fa-car-side"></i></div>
-                        <h3>Controllo Veicoli</h3>
-                        <p>Visura targhe e database assicurativo nazionale.</p>
-                        <button class="dash-btn-action">Apri Modulo</button>
-                    </div>
-                    <div class="dash-card">
-                        <div class="dash-card-icon"><i class="fas fa-user-secret"></i></div>
-                        <h3>Fascicoli Attivi</h3>
-                        <p>Gestione indagini riservate del reparto operativo.</p>
-                        <button class="dash-btn-action">Apri Modulo</button>
-                    </div>
-                </div>
-            </div>
+        <div class="input-group">
+            <label for="password">Codice di Sicurezza</label>
+            <input type="password" id="password" placeholder="Inserisci Password">
         </div>
+        
+        <button id="btn-login">AUTENTICAZIONE</button>
+        <div id="messaggio-errore"></div>
     </div>
 
-    <script src="script.js"></script>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-app.js";
+        import { getFirestore, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyDPyEfr0KbWtYDeM5-EFTl3s3VGVB_8Yi8",
+            authDomain: "database-dta.firebaseapp.com",
+            projectId: "database-dta",
+            storageBucket: "database-dta.firebasestorage.app",
+            messagingSenderId: "229305773627",
+            appId: "1:229305773627:web:ec3d17f5fcb3c65fdb761e",
+            measurementId: "G-KDE0G5RPYC"
+        };
+
+        // Inizializza
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        // Funzione Login
+        async function validaLogin() {
+            const matricolaInput = document.getElementById('matricola').value;
+            const passwordInput = document.getElementById('password').value;
+            const erroreMsg = document.getElementById('messaggio-errore');
+            const btn = document.getElementById('btn-login');
+
+            if (!matricolaInput || !passwordInput) {
+                erroreMsg.innerText = "Inserire tutti i campi.";
+                return;
+            }
+
+            erroreMsg.innerText = "";
+            btn.innerText = "VERIFICA IN CORSO...";
+
+            try {
+                const q = query(collection(db, "agenti"), where("matricola", "==", matricolaInput), where("password", "==", passwordInput));
+                const querySnapshot = await getDocs(q);
+
+                if (!querySnapshot.empty) {
+                    const datiAgente = querySnapshot.docs[0].data();
+                    // Salva grado, nome e matricola nel browser
+                    localStorage.setItem('utenteLoggato', JSON.stringify(datiAgente));
+                    window.location.href = 'dashboard.html';
+                } else {
+                    erroreMsg.innerText = "Accesso Negato: Credenziali errate.";
+                    btn.innerText = "AUTENTICAZIONE";
+                }
+            } catch (error) {
+                console.error("Errore Database:", error);
+                erroreMsg.innerText = "Errore di connessione al Server DTA.";
+                btn.innerText = "AUTENTICAZIONE";
+            }
+        }
+
+        document.getElementById('btn-login').addEventListener('click', validaLogin);
+    </script>
+
 </body>
 </html>
