@@ -1,9 +1,6 @@
-// Importa Firebase (SDK Versione 12.10.0) 
-// NIENTE Analytics per evitare l'errore dell'AdBlocker!
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-app.js";
 import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-firestore.js";
 
-// --- LA TUA CONFIGURAZIONE FIREBASE REALE ---
 const firebaseConfig = {
     apiKey: "AIzaSyAYsesmrIxPL0_UJctwfRKLpQcElpeMRcU",
     authDomain: "database-sqmobile-digos.firebaseapp.com",
@@ -13,171 +10,98 @@ const firebaseConfig = {
     appId: "1:510053226005:web:aed636bc19a7e23b34e01c"
 };
 
-// Inizializza l'app e il database Firestore
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-// Costanti UI - Pagine e Layout
-const selectorSection = document.getElementById('department-selector');
-const loginSection = document.getElementById('login-section');
-const loginTitle = document.getElementById('login-title');
-const activeDeptIcon = document.getElementById('active-dept-icon');
-const loginForm = document.getElementById('login-form');
-const authScreen = document.getElementById('auth-screen');
-const mainNavbar = document.getElementById('main-navbar');
-const dashboardSection = document.getElementById('dashboard-section');
+// OROLOGIO
+setInterval(() => {
+    const clock = document.getElementById('system-clock');
+    if(clock) clock.textContent = new Date().toLocaleTimeString('it-IT');
+}, 1000);
 
-// Costanti UI - Profilo Dashboard
-const loggedUserName = document.getElementById('logged-user-name');
-const loggedUserRank = document.getElementById('logged-user-rank');
-const loggedUserBadge = document.getElementById('logged-user-badge');
-const dashDeptDisplay = document.getElementById('dash-dept-display');
-const welcomeMsg = document.getElementById('welcome-message');
-
-// --- OROLOGIO DI SISTEMA (Nuova Status Bar) ---
-function updateClock() {
-    const clockElement = document.getElementById('system-clock');
-    if(clockElement) {
-        const now = new Date();
-        const timeString = now.toLocaleTimeString('it-IT', { hour12: false });
-        clockElement.textContent = timeString;
-    }
-}
-setInterval(updateClock, 1000);
-updateClock();
-
-// --- SISTEMA DI NOTIFICHE CUSTOM (Toast) ---
+// NOTIFICHE
 function showToast(title, message, type = 'info') {
     const container = document.getElementById('toast-container');
     const toast = document.createElement('div');
     toast.className = `toast ${type}`;
-    
-    let iconClass = 'fa-info-circle';
-    if (type === 'success') iconClass = 'fa-check-circle';
-    if (type === 'error') iconClass = 'fa-exclamation-triangle';
-
-    toast.innerHTML = `
-        <div class="toast-icon"><i class="fas ${iconClass}"></i></div>
-        <div class="toast-content">
-            <div class="toast-title">${title}</div>
-            <div class="toast-message">${message}</div>
-        </div>
-    `;
-
+    toast.innerHTML = `<strong>${title}</strong><p style="font-size:0.8rem">${message}</p>`;
     container.appendChild(toast);
-
-    setTimeout(() => {
-        toast.style.animation = 'fadeOutToast 0.4s ease-out forwards';
+    setTimeout(() => { 
+        toast.style.opacity = '0'; 
         setTimeout(() => toast.remove(), 400); 
     }, 4500);
 }
 
-// --- NAVIGAZIONE INTERFACCIA ---
-window.showLogin = (departmentName, imageSrc) => {
-    selectorSection.classList.add('hidden');
-    loginTitle.textContent = departmentName;
-    document.getElementById('active-dept-icon').src = imageSrc;
-    loginSection.classList.remove('hidden');
-    
-    // Riavvia l'animazione
-    loginSection.style.animation = 'none';
-    loginSection.offsetHeight; 
-    loginSection.style.animation = 'slideInRight 0.4s ease-out forwards';
+// NAVIGAZIONE
+window.showLogin = (name, img) => {
+    document.getElementById('department-selector').classList.add('hidden');
+    document.getElementById('login-title').textContent = name;
+    document.getElementById('active-dept-icon').src = img;
+    document.getElementById('login-section').classList.remove('hidden');
 };
 
 window.showSelector = () => {
-    loginSection.classList.add('hidden');
-    loginForm.reset();
-    selectorSection.classList.remove('hidden');
-    
-    // Riavvia l'animazione
-    selectorSection.style.animation = 'none';
-    selectorSection.offsetHeight; 
-    selectorSection.style.animation = 'slideInRight 0.4s ease-out forwards';
+    document.getElementById('login-section').classList.add('hidden');
+    document.getElementById('department-selector').classList.remove('hidden');
 };
 
-window.logout = () => {
-    // Il logout ricarica la pagina per azzerare i dati in memoria
-    location.reload(); 
-};
+window.logout = () => location.reload();
 
-// --- LOGICA TIMER 10 GIORNI (DIGOS / NOS) ---
-const tenDaysFromNow = new Date().getTime() + (10 * 24 * 60 * 60 * 1000);
-
-const countdownTimer = setInterval(() => {
-    const now = new Date().getTime();
-    const distance = tenDaysFromNow - now;
-
-    const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-    const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-    const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-    const seconds = Math.floor((distance % (1000 * 60)) / 1000);
-
-    const timeText = `${days}g ${hours}h ${minutes}m ${seconds}s`;
-
-    document.getElementById("timer-digos").innerText = "Sblocco in: " + timeText;
-    document.getElementById("timer-nos").innerText = "Sblocco in: " + timeText;
-
-    if (distance < 0) {
-        clearInterval(countdownTimer);
-        document.getElementById("timer-digos").innerText = "Sviluppo Completato";
-        document.getElementById("timer-nos").innerText = "Sviluppo Completato";
-    }
+// TIMER
+const tenDays = new Date().getTime() + (10 * 24 * 60 * 60 * 1000);
+setInterval(() => {
+    const diff = tenDays - new Date().getTime();
+    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    const txt = `${days}g ${hours}h`;
+    document.getElementById('timer-digos').textContent = "Sblocco: " + txt;
+    document.getElementById('timer-nos').textContent = "Sblocco: " + txt;
 }, 1000);
 
-// --- LOGICA LOGIN AL DATABASE FIRESTORE ---
-loginForm.addEventListener('submit', async (e) => {
+// LOGIN
+document.getElementById('login-form').addEventListener('submit', async (e) => {
     e.preventDefault();
-    
-    const matricolaInput = document.getElementById('badge').value.trim();
-    const passwordInput = document.getElementById('password').value.trim();
-    const btnSubmit = document.getElementById('btn-submit');
-    
-    const originalContent = btnSubmit.innerHTML;
-    
-    // Effetto visivo di caricamento
-    btnSubmit.innerHTML = '<span>Verifica Identità...</span> <i class="fas fa-circle-notch fa-spin"></i>';
-    btnSubmit.disabled = true;
+    const matricola = document.getElementById('badge').value.trim();
+    const password = document.getElementById('password').value.trim();
+    const btn = document.getElementById('btn-submit');
+
+    btn.disabled = true;
+    btn.innerHTML = 'Verifica in corso... <i class="fas fa-spinner fa-spin"></i>';
 
     try {
-        // Cerca il documento nella collezione 'utenti'
-        const userRef = doc(db, "utenti", matricolaInput);
+        // CERCA NELLA RACCOLTA "utenti" (senza spazi)
+        const userRef = doc(db, "utenti", matricola);
         const userSnap = await getDoc(userRef);
 
         if (userSnap.exists()) {
-            const userData = userSnap.data();
-            
-            // Verifica che la password coincida
-            if (userData.password === passwordInput) {
-                
-                // Popolamento dei dati dinamici nella Dashboard (Backend)
-                loggedUserName.textContent = userData.nome || "Operatore Sconosciuto";
-                loggedUserRank.textContent = userData.grado || "Grado n.d.";
-                loggedUserBadge.textContent = "ID Matr: " + matricolaInput;
-                dashDeptDisplay.textContent = userData.reparto || "P. DI STATO";
-                welcomeMsg.textContent = "Bentornato, " + (userData.grado || "Agente") + " " + (userData.nome || "");
+            const data = userSnap.data();
+            if (data.password === password) {
+                // Caricamento Dati Profilo
+                document.getElementById('logged-user-name').textContent = data.nome || "Operatore";
+                document.getElementById('logged-user-rank').textContent = data.grado || "Grado n.d.";
+                document.getElementById('logged-user-badge').textContent = "ID Matr: " + matricola;
+                document.getElementById('dash-dept-display').textContent = data.reparto || "P. DI STATO";
+                document.getElementById('welcome-message').textContent = "Bentornato, " + (data.nome || "Agente");
 
-                showToast("Accesso Autorizzato", "Credenziali verificate. Benvenuto nel sistema.", "success");
+                showToast("Accesso Autorizzato", "Benvenuto nel terminale operativo.", "success");
                 
-                // Effettua la transizione verso il backend
                 setTimeout(() => {
-                    authScreen.classList.add('hidden');
-                    mainNavbar.classList.add('hidden');
-                    dashboardSection.classList.remove('hidden');
+                    document.getElementById('auth-screen').classList.add('hidden');
+                    document.getElementById('dashboard-section').classList.remove('hidden');
+                    document.getElementById('main-navbar').classList.add('hidden');
                 }, 1000);
-                
             } else {
-                showToast("Errore di Sicurezza", "Il codice di sicurezza inserito non è corretto.", "error");
+                showToast("Errore di Sicurezza", "Codice di sicurezza errato.", "error");
             }
         } else {
-            showToast("Soggetto Ignoto", "La matricola inserita non risulta registrata nel database.", "error");
+            showToast("Soggetto Ignoto", "Matricola non trovata nel database centrale.", "error");
+            console.log("Database non ha trovato il documento:", matricola, "nella raccolta 'utenti'");
         }
-    } catch (error) {
-        showToast("Errore di Sistema", "Accesso al database negato. Hai configurato le regole su Firebase?", "error");
-        console.error("Dettaglio Errore:", error);
+    } catch (err) {
+        showToast("Errore Sistema", "Impossibile contattare il server. Verifica permessi.", "error");
+        console.error(err);
     } finally {
-        // Ripristina sempre il bottone
-        btnSubmit.innerHTML = originalContent;
-        btnSubmit.disabled = false;
+        btn.disabled = false;
+        btn.innerHTML = 'Inizializza Connessione <i class="fas fa-fingerprint"></i>';
     }
 });
