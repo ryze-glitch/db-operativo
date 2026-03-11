@@ -24,13 +24,13 @@
         body {
             background-color: var(--bg-dark);
             color: var(--text-main);
-            overflow: hidden; /* Blocca lo scroll del body nella dashboard */
+            overflow: hidden; 
         }
 
         a { text-decoration: none; color: inherit; }
         .hidden { display: none !important; }
 
-        /* --- SCHERMATA DI CARICAMENTO (Fake Loading) --- */
+        /* --- SCHERMATA DI CARICAMENTO --- */
         #loading-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100vh;
             background: var(--bg-dark); z-index: 9999;
@@ -44,13 +44,14 @@
 
         /* --- DASHBOARD BACKEND --- */
         #dashboard-section { display: flex; height: 100vh; width: 100%; background: var(--bg-dark); animation: slideInRight 0.4s ease-out; }
-        .dashboard-sidebar { width: 260px; background: var(--bg-panel); border-right: 1px solid var(--border-color); display: flex; flex-direction: column; }
+        .dashboard-sidebar { width: 280px; background: var(--bg-panel); border-right: 1px solid var(--border-color); display: flex; flex-direction: column; }
         .sidebar-logo { padding: 25px 20px; display: flex; align-items: center; gap: 15px; border-bottom: 1px solid var(--border-color); }
         .sidebar-logo img { width: 40px; background: white; padding: 5px; border-radius: 8px; }
         .sidebar-logo h2 { font-size: 1.2rem; letter-spacing: 0.5px; }
         
         .sidebar-menu { list-style: none; padding: 20px 0; flex: 1; }
         .sidebar-menu li { padding: 15px 25px; display: flex; align-items: center; gap: 15px; cursor: pointer; color: var(--text-muted); transition: 0.2s; font-weight: 500; }
+        .sidebar-menu li i { width: 20px; text-align: center; }
         .sidebar-menu li:hover, .sidebar-menu li.active { background: rgba(37,99,235,0.1); color: var(--accent-blue); border-right: 3px solid var(--accent-blue); }
         .sidebar-menu li.logout { color: #ef4444; margin-top: auto; border-top: 1px solid var(--border-color); }
         .sidebar-menu li.logout:hover { background: rgba(239, 68, 68, 0.1); color: #f87171; border-right: 3px solid #ef4444; }
@@ -121,9 +122,9 @@
                 <h2>SQ. MOBILE</h2>
             </div>
             <ul class="sidebar-menu">
-                <li class="active"><i class="fas fa-desktop"></i> <span>Terminale Base</span></li>
-                <li><i class="fas fa-users"></i> <span>Banca Dati SDI</span></li>
-                <li><i class="fas fa-car"></i> <span>Motorizzazione</span></li>
+                <li class="active"><i class="fas fa-desktop"></i> <span>Dashboard</span></li>
+                <li><i class="fas fa-users"></i> <span>Nominativi Operatori</span></li>
+                <li><i class="fas fa-crosshairs"></i> <span>Soggetti Attenzionati</span></li>
                 <li><i class="fas fa-file-alt"></i> <span>Rapporti Penali</span></li>
                 <li class="logout" id="btn-logout"><i class="fas fa-sign-out-alt"></i> <span>Disconnetti</span></li>
             </ul>
@@ -167,7 +168,6 @@
     </div>
 
     <script>
-        // --- FUNZIONE NOTIFICHE TOAST ---
         function showToast(title, message, type = 'info') {
             const container = document.getElementById('toast-container');
             const toast = document.createElement('div');
@@ -194,7 +194,6 @@
         }
 
         document.addEventListener('DOMContentLoaded', () => {
-            // Controllo di Sicurezza (Firebase Auth locale)
             const utenteString = localStorage.getItem('utenteLoggato');
             
             if (!utenteString) {
@@ -205,29 +204,21 @@
 
             const utente = JSON.parse(utenteString);
 
-            // Inserimento Dati Agente in background
             const matricolaPura = utente.matricola.includes('-') ? utente.matricola.split('-').pop() : utente.matricola;
             document.getElementById('display-matricola').innerText = `Agente: ${matricolaPura}`;
             document.getElementById('saluto-nome').innerText = `Bentornato nel Sistema, ${utente.nome}`;
 
-            // Simulazione Caricamento Iniziale
             setTimeout(() => {
-                // Nascondi overlay
                 const overlay = document.getElementById('loading-overlay');
                 overlay.classList.add('fade-out');
                 
                 setTimeout(() => {
                     overlay.style.display = 'none';
-                    // Mostra Dashboard
                     document.getElementById('dashboard-section').classList.remove('hidden');
-                    
-                    // Lancia la notifica verde di successo vista nello screen
                     showToast("Identità Verificata", "Connessione sicura stabilita. Accesso autorizzato al terminale.", "success");
-                }, 500); // aspetta la transizione css
+                }, 500); 
+            }, 1800); 
 
-            }, 1800); // 1.8 secondi di finto caricamento
-
-            // Gestione Disconnessione
             document.getElementById('btn-logout').addEventListener('click', () => {
                 localStorage.removeItem('utenteLoggato');
                 window.location.href = 'index.html';
