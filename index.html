@@ -14,30 +14,44 @@
         :root {
             --bg-dark: #07090f;
             --bg-panel: #10141f;
-            --nav-bg: rgba(20, 22, 28, 0.75);
             --text-main: #f8fafc;
             --text-muted: #94a3b8;
             --accent-blue: #2563eb; 
             --accent-hover: #1d4ed8;
             --border-color: rgba(255, 255, 255, 0.08);
+            --topbar-height: 35px; /* Altezza della nuova barra */
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Lexend', sans-serif; }
         body { background-color: var(--bg-dark); color: var(--text-main); overflow: hidden; }
         a { text-decoration: none; color: inherit; }
 
-        .navbar-wrapper { position: fixed; top: 25px; left: 50%; transform: translateX(-50%); width: 95%; max-width: 1400px; z-index: 1000; }
-        .navbar { background: var(--nav-bg); backdrop-filter: blur(16px); border: 1px solid var(--border-color); border-radius: 999px; padding: 6px 8px; display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
-        .nav-left { justify-self: start; }
-        .nav-logo { background: #1b1e24; padding: 6px 20px 6px 12px; border-radius: 999px; display: flex; align-items: center; gap: 12px; font-weight: 700; color: var(--text-main); }
-        .nav-logo img { height: 36px; }
-        .nav-center { justify-self: center; display: flex; gap: 28px; font-size: 0.95rem; font-weight: 500; color: var(--text-muted); }
-        .nav-center a { display: flex; align-items: center; gap: 8px; transition: color 0.2s; }
-        .nav-center a:hover { color: white; }
-        .nav-right { justify-self: end; }
-        .nav-login-btn { background-color: var(--accent-blue); color: white; padding: 6px 10px 6px 20px; border-radius: 999px; display: flex; align-items: center; gap: 10px; font-weight: 600; border: none; cursor: pointer; }
+        /* --- NUOVA TOP BAR (Come da Screenshot) --- */
+        .top-bar {
+            position: fixed; top: 0; left: 0; width: 100%; height: var(--topbar-height);
+            background-color: #05070a; /* Sfondo quasi nero */
+            border-bottom: 1px solid var(--border-color);
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 0 25px; z-index: 1000;
+            font-size: 0.75rem; font-weight: 600; letter-spacing: 0.5px;
+        }
 
-        .split-layout { display: flex; height: 100vh; width: 100%; }
+        .top-bar-left { display: flex; align-items: center; gap: 10px; text-transform: uppercase; }
+        .top-bar-left img { height: 14px; border-radius: 2px; }
+        
+        .top-bar-center { display: flex; align-items: center; gap: 8px; color: #a1a1aa; text-transform: uppercase; }
+        .status-dot { width: 8px; height: 8px; background-color: #22c55e; border-radius: 50%; box-shadow: 0 0 8px #22c55e; animation: pulse 2s infinite; }
+        
+        .top-bar-right { font-family: 'Courier New', Courier, monospace; color: #3b82f6; font-size: 0.85rem; font-weight: 700; letter-spacing: 1px; }
+
+        @keyframes pulse {
+            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7); }
+            70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(34, 197, 94, 0); }
+            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); }
+        }
+
+        /* --- LAYOUT PAGINA (Adattato per la barra superiore) --- */
+        .split-layout { display: flex; height: calc(100vh - var(--topbar-height)); width: 100%; margin-top: var(--topbar-height); }
 
         .split-left { flex: 1; position: relative; background-image: url('https://i.imgur.com/HYyxG9W.jpg'); background-size: cover; background-position: center; display: flex; align-items: center; justify-content: center; padding: 40px; }
         .split-left::after { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, rgba(7, 9, 15, 0.9) 0%, rgba(37, 99, 235, 0.2) 100%); }
@@ -48,7 +62,7 @@
         .left-content p { font-size: 1.1rem; color: #cbd5e1; line-height: 1.6; font-weight: 300; }
 
         .split-right { flex: 0 0 550px; background: var(--bg-panel); display: flex; align-items: center; justify-content: center; padding: 40px; box-shadow: -10px 0 30px rgba(0,0,0,0.5); z-index: 5; }
-        .auth-container { width: 100%; max-width: 400px; margin-top: 50px; }
+        .auth-container { width: 100%; max-width: 400px; margin-bottom: 40px; }
         .auth-header { margin-bottom: 40px; }
         .auth-header h2 { font-size: 1.8rem; font-weight: 700; margin-bottom: 8px; }
         .auth-header p { color: var(--text-muted); font-size: 0.95rem; }
@@ -91,30 +105,30 @@
 
         @keyframes slideInRight { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: translateX(0); } }
         #login-section, #department-selector { animation: slideInRight 0.4s ease-out forwards; }
-        @media (max-width: 1024px) { .split-layout { flex-direction: column; overflow-y: auto; height: auto; min-height: 100vh; } .split-left { padding: 100px 20px 40px; min-height: 40vh; text-align: center; } .left-content { margin: 0 auto; } .split-right { flex: auto; width: 100%; padding: 40px 20px; } .nav-center { display: none; } }
+        
+        @media (max-width: 1024px) { 
+            .top-bar-center { display: none; } /* Nasconde il testo centrale su mobile per spazio */
+            .split-layout { flex-direction: column; overflow-y: auto; height: auto; min-height: calc(100vh - var(--topbar-height)); } 
+            .split-left { padding: 80px 20px 40px; min-height: 40vh; text-align: center; } 
+            .left-content { margin: 0 auto; } 
+            .split-right { flex: auto; width: 100%; padding: 40px 20px; } 
+        }
     </style>
 </head>
 <body>
 
-    <div class="navbar-wrapper">
-        <nav class="navbar">
-            <div class="nav-left">
-                <div class="nav-logo">
-                    <img src="https://i.imgur.com/SUM8B5x.png" alt="Logo">
-                    POLIZIA IPRP
-                </div>
-            </div>
-            <div class="nav-center">
-                <a href="index.html"><i class="fas fa-shield-alt"></i> Portale Centrale</a>
-                <a href="#"><i class="fas fa-book"></i> Direttive Operative</a>
-                <a href="#"><i class="fas fa-headset"></i> Supporto IT</a>
-            </div>
-            <div class="nav-right">
-                <button class="nav-login-btn">
-                    Login <div class="icon-circle"><i class="fas fa-lock"></i></div>
-                </button>
-            </div>
-        </nav>
+    <div class="top-bar">
+        <div class="top-bar-left">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/03/Flag_of_Italy.svg/320px-Flag_of_Italy.svg.png" alt="IT">
+            <span>POLIZIA DTA - DB CENTRALE</span>
+        </div>
+        <div class="top-bar-center">
+            <div class="status-dot"></div>
+            <span>Connessione Criptata Google Cloud</span>
+        </div>
+        <div class="top-bar-right" id="live-clock">
+            --:--:--
+        </div>
     </div>
 
     <div class="split-layout">
@@ -207,6 +221,15 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-app.js";
         import { getFirestore, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-firestore.js";
 
+        // Script per l'Orologio in Tempo Reale
+        function updateClock() {
+            const now = new Date();
+            const timeString = now.toLocaleTimeString('it-IT', { hour12: false });
+            document.getElementById('live-clock').textContent = timeString;
+        }
+        setInterval(updateClock, 1000);
+        updateClock(); // Chiama subito per evitare il delay di 1 secondo
+
         const firebaseConfig = {
             apiKey: "AIzaSyDPyEfr0KbWtYDeM5-EFTl3s3VGVB_8Yi8",
             authDomain: "database-dta.firebaseapp.com",
@@ -232,7 +255,6 @@
             document.getElementById('login-section').classList.remove('hidden');
             erroreMsg.innerText = "";
             
-            // Carica la matricola se salvata precedentemente
             const matricolaSalvata = localStorage.getItem('savedMatricola');
             if(matricolaSalvata) {
                 badgeInput.value = matricolaSalvata;
@@ -255,7 +277,6 @@
             const repartoScelto = document.getElementById('login-title').textContent;
             const btnSubmit = document.querySelector('.cyber-btn');
             
-            // Gestione "Ricorda Matricola"
             if(ricordaCheckbox.checked) {
                 localStorage.setItem('savedMatricola', matricola);
             } else {
@@ -274,7 +295,7 @@
 
                 if (!querySnapshot.empty) {
                     const agente = querySnapshot.docs[0].data();
-                    agente.reparto = repartoScelto; // Salviamo il reparto scelto
+                    agente.reparto = repartoScelto;
                     localStorage.setItem('utenteLoggato', JSON.stringify(agente));
                     
                     window.location.href = 'squadra-mobile.html';
