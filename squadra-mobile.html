@@ -60,7 +60,7 @@
         .sidebar-menu li.logout { color: var(--danger); margin-top: auto; border-top: 1px solid var(--border-color); }
         .sidebar-menu li.logout:hover { background: rgba(239, 68, 68, 0.1); color: #f87171; border-right: 3px solid var(--danger); }
 
-        .dashboard-main { flex: 1; display: flex; flex-direction: column; overflow-y: auto; position: relative; }
+        .dashboard-main { flex: 1; display: flex; flex-direction: column; overflow-y: auto; position: relative; scroll-behavior: smooth; }
         
         /* HEADER IN ALTO */
         .dashboard-header { height: 75px; min-height: 75px; background: rgba(16, 20, 31, 0.98); backdrop-filter: blur(15px); border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; padding: 0 30px; position: sticky; top: 0; z-index: 10; }
@@ -104,15 +104,15 @@
 
         /* --- VISTA 2: SOGGETTI ATTENZIONATI --- */
         
-        /* Form Inserimento */
+        /* Form Inserimento/Modifica */
         .form-panel { background: #161b26; border: 1px solid var(--accent-blue); border-radius: 12px; padding: 30px; margin-bottom: 40px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
         .form-panel h3 { margin-bottom: 20px; color: white; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; }
         .form-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; margin-bottom: 25px; }
         .form-group { display: flex; flex-direction: column; gap: 8px; }
         .form-group.full { grid-column: span 2; }
         .form-group label { font-size: 0.85rem; color: #cbd5e1; font-weight: 500; text-transform: uppercase; }
-        .form-group input, .form-group select, .form-group textarea { background: #0a0d14; border: 1px solid var(--border-color); color: white; padding: 14px; border-radius: 8px; font-family: 'Lexend'; font-size: 0.95rem; outline: none; }
-        .form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color: var(--accent-blue); }
+        .form-group input, .form-group select, .form-group textarea { background: #0a0d14; border: 1px solid var(--border-color); color: white; padding: 14px; border-radius: 8px; font-family: 'Lexend'; font-size: 0.95rem; outline: none; transition: 0.2s; }
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color: var(--accent-blue); box-shadow: 0 0 0 2px rgba(37,99,235,0.2); }
         .form-actions { display: flex; justify-content: flex-end; gap: 15px; }
 
         /* Grid delle Card Attenzionati */
@@ -136,17 +136,24 @@
         .soggetto-body p { margin-bottom: 10px; }
         .soggetto-body strong { color: white; }
 
-        /* Firma in fondo alla card */
+        /* Footer e Bottoni Azione */
         .soggetto-footer { background: rgba(0,0,0,0.2); padding: 15px 20px; border-top: 1px solid var(--border-color); font-size: 0.8rem; color: #94a3b8; display: flex; justify-content: space-between; align-items: center; }
         .firma-agente { display: flex; align-items: center; gap: 8px; font-family: monospace; }
         .firma-agente i { color: var(--accent-blue); }
+        
+        .card-actions { display: flex; gap: 8px; }
+        .btn-icon { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: var(--text-muted); border-radius: 6px; width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.2s; }
+        .btn-icon.edit:hover { background: rgba(37,99,235,0.1); color: var(--accent-blue); border-color: var(--accent-blue); }
+        .btn-icon.delete:hover { background: rgba(239,68,68,0.1); color: var(--danger); border-color: var(--danger); }
 
         /* --- NOTIFICHE (TOAST) --- */
         .toast-container { position: fixed; top: 95px; right: 25px; z-index: 9999; display: flex; flex-direction: column; gap: 12px; pointer-events: none; }
         .toast { background: #161b26; border-left: 4px solid var(--accent-blue); color: white; padding: 16px 20px; border-radius: 8px; box-shadow: 0 10px 30px rgba(0,0,0,0.6); display: flex; align-items: center; gap: 15px; min-width: 320px; max-width: 400px; animation: slideInToast 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; pointer-events: auto; }
         .toast.success { border-left-color: #22c55e; }
+        .toast.error { border-left-color: #ef4444; }
         .toast-icon { font-size: 1.4rem; }
         .toast.success .toast-icon { color: #22c55e; }
+        .toast.error .toast-icon { color: #ef4444; }
         .toast-content { flex: 1; }
         .toast-title { font-weight: 600; font-size: 0.95rem; margin-bottom: 4px; }
         .toast-message { font-size: 0.85rem; color: #cbd5e1; line-height: 1.4; }
@@ -248,8 +255,10 @@
                     </div>
 
                     <div id="form-container" class="form-panel hidden">
-                        <h3><i class="fas fa-file-signature"></i> Compilazione Fascicolo Sorveglianza</h3>
+                        <h3 id="form-titolo"><i class="fas fa-file-signature"></i> Compilazione Fascicolo Sorveglianza</h3>
                         <form id="form-attenzionato">
+                            <input type="hidden" id="att-id" value="">
+                            
                             <div class="form-grid">
                                 <div class="form-group">
                                     <label>Nome e Cognome</label>
@@ -278,7 +287,7 @@
                             </div>
                             <div class="form-actions">
                                 <button type="button" class="cyber-btn outline" id="btn-annulla-form">Annulla</button>
-                                <button type="submit" class="cyber-btn"><i class="fas fa-save"></i> Registra nel Database</button>
+                                <button type="submit" class="cyber-btn" id="btn-submit-att"><i class="fas fa-save"></i> <span>Registra nel Database</span></button>
                             </div>
                         </form>
                     </div>
@@ -301,7 +310,10 @@
             const container = document.getElementById('toast-container');
             const toast = document.createElement('div');
             toast.className = `toast ${type}`;
-            let iconClass = type === 'success' ? 'fa-check-circle' : 'fa-info-circle';
+            let iconClass = 'fa-info-circle';
+            if (type === 'success') iconClass = 'fa-check-circle';
+            if (type === 'error') iconClass = 'fa-exclamation-triangle';
+            
             toast.innerHTML = `<div class="toast-icon"><i class="fas ${iconClass}"></i></div>
                                <div class="toast-content"><div class="toast-title">${title}</div><div class="toast-message">${message}</div></div>`;
             container.appendChild(toast);
@@ -310,6 +322,7 @@
 
         // --- Variabili Globali Utente ---
         let utenteCorrente = null;
+        let matricolaPura = "";
 
         document.addEventListener('DOMContentLoaded', () => {
             const utenteString = localStorage.getItem('utenteLoggato');
@@ -318,8 +331,8 @@
             }
             utenteCorrente = JSON.parse(utenteString);
 
-            // Setup UI
-            const matricolaPura = utenteCorrente.matricola.includes('-') ? utenteCorrente.matricola.split('-').pop() : utenteCorrente.matricola;
+            // Pulizia e Setup UI
+            matricolaPura = utenteCorrente.matricola.includes('-') ? utenteCorrente.matricola.split('-').pop() : utenteCorrente.matricola;
             document.getElementById('display-matricola').innerText = `Agente: ${matricolaPura}`;
             document.getElementById('saluto-nome').innerText = `Bentornato nel Sistema, ${utenteCorrente.nome}`;
 
@@ -347,70 +360,121 @@
 
             navItems.forEach(item => {
                 item.addEventListener('click', () => {
-                    if(!item.hasAttribute('data-target')) return; // Per i bottoni non ancora implementati
+                    if(!item.hasAttribute('data-target')) return;
                     
-                    // Rimuovi active dal menu
                     navItems.forEach(n => n.classList.remove('active'));
                     item.classList.add('active');
 
-                    // Cambia il Badge in alto
                     const testoMenu = item.querySelector('span').innerText;
                     const iconaMenu = item.querySelector('i').className;
                     moduleBadge.innerHTML = `<i class="${iconaMenu}"></i> ${testoMenu}`;
 
-                    // Nascondi tutte le viste e mostra quella richiesta
                     const targetId = item.getAttribute('data-target');
                     views.forEach(v => v.classList.add('hidden'));
                     document.getElementById(targetId).classList.remove('hidden');
                 });
             });
 
-            // --- LOGICA SOGGETTI ATTENZIONATI (DATABASE LOCALE) ---
+            // --- LOGICA SOGGETTI ATTENZIONATI ---
             const formContainer = document.getElementById('form-container');
             const form = document.getElementById('form-attenzionato');
-            const grid = document.getElementById('grid-attenzionati');
 
-            // Mostra/Nascondi form
-            document.getElementById('btn-toggle-form').addEventListener('click', () => formContainer.classList.remove('hidden'));
-            document.getElementById('btn-annulla-form').addEventListener('click', () => { formContainer.classList.add('hidden'); form.reset(); });
+            // Apri form Nuovo Segnalato
+            document.getElementById('btn-toggle-form').addEventListener('click', () => {
+                form.reset();
+                document.getElementById('att-id').value = ""; // Svuota ID (modalità creazione)
+                document.getElementById('form-titolo').innerHTML = '<i class="fas fa-file-signature"></i> Compilazione Fascicolo Sorveglianza';
+                document.querySelector('#btn-submit-att span').innerText = 'Registra nel Database';
+                formContainer.classList.remove('hidden');
+            });
 
-            // Inserimento dati
+            // Annulla Form
+            document.getElementById('btn-annulla-form').addEventListener('click', () => { 
+                formContainer.classList.add('hidden'); 
+                form.reset(); 
+            });
+
+            // Salvataggio Dati (Creazione o Modifica)
             form.addEventListener('submit', (e) => {
                 e.preventDefault();
-
-                // Crea l'oggetto criminale
-                const nuovoSoggetto = {
-                    id: Date.now(),
-                    nome: document.getElementById('att-nome').value,
-                    alias: document.getElementById('att-alias').value || 'Nessuno',
-                    rischio: document.getElementById('att-rischio').value,
-                    banda: document.getElementById('att-banda').value || 'Sconosciuta',
-                    motivo: document.getElementById('att-motivo').value,
-                    dataInserimento: new Date().toLocaleDateString('it-IT'),
-                    // Firma di chi lo compila:
-                    firmaNome: utenteCorrente.nome,
-                    firmaGrado: utenteCorrente.grado || 'Agente',
-                    firmaMatricola: matricolaPura
-                };
-
-                // Recupera array esistente da LocalStorage, aggiungi e risalva
+                const idEdit = document.getElementById('att-id').value;
                 let db = JSON.parse(localStorage.getItem('db_attenzionati')) || [];
-                db.unshift(nuovoSoggetto); // Aggiunge in cima
-                localStorage.setItem('db_attenzionati', JSON.stringify(db));
 
-                showToast("Fascicolo Creato", "Il soggetto è stato inserito nel database.", "success");
+                if(idEdit) {
+                    // MODIFICA SOGGETTO ESISTENTE
+                    const index = db.findIndex(s => s.id == idEdit);
+                    if(index !== -1) {
+                        db[index].nome = document.getElementById('att-nome').value;
+                        db[index].alias = document.getElementById('att-alias').value || 'Nessuno';
+                        db[index].rischio = document.getElementById('att-rischio').value;
+                        db[index].banda = document.getElementById('att-banda').value || 'Sconosciuta';
+                        db[index].motivo = document.getElementById('att-motivo').value;
+                        showToast("Fascicolo Aggiornato", "Modifiche salvate nel database centrale.", "success");
+                    }
+                } else {
+                    // CREA NUOVO SOGGETTO
+                    const nuovoSoggetto = {
+                        id: Date.now(),
+                        nome: document.getElementById('att-nome').value,
+                        alias: document.getElementById('att-alias').value || 'Nessuno',
+                        rischio: document.getElementById('att-rischio').value,
+                        banda: document.getElementById('att-banda').value || 'Sconosciuta',
+                        motivo: document.getElementById('att-motivo').value,
+                        dataInserimento: new Date().toLocaleDateString('it-IT'),
+                        firmaNome: utenteCorrente.nome,
+                        firmaGrado: utenteCorrente.grado || 'Agente',
+                        firmaMatricola: matricolaPura
+                    };
+                    db.unshift(nuovoSoggetto); // Aggiunge in cima
+                    showToast("Fascicolo Creato", "Il soggetto è stato inserito nel database.", "success");
+                }
+
+                localStorage.setItem('db_attenzionati', JSON.stringify(db));
                 form.reset();
                 formContainer.classList.add('hidden');
-                caricaAttenzionati(); // Ricarica la grafica
+                caricaAttenzionati();
             });
         });
 
-        // Funzione per disegnare le card a schermo
+        // --- FUNZIONI GLOBALI (Richiamate dai bottoni HTML delle Card) ---
+
+        // Elimina
+        window.eliminaSoggetto = function(id) {
+            if(confirm("Protocollo Sicurezza: Sei sicuro di voler eliminare definitivamente questo fascicolo?")) {
+                let db = JSON.parse(localStorage.getItem('db_attenzionati')) || [];
+                db = db.filter(s => s.id !== id);
+                localStorage.setItem('db_attenzionati', JSON.stringify(db));
+                caricaAttenzionati();
+                showToast("Fascicolo Rimosso", "I dati sono stati cancellati dal sistema.", "error");
+            }
+        };
+
+        // Riapri Form per Modifica
+        window.modificaSoggetto = function(id) {
+            let db = JSON.parse(localStorage.getItem('db_attenzionati')) || [];
+            const soggetto = db.find(s => s.id === id);
+            
+            if(soggetto) {
+                document.getElementById('att-id').value = soggetto.id;
+                document.getElementById('att-nome').value = soggetto.nome;
+                document.getElementById('att-alias').value = soggetto.alias === 'Nessuno' ? '' : soggetto.alias;
+                document.getElementById('att-rischio').value = soggetto.rischio;
+                document.getElementById('att-banda').value = soggetto.banda === 'Sconosciuta' ? '' : soggetto.banda;
+                document.getElementById('att-motivo').value = soggetto.motivo;
+
+                document.getElementById('form-titolo').innerHTML = '<i class="fas fa-edit"></i> Modifica Fascicolo in Corso...';
+                document.querySelector('#btn-submit-att span').innerText = 'Aggiorna Fascicolo';
+                
+                document.getElementById('form-container').classList.remove('hidden');
+                document.querySelector('.dashboard-main').scrollTo({ top: 0, behavior: 'smooth' }); // Scrolla su
+            }
+        };
+
+        // Rendering delle Card
         function caricaAttenzionati() {
             const grid = document.getElementById('grid-attenzionati');
             let db = JSON.parse(localStorage.getItem('db_attenzionati')) || [];
-
-            grid.innerHTML = ''; // Svuota la griglia
+            grid.innerHTML = ''; 
 
             if(db.length === 0) {
                 grid.innerHTML = `<div class="nessun-dato"><i class="fas fa-folder-open" style="font-size: 2rem; margin-bottom:10px;"></i><br>Nessun soggetto attenzionato presente nel registro.</div>`;
@@ -418,12 +482,24 @@
             }
 
             db.forEach(soggetto => {
-                // Imposta i testi del badge di rischio in base alla scelta
                 let rischioTesto = "Rischio Basso";
                 if(soggetto.rischio === 'medio') rischioTesto = "Rischio Medio";
                 if(soggetto.rischio === 'alto') rischioTesto = "Rischio Alto";
 
-                // Creazione elemento HTML
+                // CONTROLLO PERMESSI: Admin "sì" OPPURE è il creatore del fascicolo
+                const isAutorizzato = (utenteCorrente.admin === 'sì' || matricolaPura === soggetto.firmaMatricola);
+                
+                // Generazione bottoni edit/delete in base all'autorizzazione
+                let azioniHtml = '';
+                if(isAutorizzato) {
+                    azioniHtml = `
+                        <div class="card-actions">
+                            <button class="btn-icon edit" onclick="modificaSoggetto(${soggetto.id})" title="Modifica Dati"><i class="fas fa-edit"></i></button>
+                            <button class="btn-icon delete" onclick="eliminaSoggetto(${soggetto.id})" title="Elimina Fascicolo"><i class="fas fa-trash-alt"></i></button>
+                        </div>
+                    `;
+                }
+
                 const card = document.createElement('div');
                 card.className = 'soggetto-card';
                 card.innerHTML = `
@@ -442,8 +518,9 @@
                     </div>
                     <div class="soggetto-footer">
                         <div class="firma-agente">
-                            <i class="fas fa-pen-nib"></i> Segnalato da: ${soggetto.firmaGrado} ${soggetto.firmaNome} (${soggetto.firmaMatricola})
+                            <i class="fas fa-pen-nib"></i> Compilato da: ${soggetto.firmaGrado} ${soggetto.firmaNome} (${soggetto.firmaMatricola})
                         </div>
+                        ${azioniHtml}
                     </div>
                 `;
                 grid.appendChild(card);
