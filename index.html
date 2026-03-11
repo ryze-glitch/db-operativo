@@ -76,6 +76,15 @@
         .input-container input { width: 100%; background: #0a0d14; border: 1px solid var(--border-color); color: white; padding: 16px 16px 16px 45px; border-radius: 12px; font-size: 1rem; transition: all 0.3s; }
         .input-container input:focus { outline: none; border-color: var(--accent-blue); box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.15); }
 
+        /* Stile Custom Checkbox */
+        .checkbox-container { display: flex; align-items: center; gap: 12px; margin-bottom: 25px; margin-top: -10px; }
+        .checkbox-container input[type="checkbox"] { appearance: none; background-color: #0a0d14; margin: 0; width: 18px; height: 18px; border: 1px solid var(--border-color); border-radius: 4px; display: grid; place-content: center; cursor: pointer; transition: all 0.2s; }
+        .checkbox-container input[type="checkbox"]::before { content: ""; width: 10px; height: 10px; transform: scale(0); transition: 120ms transform ease-in-out; background-color: white; transform-origin: center; clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0%, 43% 62%); }
+        .checkbox-container input[type="checkbox"]:checked { background-color: var(--accent-blue); border-color: var(--accent-blue); }
+        .checkbox-container input[type="checkbox"]:checked::before { transform: scale(1); }
+        .checkbox-container label { color: var(--text-muted); font-size: 0.9rem; cursor: pointer; user-select: none; }
+        .checkbox-container label:hover { color: white; }
+
         .cyber-btn { width: 100%; padding: 18px; background: var(--accent-blue); color: white; border: none; border-radius: 12px; font-size: 1rem; font-weight: 600; cursor: pointer; display: flex; justify-content: space-between; align-items: center; transition: all 0.3s; margin-top: 10px; }
         .cyber-btn:hover { background: var(--accent-hover); transform: translateY(-2px); box-shadow: 0 10px 25px rgba(37, 99, 235, 0.4); }
         #messaggio-errore { color: #ef4444; font-size: 0.85rem; text-align: center; margin-top: 15px; font-weight: 600; }
@@ -96,9 +105,9 @@
                 </div>
             </div>
             <div class="nav-center">
-                <a href="index.html"><i class="fas fa-home"></i> Home</a>
-                <a href="#"><i class="fas fa-bullhorn"></i> Notizie</a>
-                <a href="qualifiche.html"><i class="fas fa-medal"></i> Qualifiche</a>
+                <a href="index.html"><i class="fas fa-shield-alt"></i> Portale Centrale</a>
+                <a href="#"><i class="fas fa-book"></i> Direttive Operative</a>
+                <a href="#"><i class="fas fa-headset"></i> Supporto IT</a>
             </div>
             <div class="nav-right">
                 <button class="nav-login-btn">
@@ -175,6 +184,11 @@
                                 <input type="password" id="password" placeholder="••••••••" required>
                             </div>
                         </div>
+
+                        <div class="checkbox-container">
+                            <input type="checkbox" id="ricorda-login">
+                            <label for="ricorda-login">Ricorda la mia Matricola</label>
+                        </div>
                         
                         <button type="submit" class="cyber-btn">
                             <span>Inizializza Connessione</span>
@@ -207,6 +221,8 @@
 
         const loginForm = document.getElementById('login-form');
         const erroreMsg = document.getElementById('messaggio-errore');
+        const badgeInput = document.getElementById('badge');
+        const ricordaCheckbox = document.getElementById('ricorda-login');
         
         // Funzioni UI esposte alla finestra globale
         window.showLogin = function(departmentName, imageSrc) {
@@ -215,6 +231,13 @@
             document.getElementById('active-dept-icon').src = imageSrc;
             document.getElementById('login-section').classList.remove('hidden');
             erroreMsg.innerText = "";
+            
+            // Carica la matricola se salvata precedentemente
+            const matricolaSalvata = localStorage.getItem('savedMatricola');
+            if(matricolaSalvata) {
+                badgeInput.value = matricolaSalvata;
+                ricordaCheckbox.checked = true;
+            }
         };
 
         window.showSelector = function() {
@@ -227,11 +250,18 @@
         // Firebase Login
         loginForm.addEventListener('submit', async function(e) {
             e.preventDefault();
-            const matricola = document.getElementById('badge').value;
+            const matricola = badgeInput.value;
             const password = document.getElementById('password').value;
             const repartoScelto = document.getElementById('login-title').textContent;
             const btnSubmit = document.querySelector('.cyber-btn');
             
+            // Gestione "Ricorda Matricola"
+            if(ricordaCheckbox.checked) {
+                localStorage.setItem('savedMatricola', matricola);
+            } else {
+                localStorage.removeItem('savedMatricola');
+            }
+
             const originalContent = btnSubmit.innerHTML;
             btnSubmit.innerHTML = '<span>Verifica Credenziali...</span> <i class="fas fa-circle-notch fa-spin"></i>';
             btnSubmit.style.opacity = '0.8';
