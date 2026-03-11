@@ -17,6 +17,8 @@
             --accent-blue: #2563eb; 
             --accent-hover: #1d4ed8;
             --border-color: rgba(255, 255, 255, 0.08);
+            --danger: #ef4444;
+            --warning: #f59e0b;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Lexend', sans-serif; }
@@ -42,9 +44,11 @@
         #loading-overlay p { color: var(--text-muted); font-size: 0.95rem; }
         .fade-out { opacity: 0; pointer-events: none; }
 
-        /* --- DASHBOARD BACKEND --- */
+        /* --- LAYOUT PRINCIPALE --- */
         #dashboard-section { display: flex; height: 100vh; width: 100%; background: var(--bg-dark); animation: slideInRight 0.4s ease-out; }
-        .dashboard-sidebar { width: 280px; background: var(--bg-panel); border-right: 1px solid var(--border-color); display: flex; flex-direction: column; }
+        
+        /* SIDEBAR */
+        .dashboard-sidebar { width: 280px; background: var(--bg-panel); border-right: 1px solid var(--border-color); display: flex; flex-direction: column; z-index: 20; }
         .sidebar-logo { padding: 25px 20px; display: flex; align-items: center; gap: 15px; border-bottom: 1px solid var(--border-color); }
         .sidebar-logo img { width: 40px; background: white; padding: 5px; border-radius: 8px; }
         .sidebar-logo h2 { font-size: 1.2rem; letter-spacing: 0.5px; }
@@ -53,55 +57,104 @@
         .sidebar-menu li { padding: 15px 25px; display: flex; align-items: center; gap: 15px; cursor: pointer; color: var(--text-muted); transition: 0.2s; font-weight: 500; }
         .sidebar-menu li i { width: 20px; text-align: center; }
         .sidebar-menu li:hover, .sidebar-menu li.active { background: rgba(37,99,235,0.1); color: var(--accent-blue); border-right: 3px solid var(--accent-blue); }
-        .sidebar-menu li.logout { color: #ef4444; margin-top: auto; border-top: 1px solid var(--border-color); }
-        .sidebar-menu li.logout:hover { background: rgba(239, 68, 68, 0.1); color: #f87171; border-right: 3px solid #ef4444; }
+        .sidebar-menu li.logout { color: var(--danger); margin-top: auto; border-top: 1px solid var(--border-color); }
+        .sidebar-menu li.logout:hover { background: rgba(239, 68, 68, 0.1); color: #f87171; border-right: 3px solid var(--danger); }
 
-        .dashboard-main { flex: 1; display: flex; flex-direction: column; overflow-y: auto; }
-        .dashboard-header { height: 75px; min-height: 75px; background: rgba(16, 20, 31, 0.95); backdrop-filter: blur(10px); border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; padding: 0 40px; position: sticky; top: 0; z-index: 10; }
-        .header-search { display: flex; align-items: center; gap: 10px; background: #07090f; border: 1px solid var(--border-color); padding: 10px 15px; border-radius: 8px; width: 300px; }
-        .header-search input { background: transparent; border: none; color: white; outline: none; width: 100%; font-family: 'Lexend'; }
-        .header-user { display: flex; align-items: center; gap: 15px; font-weight: 500; }
+        .dashboard-main { flex: 1; display: flex; flex-direction: column; overflow-y: auto; position: relative; }
+        
+        /* HEADER IN ALTO */
+        .dashboard-header { height: 75px; min-height: 75px; background: rgba(16, 20, 31, 0.98); backdrop-filter: blur(15px); border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; padding: 0 30px; position: sticky; top: 0; z-index: 10; }
+        .header-left { display: flex; align-items: center; }
+        .active-module-badge { background: rgba(37, 99, 235, 0.1); color: var(--accent-blue); padding: 8px 16px; border-radius: 8px; font-weight: 600; font-size: 0.9rem; display: flex; align-items: center; gap: 10px; border: 1px solid rgba(37, 99, 235, 0.2); letter-spacing: 0.5px; text-transform: uppercase; }
+        .header-center { flex: 1; display: flex; justify-content: center; padding: 0 20px; }
+        .header-search { display: flex; align-items: center; gap: 12px; background: #07090f; border: 1px solid var(--border-color); padding: 10px 18px; border-radius: 10px; width: 100%; max-width: 500px; transition: all 0.3s; }
+        .header-search:focus-within { border-color: var(--accent-blue); box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15); }
+        .header-search input { background: transparent; border: none; color: white; outline: none; width: 100%; font-family: 'Lexend'; font-size: 0.95rem; }
+        .header-right { display: flex; align-items: center; gap: 25px; }
+        .system-status { display: flex; align-items: center; gap: 8px; font-size: 0.85rem; color: #cbd5e1; font-weight: 500; }
+        .status-dot { width: 8px; height: 8px; background-color: #22c55e; border-radius: 50%; box-shadow: 0 0 10px #22c55e; animation: pulse 2s infinite; }
+        .live-clock { font-family: monospace; font-size: 1.15rem; color: var(--text-main); font-weight: 600; letter-spacing: 1.5px; background: rgba(255,255,255,0.03); padding: 8px 14px; border-radius: 8px; border: 1px solid var(--border-color); }
+        .header-user { display: flex; align-items: center; gap: 15px; font-weight: 500; border-left: 1px solid var(--border-color); padding-left: 25px; }
         .header-user span { color: var(--text-muted); font-size: 0.9rem; }
-        .user-avatar { width: 40px; height: 40px; background: var(--bg-panel); border: 1px solid var(--accent-blue); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--accent-blue); }
+        .user-avatar { width: 42px; height: 42px; background: rgba(37, 99, 235, 0.1); border: 1px solid var(--accent-blue); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--accent-blue); font-size: 1.1rem; }
 
+        @keyframes pulse { 0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7); } 70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(34, 197, 94, 0); } 100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); } }
+
+        /* --- CONTENUTO (VISTE) --- */
         .dashboard-content { padding: 40px; }
-        .dashboard-content h2 { margin-bottom: 10px; font-size: 2rem; font-weight: 700; }
-        .dashboard-content p { color: var(--text-muted); margin-bottom: 40px; font-size: 1.05rem; }
+        .view-section { animation: fadeIn 0.3s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        .section-header { margin-bottom: 40px; display: flex; justify-content: space-between; align-items: flex-end; }
+        .section-title h2 { font-size: 2rem; font-weight: 700; margin-bottom: 8px; }
+        .section-title p { color: var(--text-muted); font-size: 1.05rem; }
 
+        /* VISTA 1: DASHBOARD CARDS */
         .dashboard-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 25px; }
         .dash-card { background: var(--bg-panel); border: 1px solid var(--border-color); border-radius: 12px; padding: 30px 25px; transition: transform 0.3s, border-color 0.3s; display: flex; flex-direction: column; }
         .dash-card:hover { transform: translateY(-5px); border-color: var(--accent-blue); box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
         .dash-card h3 { display: flex; align-items: center; gap: 12px; color: var(--accent-blue); margin-bottom: 15px; font-size: 1.25rem; font-weight: 600; }
         .dash-card p { color: var(--text-muted); font-size: 0.95rem; margin-bottom: 25px; line-height: 1.6; flex-grow: 1; }
         
-        .cyber-btn { width: 100%; padding: 14px; background: var(--accent-blue); color: white; border: none; border-radius: 8px; font-size: 0.95rem; font-weight: 600; cursor: pointer; transition: all 0.3s; font-family: 'Lexend'; }
+        .cyber-btn { padding: 14px 24px; background: var(--accent-blue); color: white; border: none; border-radius: 8px; font-size: 0.95rem; font-weight: 600; cursor: pointer; transition: all 0.3s; font-family: 'Lexend'; display: inline-flex; align-items: center; justify-content: center; gap: 10px; }
         .cyber-btn:hover { background: var(--accent-hover); transform: translateY(-2px); box-shadow: 0 5px 15px rgba(37, 99, 235, 0.4); }
+        .cyber-btn.w-100 { width: 100%; }
+        .cyber-btn.outline { background: transparent; border: 1px solid var(--accent-blue); color: var(--accent-blue); }
+        .cyber-btn.outline:hover { background: rgba(37, 99, 235, 0.1); }
 
-        /* --- SISTEMA DI NOTIFICHE (TOAST) --- */
-        .toast-container { position: fixed; top: 85px; right: 25px; z-index: 9999; display: flex; flex-direction: column; gap: 12px; pointer-events: none; }
-        .toast { background: #161b26; border-left: 4px solid var(--accent-blue); color: white; padding: 16px 20px; border-radius: 8px; box-shadow: 0 10px 30px rgba(0,0,0,0.6), inset 0 0 0 1px rgba(255,255,255,0.05); display: flex; align-items: center; gap: 15px; min-width: 320px; max-width: 400px; animation: slideInToast 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; pointer-events: auto; }
+        /* --- VISTA 2: SOGGETTI ATTENZIONATI --- */
+        
+        /* Form Inserimento */
+        .form-panel { background: #161b26; border: 1px solid var(--accent-blue); border-radius: 12px; padding: 30px; margin-bottom: 40px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        .form-panel h3 { margin-bottom: 20px; color: white; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; }
+        .form-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; margin-bottom: 25px; }
+        .form-group { display: flex; flex-direction: column; gap: 8px; }
+        .form-group.full { grid-column: span 2; }
+        .form-group label { font-size: 0.85rem; color: #cbd5e1; font-weight: 500; text-transform: uppercase; }
+        .form-group input, .form-group select, .form-group textarea { background: #0a0d14; border: 1px solid var(--border-color); color: white; padding: 14px; border-radius: 8px; font-family: 'Lexend'; font-size: 0.95rem; outline: none; }
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color: var(--accent-blue); }
+        .form-actions { display: flex; justify-content: flex-end; gap: 15px; }
+
+        /* Grid delle Card Attenzionati */
+        .attenzionati-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 25px; }
+        
+        /* Singola Card Fascicolo */
+        .soggetto-card { background: var(--bg-panel); border: 1px solid var(--border-color); border-radius: 12px; overflow: hidden; display: flex; flex-direction: column; transition: all 0.3s; position: relative; }
+        .soggetto-card:hover { border-color: #475569; transform: translateY(-4px); box-shadow: 0 15px 30px rgba(0,0,0,0.4); }
+        
+        .soggetto-header { padding: 20px; border-bottom: 1px solid rgba(255,255,255,0.05); display: flex; gap: 15px; align-items: center; position: relative; }
+        .soggetto-foto { width: 65px; height: 65px; background: #1e293b; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 2rem; color: #64748b; object-fit: cover; }
+        .soggetto-info h4 { font-size: 1.2rem; margin-bottom: 4px; color: white; }
+        .soggetto-info span.alias { font-size: 0.9rem; color: var(--text-muted); font-style: italic; }
+        
+        .badge-rischio { position: absolute; top: 20px; right: 20px; padding: 4px 10px; border-radius: 6px; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
+        .badge-rischio.basso { background: rgba(34, 197, 94, 0.1); color: #22c55e; border: 1px solid rgba(34, 197, 94, 0.2); }
+        .badge-rischio.medio { background: rgba(245, 158, 11, 0.1); color: var(--warning); border: 1px solid rgba(245, 158, 11, 0.2); }
+        .badge-rischio.alto { background: rgba(239, 68, 68, 0.1); color: var(--danger); border: 1px solid rgba(239, 68, 68, 0.2); }
+
+        .soggetto-body { padding: 20px; flex-grow: 1; font-size: 0.9rem; color: #cbd5e1; line-height: 1.6; }
+        .soggetto-body p { margin-bottom: 10px; }
+        .soggetto-body strong { color: white; }
+
+        /* Firma in fondo alla card */
+        .soggetto-footer { background: rgba(0,0,0,0.2); padding: 15px 20px; border-top: 1px solid var(--border-color); font-size: 0.8rem; color: #94a3b8; display: flex; justify-content: space-between; align-items: center; }
+        .firma-agente { display: flex; align-items: center; gap: 8px; font-family: monospace; }
+        .firma-agente i { color: var(--accent-blue); }
+
+        /* --- NOTIFICHE (TOAST) --- */
+        .toast-container { position: fixed; top: 95px; right: 25px; z-index: 9999; display: flex; flex-direction: column; gap: 12px; pointer-events: none; }
+        .toast { background: #161b26; border-left: 4px solid var(--accent-blue); color: white; padding: 16px 20px; border-radius: 8px; box-shadow: 0 10px 30px rgba(0,0,0,0.6); display: flex; align-items: center; gap: 15px; min-width: 320px; max-width: 400px; animation: slideInToast 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; pointer-events: auto; }
         .toast.success { border-left-color: #22c55e; }
-        .toast.error { border-left-color: #ef4444; }
         .toast-icon { font-size: 1.4rem; }
         .toast.success .toast-icon { color: #22c55e; }
-        .toast.error .toast-icon { color: #ef4444; }
         .toast-content { flex: 1; }
-        .toast-title { font-weight: 600; font-size: 0.95rem; margin-bottom: 4px; letter-spacing: 0.5px; }
+        .toast-title { font-weight: 600; font-size: 0.95rem; margin-bottom: 4px; }
         .toast-message { font-size: 0.85rem; color: #cbd5e1; line-height: 1.4; }
 
-        @keyframes slideInRight { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: translateX(0); } }
         @keyframes slideInToast { from { transform: translateX(120%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
         @keyframes fadeOutToast { from { transform: translateX(0); opacity: 1; } to { transform: translateX(120%); opacity: 0; } }
-
-        /* RESPONSIVE */
-        @media (max-width: 1024px) {
-            .dashboard-sidebar { width: 70px; }
-            .sidebar-logo h2, .sidebar-menu li span { display: none; }
-            .sidebar-menu li { justify-content: center; padding: 15px 0; }
-            .header-search { width: 180px; }
-            .dashboard-header { padding: 0 20px; }
-            .dashboard-content { padding: 20px; }
-        }
+        
+        .nessun-dato { text-align: center; padding: 50px; color: var(--text-muted); font-size: 1.1rem; background: rgba(255,255,255,0.02); border-radius: 12px; border: 1px dashed var(--border-color); grid-column: 1 / -1; }
     </style>
 </head>
 <body>
@@ -122,108 +175,280 @@
                 <h2>SQ. MOBILE</h2>
             </div>
             <ul class="sidebar-menu">
-                <li class="active"><i class="fas fa-desktop"></i> <span>Dashboard</span></li>
-                <li><i class="fas fa-users"></i> <span>Nominativi Operatori</span></li>
-                <li><i class="fas fa-crosshairs"></i> <span>Soggetti Attenzionati</span></li>
-                <li><i class="fas fa-file-alt"></i> <span>Rapporti Penali</span></li>
+                <li class="nav-item active" data-target="view-dashboard"><i class="fas fa-desktop"></i> <span>Dashboard</span></li>
+                <li class="nav-item" data-target="view-attenzionati"><i class="fas fa-crosshairs"></i> <span>Soggetti Attenzionati</span></li>
+                <li class="nav-item"><i class="fas fa-users"></i> <span>Nominativi Operatori</span></li>
+                <li class="nav-item"><i class="fas fa-file-alt"></i> <span>Rapporti Penali</span></li>
                 <li class="logout" id="btn-logout"><i class="fas fa-sign-out-alt"></i> <span>Disconnetti</span></li>
             </ul>
         </div>
         
         <div class="dashboard-main">
             <header class="dashboard-header">
-                <div class="header-search">
-                    <i class="fas fa-search"></i>
-                    <input type="text" placeholder="Cerca nel database...">
+                <div class="header-left">
+                    <div class="active-module-badge" id="module-badge">
+                        <i class="fas fa-shield-alt"></i> Modulo Centrale
+                    </div>
                 </div>
-                <div class="header-user">
-                    <span id="display-matricola">Agente: ----</span>
-                    <div class="user-avatar"><i class="fas fa-user-shield"></i></div>
+                <div class="header-center">
+                    <div class="header-search">
+                        <i class="fas fa-search"></i>
+                        <input type="text" placeholder="Ricerca globale (Targa, CF, Nome)...">
+                    </div>
+                </div>
+                <div class="header-right">
+                    <div class="system-status">
+                        <div class="status-dot"></div>
+                        <span class="status-text">Rete Criptata</span>
+                    </div>
+                    <div class="live-clock" id="live-clock">--:--:--</div>
+                    <div class="header-user">
+                        <span id="display-matricola">Agente: ----</span>
+                        <div class="user-avatar"><i class="fas fa-user-shield"></i></div>
+                    </div>
                 </div>
             </header>
             
             <div class="dashboard-content">
-                <h2 id="saluto-nome">Bentornato nel Sistema, Agente</h2>
-                <p>Seleziona un'operazione per procedere con le indagini.</p>
                 
-                <div class="dashboard-cards">
-                    <div class="dash-card">
-                        <h3><i class="fas fa-search"></i> Ricerca Soggetto</h3>
-                        <p>Accedi all'anagrafe e verifica eventuali precedenti o mandati di cattura.</p>
-                        <button class="cyber-btn">Apri Modulo</button>
+                <div id="view-dashboard" class="view-section">
+                    <div class="section-header">
+                        <div class="section-title">
+                            <h2 id="saluto-nome">Bentornato nel Sistema, Agente</h2>
+                            <p>Seleziona un'operazione rapida per procedere con le indagini.</p>
+                        </div>
                     </div>
-                    <div class="dash-card">
-                        <h3><i class="fas fa-car"></i> Visura Targa</h3>
-                        <p>Controllo intestatario veicolo, copertura assicurativa e stato del mezzo.</p>
-                        <button class="cyber-btn">Apri Modulo</button>
-                    </div>
-                    <div class="dash-card">
-                        <h3><i class="fas fa-folder-open"></i> Fascicoli Aperti</h3>
-                        <p>Gestisci e aggiorna i fascicoli investigativi in corso della Squadra Mobile.</p>
-                        <button class="cyber-btn">Apri Modulo</button>
+                    
+                    <div class="dashboard-cards">
+                        <div class="dash-card">
+                            <h3><i class="fas fa-search"></i> Ricerca Soggetto</h3>
+                            <p>Accedi all'anagrafe e verifica eventuali precedenti o mandati di cattura.</p>
+                            <button class="cyber-btn w-100">Apri Modulo</button>
+                        </div>
+                        <div class="dash-card">
+                            <h3><i class="fas fa-car"></i> Visura Targa</h3>
+                            <p>Controllo intestatario veicolo, copertura assicurativa e stato del mezzo.</p>
+                            <button class="cyber-btn w-100">Apri Modulo</button>
+                        </div>
+                        <div class="dash-card">
+                            <h3><i class="fas fa-folder-open"></i> Fascicoli Aperti</h3>
+                            <p>Gestisci e aggiorna i fascicoli investigativi in corso della Squadra Mobile.</p>
+                            <button class="cyber-btn w-100">Apri Modulo</button>
+                        </div>
                     </div>
                 </div>
+
+                <div id="view-attenzionati" class="view-section hidden">
+                    <div class="section-header">
+                        <div class="section-title">
+                            <h2>Soggetti Attenzionati</h2>
+                            <p>Registro interno dei sospettati e individui sotto sorveglianza.</p>
+                        </div>
+                        <button id="btn-toggle-form" class="cyber-btn"><i class="fas fa-plus"></i> Nuovo Segnalato</button>
+                    </div>
+
+                    <div id="form-container" class="form-panel hidden">
+                        <h3><i class="fas fa-file-signature"></i> Compilazione Fascicolo Sorveglianza</h3>
+                        <form id="form-attenzionato">
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label>Nome e Cognome</label>
+                                    <input type="text" id="att-nome" placeholder="Es. Mario Rossi" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>Alias / Soprannome</label>
+                                    <input type="text" id="att-alias" placeholder="Es. Lo Smilzo">
+                                </div>
+                                <div class="form-group">
+                                    <label>Livello di Pericolo</label>
+                                    <select id="att-rischio" required>
+                                        <option value="basso">Rischio Basso (Monitoraggio)</option>
+                                        <option value="medio">Rischio Medio (Precedenti)</option>
+                                        <option value="alto">Rischio Alto (Armato/Pericoloso)</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>Affiliazione / Banda</label>
+                                    <input type="text" id="att-banda" placeholder="Es. Nessuna">
+                                </div>
+                                <div class="form-group full">
+                                    <label>Motivo dell'Attenzione Investigativa</label>
+                                    <textarea id="att-motivo" rows="3" placeholder="Descrivi il motivo per cui il soggetto è sotto sorveglianza..." required></textarea>
+                                </div>
+                            </div>
+                            <div class="form-actions">
+                                <button type="button" class="cyber-btn outline" id="btn-annulla-form">Annulla</button>
+                                <button type="submit" class="cyber-btn"><i class="fas fa-save"></i> Registra nel Database</button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <div id="grid-attenzionati" class="attenzionati-grid">
+                        </div>
+                </div>
+
             </div>
         </div>
     </div>
 
     <script>
+        // --- Orologio e Notifiche ---
+        setInterval(() => {
+            document.getElementById('live-clock').textContent = new Date().toLocaleTimeString('it-IT', { hour12: false });
+        }, 1000);
+
         function showToast(title, message, type = 'info') {
             const container = document.getElementById('toast-container');
             const toast = document.createElement('div');
             toast.className = `toast ${type}`;
-            
-            let iconClass = 'fa-info-circle';
-            if (type === 'success') iconClass = 'fa-check-circle';
-            if (type === 'error') iconClass = 'fa-exclamation-triangle';
-
-            toast.innerHTML = `
-                <div class="toast-icon"><i class="fas ${iconClass}"></i></div>
-                <div class="toast-content">
-                    <div class="toast-title">${title}</div>
-                    <div class="toast-message">${message}</div>
-                </div>
-            `;
-
+            let iconClass = type === 'success' ? 'fa-check-circle' : 'fa-info-circle';
+            toast.innerHTML = `<div class="toast-icon"><i class="fas ${iconClass}"></i></div>
+                               <div class="toast-content"><div class="toast-title">${title}</div><div class="toast-message">${message}</div></div>`;
             container.appendChild(toast);
-
-            setTimeout(() => {
-                toast.style.animation = 'fadeOutToast 0.4s ease-out forwards';
-                setTimeout(() => toast.remove(), 400); 
-            }, 4500);
+            setTimeout(() => { toast.style.animation = 'fadeOutToast 0.4s ease-out forwards'; setTimeout(() => toast.remove(), 400); }, 4500);
         }
+
+        // --- Variabili Globali Utente ---
+        let utenteCorrente = null;
 
         document.addEventListener('DOMContentLoaded', () => {
             const utenteString = localStorage.getItem('utenteLoggato');
-            
             if (!utenteString) {
-                alert("Accesso Negato: Connessione non autorizzata. Torna al Login.");
-                window.location.href = 'index.html'; 
-                return;
+                alert("Accesso Negato: Connessione non autorizzata."); window.location.href = 'index.html'; return;
             }
+            utenteCorrente = JSON.parse(utenteString);
 
-            const utente = JSON.parse(utenteString);
-
-            const matricolaPura = utente.matricola.includes('-') ? utente.matricola.split('-').pop() : utente.matricola;
+            // Setup UI
+            const matricolaPura = utenteCorrente.matricola.includes('-') ? utenteCorrente.matricola.split('-').pop() : utenteCorrente.matricola;
             document.getElementById('display-matricola').innerText = `Agente: ${matricolaPura}`;
-            document.getElementById('saluto-nome').innerText = `Bentornato nel Sistema, ${utente.nome}`;
+            document.getElementById('saluto-nome').innerText = `Bentornato nel Sistema, ${utenteCorrente.nome}`;
 
+            // Finto Caricamento Iniziale
             setTimeout(() => {
                 const overlay = document.getElementById('loading-overlay');
                 overlay.classList.add('fade-out');
-                
                 setTimeout(() => {
                     overlay.style.display = 'none';
                     document.getElementById('dashboard-section').classList.remove('hidden');
-                    showToast("Identità Verificata", "Connessione sicura stabilita. Accesso autorizzato al terminale.", "success");
+                    showToast("Identità Verificata", "Connessione sicura stabilita.", "success");
+                    caricaAttenzionati(); // Carica i dati salvati
                 }, 500); 
-            }, 1800); 
+            }, 1500); 
 
+            // Logout
             document.getElementById('btn-logout').addEventListener('click', () => {
-                localStorage.removeItem('utenteLoggato');
-                window.location.href = 'index.html';
+                localStorage.removeItem('utenteLoggato'); window.location.href = 'index.html';
+            });
+
+            // --- GESTIONE VISTE (NAVIGAZIONE MENU) ---
+            const navItems = document.querySelectorAll('.nav-item');
+            const views = document.querySelectorAll('.view-section');
+            const moduleBadge = document.getElementById('module-badge');
+
+            navItems.forEach(item => {
+                item.addEventListener('click', () => {
+                    if(!item.hasAttribute('data-target')) return; // Per i bottoni non ancora implementati
+                    
+                    // Rimuovi active dal menu
+                    navItems.forEach(n => n.classList.remove('active'));
+                    item.classList.add('active');
+
+                    // Cambia il Badge in alto
+                    const testoMenu = item.querySelector('span').innerText;
+                    const iconaMenu = item.querySelector('i').className;
+                    moduleBadge.innerHTML = `<i class="${iconaMenu}"></i> ${testoMenu}`;
+
+                    // Nascondi tutte le viste e mostra quella richiesta
+                    const targetId = item.getAttribute('data-target');
+                    views.forEach(v => v.classList.add('hidden'));
+                    document.getElementById(targetId).classList.remove('hidden');
+                });
+            });
+
+            // --- LOGICA SOGGETTI ATTENZIONATI (DATABASE LOCALE) ---
+            const formContainer = document.getElementById('form-container');
+            const form = document.getElementById('form-attenzionato');
+            const grid = document.getElementById('grid-attenzionati');
+
+            // Mostra/Nascondi form
+            document.getElementById('btn-toggle-form').addEventListener('click', () => formContainer.classList.remove('hidden'));
+            document.getElementById('btn-annulla-form').addEventListener('click', () => { formContainer.classList.add('hidden'); form.reset(); });
+
+            // Inserimento dati
+            form.addEventListener('submit', (e) => {
+                e.preventDefault();
+
+                // Crea l'oggetto criminale
+                const nuovoSoggetto = {
+                    id: Date.now(),
+                    nome: document.getElementById('att-nome').value,
+                    alias: document.getElementById('att-alias').value || 'Nessuno',
+                    rischio: document.getElementById('att-rischio').value,
+                    banda: document.getElementById('att-banda').value || 'Sconosciuta',
+                    motivo: document.getElementById('att-motivo').value,
+                    dataInserimento: new Date().toLocaleDateString('it-IT'),
+                    // Firma di chi lo compila:
+                    firmaNome: utenteCorrente.nome,
+                    firmaGrado: utenteCorrente.grado || 'Agente',
+                    firmaMatricola: matricolaPura
+                };
+
+                // Recupera array esistente da LocalStorage, aggiungi e risalva
+                let db = JSON.parse(localStorage.getItem('db_attenzionati')) || [];
+                db.unshift(nuovoSoggetto); // Aggiunge in cima
+                localStorage.setItem('db_attenzionati', JSON.stringify(db));
+
+                showToast("Fascicolo Creato", "Il soggetto è stato inserito nel database.", "success");
+                form.reset();
+                formContainer.classList.add('hidden');
+                caricaAttenzionati(); // Ricarica la grafica
             });
         });
+
+        // Funzione per disegnare le card a schermo
+        function caricaAttenzionati() {
+            const grid = document.getElementById('grid-attenzionati');
+            let db = JSON.parse(localStorage.getItem('db_attenzionati')) || [];
+
+            grid.innerHTML = ''; // Svuota la griglia
+
+            if(db.length === 0) {
+                grid.innerHTML = `<div class="nessun-dato"><i class="fas fa-folder-open" style="font-size: 2rem; margin-bottom:10px;"></i><br>Nessun soggetto attenzionato presente nel registro.</div>`;
+                return;
+            }
+
+            db.forEach(soggetto => {
+                // Imposta i testi del badge di rischio in base alla scelta
+                let rischioTesto = "Rischio Basso";
+                if(soggetto.rischio === 'medio') rischioTesto = "Rischio Medio";
+                if(soggetto.rischio === 'alto') rischioTesto = "Rischio Alto";
+
+                // Creazione elemento HTML
+                const card = document.createElement('div');
+                card.className = 'soggetto-card';
+                card.innerHTML = `
+                    <div class="soggetto-header">
+                        <div class="soggetto-foto"><i class="fas fa-user-secret"></i></div>
+                        <div class="soggetto-info">
+                            <h4>${soggetto.nome}</h4>
+                            <span class="alias">"${soggetto.alias}"</span>
+                        </div>
+                        <div class="badge-rischio ${soggetto.rischio}">${rischioTesto}</div>
+                    </div>
+                    <div class="soggetto-body">
+                        <p><strong>Data Segnalazione:</strong> ${soggetto.dataInserimento}</p>
+                        <p><strong>Affiliazione:</strong> ${soggetto.banda}</p>
+                        <p><strong>Motivo:</strong> ${soggetto.motivo}</p>
+                    </div>
+                    <div class="soggetto-footer">
+                        <div class="firma-agente">
+                            <i class="fas fa-pen-nib"></i> Segnalato da: ${soggetto.firmaGrado} ${soggetto.firmaNome} (${soggetto.firmaMatricola})
+                        </div>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
     </script>
 </body>
 </html>
