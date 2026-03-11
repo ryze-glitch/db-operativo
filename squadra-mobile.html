@@ -101,6 +101,8 @@
         .cyber-btn.w-100 { width: 100%; }
         .cyber-btn.outline { background: transparent; border: 1px solid var(--accent-blue); color: var(--accent-blue); }
         .cyber-btn.outline:hover { background: rgba(37, 99, 235, 0.1); }
+        .cyber-btn.danger { background: var(--danger); }
+        .cyber-btn.danger:hover { background: #dc2626; box-shadow: 0 5px 15px rgba(239, 68, 68, 0.4); }
 
         /* --- VISTA 2: SOGGETTI ATTENZIONATI --- */
         
@@ -138,13 +140,23 @@
 
         /* Footer e Bottoni Azione */
         .soggetto-footer { background: rgba(0,0,0,0.2); padding: 15px 20px; border-top: 1px solid var(--border-color); font-size: 0.8rem; color: #94a3b8; display: flex; justify-content: space-between; align-items: center; }
-        .firma-agente { display: flex; align-items: center; gap: 8px; font-family: monospace; }
+        .firma-agente { display: flex; align-items: center; gap: 8px; font-family: monospace; font-size: 0.85rem;}
         .firma-agente i { color: var(--accent-blue); }
         
         .card-actions { display: flex; gap: 8px; }
         .btn-icon { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: var(--text-muted); border-radius: 6px; width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.2s; }
         .btn-icon.edit:hover { background: rgba(37,99,235,0.1); color: var(--accent-blue); border-color: var(--accent-blue); }
         .btn-icon.delete:hover { background: rgba(239,68,68,0.1); color: var(--danger); border-color: var(--danger); }
+
+        /* --- MODAL DI CONFERMA ELIMINAZIONE --- */
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100vh; background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(4px); z-index: 10000; display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: opacity 0.3s ease; }
+        .modal-overlay.active { opacity: 1; pointer-events: auto; }
+        .modal-content { background: var(--bg-panel); border: 1px solid var(--danger); border-radius: 12px; padding: 35px 40px; text-align: center; max-width: 450px; width: 90%; box-shadow: 0 20px 50px rgba(0,0,0,0.6), inset 0 0 0 1px rgba(239, 68, 68, 0.1); transform: translateY(20px); transition: transform 0.3s ease; }
+        .modal-overlay.active .modal-content { transform: translateY(0); }
+        .modal-icon { font-size: 3rem; color: var(--danger); margin-bottom: 20px; }
+        .modal-content h3 { font-size: 1.4rem; margin-bottom: 12px; color: white; font-weight: 700; }
+        .modal-content p { color: var(--text-muted); font-size: 0.95rem; margin-bottom: 30px; line-height: 1.5; }
+        .modal-actions { display: flex; gap: 15px; justify-content: center; }
 
         /* --- NOTIFICHE (TOAST) --- */
         .toast-container { position: fixed; top: 95px; right: 25px; z-index: 9999; display: flex; flex-direction: column; gap: 12px; pointer-events: none; }
@@ -172,6 +184,18 @@
         <i class="fas fa-circle-notch fa-spin"></i>
         <h2>Accesso al Database</h2>
         <p>Inizializzazione connessione sicura in corso...</p>
+    </div>
+
+    <div id="delete-modal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-icon"><i class="fas fa-exclamation-triangle"></i></div>
+            <h3>Conferma Eliminazione</h3>
+            <p>Protocollo Sicurezza: Sei sicuro di voler eliminare definitivamente questo fascicolo? L'azione è irreversibile e verrà registrata nei log di sistema.</p>
+            <div class="modal-actions">
+                <button class="cyber-btn outline" id="btn-cancel-delete">Annulla</button>
+                <button class="cyber-btn danger" id="btn-confirm-delete"><i class="fas fa-trash"></i> Elimina Fascicolo</button>
+            </div>
+        </div>
     </div>
 
     <div id="dashboard-section" class="hidden">
@@ -322,7 +346,6 @@
 
         // --- Variabili Globali Utente ---
         let utenteCorrente = null;
-        let matricolaPura = "";
 
         document.addEventListener('DOMContentLoaded', () => {
             const utenteString = localStorage.getItem('utenteLoggato');
@@ -331,8 +354,8 @@
             }
             utenteCorrente = JSON.parse(utenteString);
 
-            // Pulizia e Setup UI
-            matricolaPura = utenteCorrente.matricola.includes('-') ? utenteCorrente.matricola.split('-').pop() : utenteCorrente.matricola;
+            // Pulizia UI (L'id in alto e basta)
+            const matricolaPura = utenteCorrente.matricola.includes('-') ? utenteCorrente.matricola.split('-').pop() : utenteCorrente.matricola;
             document.getElementById('display-matricola').innerText = `Agente: ${matricolaPura}`;
             document.getElementById('saluto-nome').innerText = `Bentornato nel Sistema, ${utenteCorrente.nome}`;
 
@@ -344,7 +367,7 @@
                     overlay.style.display = 'none';
                     document.getElementById('dashboard-section').classList.remove('hidden');
                     showToast("Identità Verificata", "Connessione sicura stabilita.", "success");
-                    caricaAttenzionati(); // Carica i dati salvati
+                    caricaAttenzionati(); 
                 }, 500); 
             }, 1500); 
 
@@ -382,7 +405,7 @@
             // Apri form Nuovo Segnalato
             document.getElementById('btn-toggle-form').addEventListener('click', () => {
                 form.reset();
-                document.getElementById('att-id').value = ""; // Svuota ID (modalità creazione)
+                document.getElementById('att-id').value = ""; 
                 document.getElementById('form-titolo').innerHTML = '<i class="fas fa-file-signature"></i> Compilazione Fascicolo Sorveglianza';
                 document.querySelector('#btn-submit-att span').innerText = 'Registra nel Database';
                 formContainer.classList.remove('hidden');
@@ -394,14 +417,13 @@
                 form.reset(); 
             });
 
-            // Salvataggio Dati (Creazione o Modifica)
+            // Salvataggio Dati
             form.addEventListener('submit', (e) => {
                 e.preventDefault();
                 const idEdit = document.getElementById('att-id').value;
                 let db = JSON.parse(localStorage.getItem('db_attenzionati')) || [];
 
                 if(idEdit) {
-                    // MODIFICA SOGGETTO ESISTENTE
                     const index = db.findIndex(s => s.id == idEdit);
                     if(index !== -1) {
                         db[index].nome = document.getElementById('att-nome').value;
@@ -412,7 +434,6 @@
                         showToast("Fascicolo Aggiornato", "Modifiche salvate nel database centrale.", "success");
                     }
                 } else {
-                    // CREA NUOVO SOGGETTO
                     const nuovoSoggetto = {
                         id: Date.now(),
                         nome: document.getElementById('att-nome').value,
@@ -421,11 +442,12 @@
                         banda: document.getElementById('att-banda').value || 'Sconosciuta',
                         motivo: document.getElementById('att-motivo').value,
                         dataInserimento: new Date().toLocaleDateString('it-IT'),
+                        
+                        // Firma con Nome in Codice e Matricola Intera (come da richiesta)
                         firmaNome: utenteCorrente.nome,
-                        firmaGrado: utenteCorrente.grado || 'Agente',
-                        firmaMatricola: matricolaPura
+                        firmaMatricola: utenteCorrente.matricola
                     };
-                    db.unshift(nuovoSoggetto); // Aggiunge in cima
+                    db.unshift(nuovoSoggetto); 
                     showToast("Fascicolo Creato", "Il soggetto è stato inserito nel database.", "success");
                 }
 
@@ -436,20 +458,36 @@
             });
         });
 
-        // --- FUNZIONI GLOBALI (Richiamate dai bottoni HTML delle Card) ---
+        // --- GESTIONE MODAL ELIMINAZIONE ---
+        let currentIdToDelete = null;
+        const deleteModal = document.getElementById('delete-modal');
 
-        // Elimina
         window.eliminaSoggetto = function(id) {
-            if(confirm("Protocollo Sicurezza: Sei sicuro di voler eliminare definitivamente questo fascicolo?")) {
+            currentIdToDelete = id;
+            deleteModal.classList.add('active'); // Mostra il modal custom
+        };
+
+        // Annulla Cancellazione
+        document.getElementById('btn-cancel-delete').addEventListener('click', () => {
+            currentIdToDelete = null;
+            deleteModal.classList.remove('active');
+        });
+
+        // Conferma Cancellazione
+        document.getElementById('btn-confirm-delete').addEventListener('click', () => {
+            if(currentIdToDelete) {
                 let db = JSON.parse(localStorage.getItem('db_attenzionati')) || [];
-                db = db.filter(s => s.id !== id);
+                db = db.filter(s => s.id !== currentIdToDelete);
                 localStorage.setItem('db_attenzionati', JSON.stringify(db));
                 caricaAttenzionati();
                 showToast("Fascicolo Rimosso", "I dati sono stati cancellati dal sistema.", "error");
+                
+                currentIdToDelete = null;
+                deleteModal.classList.remove('active');
             }
-        };
+        });
 
-        // Riapri Form per Modifica
+        // --- GESTIONE MODIFICA ---
         window.modificaSoggetto = function(id) {
             let db = JSON.parse(localStorage.getItem('db_attenzionati')) || [];
             const soggetto = db.find(s => s.id === id);
@@ -466,11 +504,11 @@
                 document.querySelector('#btn-submit-att span').innerText = 'Aggiorna Fascicolo';
                 
                 document.getElementById('form-container').classList.remove('hidden');
-                document.querySelector('.dashboard-main').scrollTo({ top: 0, behavior: 'smooth' }); // Scrolla su
+                document.querySelector('.dashboard-main').scrollTo({ top: 0, behavior: 'smooth' });
             }
         };
 
-        // Rendering delle Card
+        // --- RENDERING CARD ---
         function caricaAttenzionati() {
             const grid = document.getElementById('grid-attenzionati');
             let db = JSON.parse(localStorage.getItem('db_attenzionati')) || [];
@@ -486,10 +524,9 @@
                 if(soggetto.rischio === 'medio') rischioTesto = "Rischio Medio";
                 if(soggetto.rischio === 'alto') rischioTesto = "Rischio Alto";
 
-                // CONTROLLO PERMESSI: Admin "sì" OPPURE è il creatore del fascicolo
-                const isAutorizzato = (utenteCorrente.admin === 'sì' || matricolaPura === soggetto.firmaMatricola);
+                // Autorizzazione: Admin "sì" OPPURE è la stessa matricola (intera)
+                const isAutorizzato = (utenteCorrente.admin === 'sì' || utenteCorrente.matricola === soggetto.firmaMatricola);
                 
-                // Generazione bottoni edit/delete in base all'autorizzazione
                 let azioniHtml = '';
                 if(isAutorizzato) {
                     azioniHtml = `
@@ -518,7 +555,7 @@
                     </div>
                     <div class="soggetto-footer">
                         <div class="firma-agente">
-                            <i class="fas fa-pen-nib"></i> Compilato da: ${soggetto.firmaGrado} ${soggetto.firmaNome} (${soggetto.firmaMatricola})
+                            <i class="fas fa-pen-nib"></i> Compilato da: ${soggetto.firmaNome} - ${soggetto.firmaMatricola}
                         </div>
                         ${azioniHtml}
                     </div>
