@@ -114,7 +114,6 @@
         /* --- GRIGLIA CARDS (ATTENZIONATI & FASCICOLI) --- */
         .data-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 25px; }
         
-        /* Stile singola Card */
         .db-card { background: var(--bg-panel); border: 1px solid var(--border-color); border-radius: 12px; overflow: hidden; display: flex; flex-direction: column; transition: all 0.3s; position: relative; }
         .db-card:hover { border-color: #475569; transform: translateY(-4px); box-shadow: 0 15px 30px rgba(0,0,0,0.4); }
         
@@ -156,9 +155,11 @@
         .toast { background: #161b26; border-left: 4px solid var(--accent-blue); color: white; padding: 16px 20px; border-radius: 8px; box-shadow: 0 10px 30px rgba(0,0,0,0.6); display: flex; align-items: center; gap: 15px; min-width: 320px; max-width: 400px; animation: slideInToast 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; pointer-events: auto; }
         .toast.success { border-left-color: #22c55e; }
         .toast.error { border-left-color: #ef4444; }
+        .toast.warning { border-left-color: #f59e0b; }
         .toast-icon { font-size: 1.4rem; }
         .toast.success .toast-icon { color: #22c55e; }
         .toast.error .toast-icon { color: #ef4444; }
+        .toast.warning .toast-icon { color: #f59e0b; }
         .toast-content { flex: 1; }
         .toast-title { font-weight: 600; font-size: 0.95rem; margin-bottom: 4px; }
         .toast-message { font-size: 0.85rem; color: #cbd5e1; line-height: 1.4; }
@@ -279,7 +280,7 @@
                             <div class="form-grid">
                                 <div class="form-group">
                                     <label>Nome e Cognome</label>
-                                    <input type="text" id="att-nome" placeholder="Es. Mario Rossi" required>
+                                    <input type="text" id="att-nome" placeholder="Es. Mario Rossi">
                                 </div>
                                 <div class="form-group">
                                     <label>Alias / Soprannome</label>
@@ -287,7 +288,7 @@
                                 </div>
                                 <div class="form-group">
                                     <label>Livello di Pericolo</label>
-                                    <select id="att-rischio" required>
+                                    <select id="att-rischio">
                                         <option value="basso">Rischio Basso (Monitoraggio)</option>
                                         <option value="medio">Rischio Medio (Precedenti)</option>
                                         <option value="alto">Rischio Alto (Armato/Pericoloso)</option>
@@ -299,7 +300,7 @@
                                 </div>
                                 <div class="form-group full">
                                     <label>Motivo dell'Attenzione Investigativa</label>
-                                    <textarea id="att-motivo" rows="3" placeholder="Descrivi il motivo per cui il soggetto è sotto sorveglianza..." required></textarea>
+                                    <textarea id="att-motivo" rows="3" placeholder="Descrivi il motivo per cui il soggetto è sotto sorveglianza..."></textarea>
                                 </div>
                             </div>
                             <div class="form-actions">
@@ -331,15 +332,15 @@
                             <div class="form-grid">
                                 <div class="form-group full">
                                     <label>Titolo / Nome Operazione</label>
-                                    <input type="text" id="fas-titolo" placeholder="Es. Operazione Scacco Matto" required>
+                                    <input type="text" id="fas-titolo" placeholder="Es. Operazione Scacco Matto">
                                 </div>
                                 <div class="form-group">
                                     <label>Reati Ipotizzati</label>
-                                    <input type="text" id="fas-reati" placeholder="Es. Estorsione, Associazione a delinquere" required>
+                                    <input type="text" id="fas-reati" placeholder="Es. Estorsione, Associazione a delinquere">
                                 </div>
                                 <div class="form-group">
                                     <label>Stato Indagine</label>
-                                    <select id="fas-stato" required>
+                                    <select id="fas-stato">
                                         <option value="aperto">Aperta / In Corso</option>
                                         <option value="attesa">In Attesa di Sviluppi</option>
                                         <option value="chiuso">Chiusa / Archiviata</option>
@@ -355,7 +356,7 @@
                                 </div>
                                 <div class="form-group full">
                                     <label>Descrizione e Dettagli Investigativi</label>
-                                    <textarea id="fas-dettagli" rows="5" placeholder="Inserisci tutti i dettagli dell'indagine, luoghi, prove raccolte..." required></textarea>
+                                    <textarea id="fas-dettagli" rows="5" placeholder="Inserisci tutti i dettagli dell'indagine, luoghi, prove raccolte..."></textarea>
                                 </div>
                             </div>
                             <div class="form-actions">
@@ -375,10 +376,11 @@
     </div>
 
     <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-app.js";
-        import { getFirestore, collection, addDoc, updateDoc, deleteDoc, doc, onSnapshot } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-firestore.js";
+        // Uso la versione 10.10.0 ufficiale di Firebase per massima stabilità
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-app.js";
+        import { getFirestore, collection, addDoc, updateDoc, deleteDoc, doc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-firestore.js";
 
-        // Inizializzazione Firebase (Stessa configurazione del Login)
+        // Inizializzazione Firebase
         const firebaseConfig = {
             apiKey: "AIzaSyDPyEfr0KbWtYDeM5-EFTl3s3VGVB_8Yi8",
             authDomain: "database-dta.firebaseapp.com",
@@ -398,25 +400,29 @@
             const toast = document.createElement('div');
             toast.className = `toast ${type}`;
             let iconClass = type === 'success' ? 'fa-check-circle' : (type === 'error' ? 'fa-exclamation-triangle' : 'fa-info-circle');
+            if(type === 'warning') iconClass = 'fa-exclamation-triangle';
             toast.innerHTML = `<div class="toast-icon"><i class="fas ${iconClass}"></i></div>
                                <div class="toast-content"><div class="toast-title">${title}</div><div class="toast-message">${message}</div></div>`;
             container.appendChild(toast);
             setTimeout(() => { toast.style.animation = 'fadeOutToast 0.4s ease-out forwards'; setTimeout(() => toast.remove(), 400); }, 4500);
         }
 
-        // --- Variabili Globali Utente ---
+        // --- Setup Utente ---
         let utenteCorrente = null;
-        let matricolaPura = "";
+        let matricolaPura = "Sconosciuto";
 
-        // Autenticazione e Setup Base
         const utenteString = localStorage.getItem('utenteLoggato');
         if (!utenteString) {
             alert("Accesso Negato: Connessione non autorizzata."); window.location.href = 'index.html';
         } else {
             utenteCorrente = JSON.parse(utenteString);
-            matricolaPura = utenteCorrente.matricola.includes('-') ? utenteCorrente.matricola.split('-').pop() : utenteCorrente.matricola;
+            
+            // Protezione contro matricole indefinite o errate
+            let mat = utenteCorrente.matricola || "";
+            matricolaPura = mat.includes('-') ? mat.split('-').pop() : mat;
+            
             document.getElementById('display-matricola').innerText = `Agente: ${matricolaPura}`;
-            document.getElementById('saluto-nome').innerText = `Bentornato nel Sistema, ${utenteCorrente.nome}`;
+            document.getElementById('saluto-nome').innerText = `Bentornato nel Sistema, ${utenteCorrente.nome || 'Agente'}`;
 
             setTimeout(() => {
                 document.getElementById('loading-overlay').classList.add('fade-out');
@@ -469,7 +475,8 @@
                     await deleteDoc(doc(db, deleteInfo.collectionName, deleteInfo.id));
                     showToast("Record Eliminato", "Il record è stato cancellato dal database cloud.", "error");
                 } catch (error) {
-                    showToast("Errore Database", "Impossibile eliminare il record.", "error");
+                    showToast("Errore Database", "Permessi insufficienti o errore di rete.", "error");
+                    console.error("Errore eliminazione:", error);
                 }
                 deleteModal.classList.remove('active');
             }
@@ -490,7 +497,6 @@
         const formAtt = document.getElementById('form-attenzionato');
         const gridAtt = document.getElementById('grid-attenzionati');
         
-        // Listener In Tempo Reale Firebase
         onSnapshot(collection(db, "attenzionati"), (snapshot) => {
             gridAtt.innerHTML = '';
             if(snapshot.empty) {
@@ -502,9 +508,8 @@
                 const id = docSnap.id;
                 
                 let rischioTesto = data.rischio === 'medio' ? "Rischio Medio" : (data.rischio === 'alto' ? "Rischio Alto" : "Rischio Basso");
-                const isAutorizzato = (utenteCorrente.admin === 'sì' || utenteCorrente.matricola === data.firmaMatricola);
+                const isAutorizzato = (utenteCorrente.admin === 'sì' || utenteCorrente.matricola === data.firmaMatricolaCompleta);
                 
-                // Gestione Immagine
                 let fotoHtml = `<div class="card-foto"><i class="fas fa-user-secret"></i></div>`;
                 if(data.fotoUrl && data.fotoUrl.trim() !== '') {
                     fotoHtml = `<img src="${data.fotoUrl}" class="card-foto" alt="Foto Sospettato">`;
@@ -547,7 +552,6 @@
             });
         });
 
-        // Form Submit Attenzionati
         document.getElementById('btn-toggle-form-att').addEventListener('click', () => {
             formAtt.reset(); document.getElementById('att-id').value = ""; 
             document.getElementById('form-titolo-att').innerHTML = '<i class="fas fa-fingerprint"></i> Nuova Identificazione';
@@ -557,18 +561,32 @@
 
         formAtt.addEventListener('submit', async (e) => {
             e.preventDefault();
+            
+            // Validazione manuale e sicura
+            const nomeInput = document.getElementById('att-nome').value.trim();
+            const motivoInput = document.getElementById('att-motivo').value.trim();
+            if(!nomeInput || !motivoInput) {
+                showToast("Campi Mancanti", "Compila almeno Nome e Motivo per procedere.", "warning");
+                return;
+            }
+
             const idEdit = document.getElementById('att-id').value;
             const payload = {
-                nome: document.getElementById('att-nome').value,
-                alias: document.getElementById('att-alias').value || 'Nessuno',
+                nome: nomeInput,
+                alias: document.getElementById('att-alias').value.trim() || 'Nessuno',
                 rischio: document.getElementById('att-rischio').value,
-                fotoUrl: document.getElementById('att-foto').value,
-                banda: document.getElementById('att-banda').value || 'Sconosciuta',
-                motivo: document.getElementById('att-motivo').value,
+                fotoUrl: document.getElementById('att-foto').value.trim(),
+                banda: document.getElementById('att-banda').value.trim() || 'Sconosciuta',
+                motivo: motivoInput,
                 dataInserimento: new Date().toLocaleDateString('it-IT'),
-                firmaNome: utenteCorrente.nome,
-                firmaMatricola: utenteCorrente.matricola
+                
+                firmaNome: utenteCorrente.nome || "Sconosciuto",
+                firmaMatricola: matricolaPura, 
+                firmaMatricolaCompleta: utenteCorrente.matricola // Usata in background per l'autorizzazione
             };
+
+            const btnSubmit = document.getElementById('btn-submit-att');
+            btnSubmit.disabled = true;
 
             try {
                 if(idEdit) {
@@ -580,25 +598,25 @@
                 }
                 formAtt.reset(); document.getElementById('form-container-att').classList.add('hidden');
             } catch(err) {
-                showToast("Errore di Rete", "Impossibile contattare il Cloud.", "error");
+                console.error("Errore di Rete:", err);
+                showToast("Errore Database", "Impossibile salvare il documento nel Cloud.", "error");
+            } finally {
+                btnSubmit.disabled = false;
             }
         });
 
-        // Modifica Attenzionato (Recupero visivo)
         window.modificaAttenzionato = async function(id) {
-            // Per semplicità recupero i dati dalla view attuale (in alternativa si può fare un getDoc)
-            // L'onSnapshot tiene i dati in griglia sincronizzati, ma qui farò il fetch per esserne certi.
-            import("https://www.gstatic.com/firebasejs/12.10.0/firebase-firestore.js").then(async (m) => {
+            import("https://www.gstatic.com/firebasejs/10.10.0/firebase-firestore.js").then(async (m) => {
                 const docSnap = await m.getDoc(doc(db, "attenzionati", id));
                 if (docSnap.exists()) {
                     const data = docSnap.data();
                     document.getElementById('att-id').value = id;
-                    document.getElementById('att-nome').value = data.nome;
+                    document.getElementById('att-nome').value = data.nome || '';
                     document.getElementById('att-alias').value = data.alias === 'Nessuno' ? '' : data.alias;
-                    document.getElementById('att-rischio').value = data.rischio;
+                    document.getElementById('att-rischio').value = data.rischio || 'basso';
                     document.getElementById('att-foto').value = data.fotoUrl || '';
                     document.getElementById('att-banda').value = data.banda === 'Sconosciuta' ? '' : data.banda;
-                    document.getElementById('att-motivo').value = data.motivo;
+                    document.getElementById('att-motivo').value = data.motivo || '';
 
                     document.getElementById('form-titolo-att').innerHTML = '<i class="fas fa-edit"></i> Modifica Identificazione...';
                     document.querySelector('#btn-submit-att span').innerText = 'Aggiorna Record';
@@ -615,7 +633,6 @@
         const formFas = document.getElementById('form-fascicolo');
         const gridFas = document.getElementById('grid-fascicoli');
         
-        // Listener In Tempo Reale Firebase
         onSnapshot(collection(db, "fascicoli"), (snapshot) => {
             gridFas.innerHTML = '';
             if(snapshot.empty) {
@@ -627,7 +644,7 @@
                 const id = docSnap.id;
                 
                 let statoTesto = data.stato === 'attesa' ? "In Attesa" : (data.stato === 'chiuso' ? "Chiuso/Archiviato" : "Indagine Aperta");
-                const isAutorizzato = (utenteCorrente.admin === 'sì' || utenteCorrente.matricola === data.firmaMatricola);
+                const isAutorizzato = (utenteCorrente.admin === 'sì' || utenteCorrente.matricola === data.firmaMatricolaCompleta);
                 
                 let fotoHtml = `<div class="card-foto"><i class="fas fa-file-invoice"></i></div>`;
                 if(data.fotoUrl && data.fotoUrl.trim() !== '') {
@@ -671,7 +688,6 @@
             });
         });
 
-        // Form Submit Fascicoli
         document.getElementById('btn-toggle-form-fas').addEventListener('click', () => {
             formFas.reset(); document.getElementById('fas-id').value = ""; 
             document.getElementById('form-titolo-fas').innerHTML = '<i class="fas fa-folder-open"></i> Creazione Fascicolo D\'Indagine';
@@ -681,18 +697,34 @@
 
         formFas.addEventListener('submit', async (e) => {
             e.preventDefault();
+
+            // Validazione manuale sicura
+            const titolo = document.getElementById('fas-titolo').value.trim();
+            const reati = document.getElementById('fas-reati').value.trim();
+            const dettagli = document.getElementById('fas-dettagli').value.trim();
+            
+            if(!titolo || !reati || !dettagli) {
+                showToast("Campi Mancanti", "Compila Titolo, Reati e Dettagli per procedere.", "warning");
+                return;
+            }
+
             const idEdit = document.getElementById('fas-id').value;
             const payload = {
-                titolo: document.getElementById('fas-titolo').value,
-                reati: document.getElementById('fas-reati').value,
+                titolo: titolo,
+                reati: reati,
                 stato: document.getElementById('fas-stato').value,
-                soggetti: document.getElementById('fas-soggetti').value || 'Nessuno inserito',
-                fotoUrl: document.getElementById('fas-foto').value,
-                dettagli: document.getElementById('fas-dettagli').value,
+                soggetti: document.getElementById('fas-soggetti').value.trim() || 'Nessuno inserito',
+                fotoUrl: document.getElementById('fas-foto').value.trim(),
+                dettagli: dettagli,
                 dataInserimento: new Date().toLocaleDateString('it-IT'),
-                firmaNome: utenteCorrente.nome,
-                firmaMatricola: utenteCorrente.matricola
+                
+                firmaNome: utenteCorrente.nome || "Sconosciuto",
+                firmaMatricola: matricolaPura,
+                firmaMatricolaCompleta: utenteCorrente.matricola
             };
+
+            const btnSubmit = document.getElementById('btn-submit-fas');
+            btnSubmit.disabled = true;
 
             try {
                 if(idEdit) {
@@ -704,23 +736,25 @@
                 }
                 formFas.reset(); document.getElementById('form-container-fas').classList.add('hidden');
             } catch(err) {
-                showToast("Errore di Rete", "Impossibile contattare il Cloud.", "error");
+                console.error("Errore di Rete:", err);
+                showToast("Errore Database", "Impossibile salvare il documento nel Cloud.", "error");
+            } finally {
+                btnSubmit.disabled = false;
             }
         });
 
-        // Modifica Fascicolo
         window.modificaFascicolo = async function(id) {
-            import("https://www.gstatic.com/firebasejs/12.10.0/firebase-firestore.js").then(async (m) => {
+            import("https://www.gstatic.com/firebasejs/10.10.0/firebase-firestore.js").then(async (m) => {
                 const docSnap = await m.getDoc(doc(db, "fascicoli", id));
                 if (docSnap.exists()) {
                     const data = docSnap.data();
                     document.getElementById('fas-id').value = id;
-                    document.getElementById('fas-titolo').value = data.titolo;
-                    document.getElementById('fas-reati').value = data.reati;
-                    document.getElementById('fas-stato').value = data.stato;
+                    document.getElementById('fas-titolo').value = data.titolo || '';
+                    document.getElementById('fas-reati').value = data.reati || '';
+                    document.getElementById('fas-stato').value = data.stato || 'aperto';
                     document.getElementById('fas-soggetti').value = data.soggetti === 'Nessuno inserito' ? '' : data.soggetti;
                     document.getElementById('fas-foto').value = data.fotoUrl || '';
-                    document.getElementById('fas-dettagli').value = data.dettagli;
+                    document.getElementById('fas-dettagli').value = data.dettagli || '';
 
                     document.getElementById('form-titolo-fas').innerHTML = '<i class="fas fa-edit"></i> Modifica Dati Fascicolo...';
                     document.querySelector('#btn-submit-fas span').innerText = 'Aggiorna Dati';
