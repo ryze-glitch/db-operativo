@@ -4,59 +4,36 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Terminale Operativo - Squadra Mobile</title>
-    
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        :root {
-            --bg-dark: #07090f;
-            --bg-panel: #10141f;
-            --text-main: #f8fafc;
-            --text-muted: #94a3b8;
-            --accent-blue: #2563eb; 
-            --accent-hover: #1d4ed8;
-            --border-color: rgba(255, 255, 255, 0.08);
-            --danger: #ef4444;
-            --warning: #f59e0b;
-        }
-
+        :root { --bg-dark: #07090f; --bg-panel: #10141f; --text-main: #f8fafc; --text-muted: #94a3b8; --accent-blue: #2563eb; --accent-hover: #1d4ed8; --border-color: rgba(255, 255, 255, 0.08); --danger: #ef4444; --warning: #f59e0b; }
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Lexend', sans-serif; }
-        
         body { background-color: var(--bg-dark); color: var(--text-main); overflow: hidden; }
-        a { text-decoration: none; color: inherit; }
-        .hidden { display: none !important; }
-
-        /* --- SCHERMATA DI CARICAMENTO --- */
-        #loading-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100vh;
-            background: var(--bg-dark); z-index: 9999;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            transition: opacity 0.5s ease;
-        }
+        a { text-decoration: none; color: inherit; } .hidden { display: none !important; }
+        
+        /* SCHERMATA CARICAMENTO */
+        #loading-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100vh; background: var(--bg-dark); z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: opacity 0.5s ease; }
         #loading-overlay i { font-size: 3.5rem; color: var(--accent-blue); margin-bottom: 20px; }
         #loading-overlay h2 { font-size: 1.5rem; font-weight: 600; margin-bottom: 10px; }
         #loading-overlay p { color: var(--text-muted); font-size: 0.95rem; }
         .fade-out { opacity: 0; pointer-events: none; }
 
-        /* --- LAYOUT PRINCIPALE --- */
+        /* LAYOUT PRINCIPALE */
         #dashboard-section { display: flex; height: 100vh; width: 100%; background: var(--bg-dark); animation: slideInRight 0.4s ease-out; }
-        
-        /* SIDEBAR */
         .dashboard-sidebar { width: 280px; background: var(--bg-panel); border-right: 1px solid var(--border-color); display: flex; flex-direction: column; z-index: 20; }
         .sidebar-logo { padding: 25px 20px; display: flex; align-items: center; gap: 15px; border-bottom: 1px solid var(--border-color); }
         .sidebar-logo img { width: 40px; background: white; padding: 5px; border-radius: 8px; }
         .sidebar-logo h2 { font-size: 1.2rem; letter-spacing: 0.5px; }
-        
         .sidebar-menu { list-style: none; padding: 20px 0; flex: 1; overflow-y: auto; }
         .sidebar-menu li { padding: 15px 25px; display: flex; align-items: center; gap: 15px; cursor: pointer; color: var(--text-muted); transition: 0.2s; font-weight: 500; }
         .sidebar-menu li i { width: 20px; text-align: center; }
         .sidebar-menu li:hover, .sidebar-menu li.active { background: rgba(37,99,235,0.1); color: var(--accent-blue); border-right: 3px solid var(--accent-blue); }
         .sidebar-menu li.logout { color: var(--danger); margin-top: auto; border-top: 1px solid var(--border-color); }
         .sidebar-menu li.logout:hover { background: rgba(239, 68, 68, 0.1); color: #f87171; border-right: 3px solid var(--danger); }
-
         .dashboard-main { flex: 1; display: flex; flex-direction: column; overflow-y: auto; position: relative; scroll-behavior: smooth; }
-        
+
         /* HEADER IN ALTO */
         .dashboard-header { height: 75px; min-height: 75px; background: rgba(16, 20, 31, 0.98); backdrop-filter: blur(15px); border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; padding: 0 30px; position: sticky; top: 0; z-index: 10; }
         .header-left { flex: 0 1 auto; }
@@ -64,35 +41,28 @@
         .header-search { display: flex; align-items: center; gap: 12px; background: #07090f; border: 1px solid var(--border-color); padding: 10px 18px; border-radius: 10px; width: 100%; max-width: 450px; transition: all 0.3s; }
         .header-search:focus-within { border-color: var(--accent-blue); box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15); }
         .header-search input { background: transparent; border: none; color: white; outline: none; width: 100%; font-family: 'Lexend'; font-size: 0.95rem; }
+        .header-right { flex: 0 0 auto; display: flex; align-items: center; justify-content: flex-end; gap: 20px; }
         
-        .header-right { flex: 0 0 auto; display: flex; align-items: center; justify-content: flex-end; gap: 25px; }
-        
-        /* CAMPANELLA NOTIFICHE */
         .notification-bell { position: relative; cursor: pointer; color: var(--text-muted); font-size: 1.3rem; transition: color 0.2s; display: flex; align-items: center; }
         .notification-bell:hover { color: white; }
         .notification-badge { position: absolute; top: -6px; right: -8px; background: var(--danger); color: white; font-size: 0.65rem; font-weight: bold; border-radius: 50px; padding: 2px 6px; border: 2px solid rgba(16, 20, 31, 0.98); min-width: 18px; text-align: center; }
-
         .live-clock { display: flex; align-items: center; gap: 10px; font-family: monospace; font-size: 1rem; color: var(--text-main); font-weight: 600; letter-spacing: 1px; background: rgba(255,255,255,0.03); padding: 8px 14px; border-radius: 8px; border: 1px solid var(--border-color); white-space: nowrap; }
-        
-        /* PROFILO UTENTE */
         .header-user { display: flex; align-items: center; gap: 15px; border-left: 1px solid var(--border-color); padding-left: 20px; white-space: nowrap; text-align: right; }
         .user-text-info { display: flex; flex-direction: column; text-align: right; }
         .user-text-info .user-name { color: white; font-weight: 600; font-size: 0.95rem; }
         .user-text-info .user-mat { color: var(--text-muted); font-size: 0.8rem; font-family: monospace; letter-spacing: 0.5px; }
         .user-avatar { width: 42px; height: 42px; min-width: 42px; background: rgba(37, 99, 235, 0.1); border: 1px solid var(--accent-blue); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--accent-blue); font-size: 1.1rem; }
 
-        /* --- CONTENUTO E BOTTONI --- */
+        /* CONTENUTO VISTE */
         .dashboard-content { padding: 40px; }
         .view-section { animation: fadeIn 0.3s ease-out; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        
         .section-header { margin-bottom: 40px; display: flex; justify-content: space-between; align-items: flex-end; }
         .section-title h2 { font-size: 2rem; font-weight: 700; margin-bottom: 8px; }
         .section-title p { color: var(--text-muted); font-size: 1.05rem; }
 
         .cyber-btn { padding: 14px 24px; background: var(--accent-blue); color: white; border: none; border-radius: 8px; font-size: 0.95rem; font-weight: 600; cursor: pointer; transition: all 0.3s; font-family: 'Lexend'; display: inline-flex; align-items: center; justify-content: center; gap: 10px; }
         .cyber-btn:hover { background: var(--accent-hover); transform: translateY(-2px); box-shadow: 0 5px 15px rgba(37, 99, 235, 0.4); }
-        .cyber-btn.w-100 { width: 100%; }
         .cyber-btn.outline { background: transparent; border: 1px solid var(--accent-blue); color: var(--accent-blue); }
         .cyber-btn.outline:hover { background: rgba(37, 99, 235, 0.1); }
         .cyber-btn.danger { background: var(--danger); }
@@ -101,16 +71,19 @@
         .cyber-btn.success { background: #22c55e; }
         .cyber-btn.success:hover { background: #16a34a; box-shadow: 0 5px 15px rgba(34, 197, 94, 0.4); }
 
-        /* --- DASHBOARD HOME AGGIORNATA (DRIVE E VERBALI) --- */
+        /* HOME DASHBOARD */
         .home-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; }
         .home-card { background: linear-gradient(145deg, #161b26 0%, #0a0d14 100%); border: 1px solid var(--border-color); border-radius: 16px; padding: 40px; display: flex; flex-direction: column; justify-content: center; align-items: flex-start; transition: all 0.3s; position: relative; overflow: hidden; }
         .home-card::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 4px; background: var(--accent-blue); opacity: 0.5; transition: opacity 0.3s; }
         .home-card:hover { transform: translateY(-5px); border-color: var(--accent-blue); box-shadow: 0 20px 40px rgba(0,0,0,0.4); }
         .home-card:hover::before { opacity: 1; }
-        
         .home-card-icon { width: 70px; height: 70px; background: rgba(37, 99, 235, 0.1); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 2.2rem; color: var(--accent-blue); margin-bottom: 25px; border: 1px solid rgba(37, 99, 235, 0.2); }
         .home-card h3 { font-size: 1.8rem; color: white; margin-bottom: 15px; font-weight: 700; }
         .home-card p { color: var(--text-muted); font-size: 1.05rem; line-height: 1.6; margin-bottom: 35px; max-width: 90%; }
+        .home-charts-container { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin-top: 30px; }
+        .chart-box { background: var(--bg-panel); border: 1px solid var(--border-color); border-radius: 16px; padding: 25px; box-shadow: 0 10px 20px rgba(0,0,0,0.2); display: flex; flex-direction: column; align-items: center; }
+        .chart-box h4 { width: 100%; color: white; font-size: 1.1rem; margin-bottom: 20px; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; }
+        .chart-wrapper { width: 100%; position: relative; display: flex; justify-content: center; }
 
         /* FORMS */
         .form-panel { background: #161b26; border: 1px solid var(--accent-blue); border-radius: 12px; padding: 30px; margin-bottom: 40px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
@@ -132,12 +105,10 @@
         .card-info { overflow: hidden; }
         .card-info h4 { font-size: 1.2rem; margin-bottom: 4px; color: white; padding-right: 70px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .card-info span.subtitle { font-size: 0.9rem; color: var(--text-muted); font-style: italic; display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        
         .badge-status { position: absolute; top: 20px; right: 20px; padding: 4px 10px; border-radius: 6px; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
         .badge-status.basso, .badge-status.aperto { background: rgba(34, 197, 94, 0.1); color: #22c55e; border: 1px solid rgba(34, 197, 94, 0.2); }
         .badge-status.medio, .badge-status.attesa { background: rgba(245, 158, 11, 0.1); color: var(--warning); border: 1px solid rgba(245, 158, 11, 0.2); }
         .badge-status.alto, .badge-status.chiuso { background: rgba(239, 68, 68, 0.1); color: var(--danger); border: 1px solid rgba(239, 68, 68, 0.2); }
-
         .card-body { padding: 20px; flex-grow: 1; font-size: 0.9rem; color: #cbd5e1; line-height: 1.6; }
         .card-footer { background: rgba(0,0,0,0.2); padding: 15px 20px; border-top: 1px solid var(--border-color); font-size: 0.8rem; color: #94a3b8; display: flex; justify-content: space-between; align-items: center; }
         .firma-agente { display: flex; align-items: center; gap: 8px; font-family: monospace; font-size: 0.85rem;}
@@ -147,12 +118,11 @@
         .btn-icon.edit:hover { background: rgba(37,99,235,0.1); color: var(--accent-blue); border-color: var(--accent-blue); }
         .btn-icon.delete:hover { background: rgba(239,68,68,0.1); color: var(--danger); border-color: var(--danger); }
 
-        /* --- STILE LISTA ANNUNCI (CON PRESA VISIONE) --- */
-        .annuncio-card { background: rgba(255,255,255,0.02); border-left: 4px solid var(--accent-blue); padding: 25px; border-radius: 8px; border-top: 1px solid var(--border-color); border-right: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color); transition: all 0.3s; margin-bottom: 15px; display: flex; flex-direction: column; }
+        /* LISTA ANNUNCI */
+        .annuncio-card { background: rgba(255,255,255,0.02); border-left: 4px solid var(--accent-blue); padding: 25px; border-radius: 8px; border: 1px solid var(--border-color); transition: all 0.3s; margin-bottom: 15px; display: flex; flex-direction: column; }
         .annuncio-card:hover { background: rgba(255,255,255,0.04); }
         .annuncio-card.alta { border-left-color: var(--warning); }
         .annuncio-card.urgente { border-left-color: var(--danger); background: rgba(239, 68, 68, 0.05); }
-        
         .annuncio-header { display: flex; justify-content: space-between; margin-bottom: 15px; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 10px; }
         .annuncio-title { font-size: 1.3rem; font-weight: 700; color: white; display:flex; align-items:center; gap: 10px;}
         .annuncio-meta { font-size: 0.85rem; color: var(--text-muted); display: flex; align-items: center; gap: 20px; font-family: monospace;}
@@ -160,7 +130,7 @@
         .annuncio-footer { border-top: 1px solid rgba(255,255,255,0.05); padding-top: 15px; display: flex; justify-content: space-between; align-items: center; }
         .badge-urgent { background: var(--danger); color: white; padding: 3px 8px; border-radius: 4px; font-size: 0.7rem; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; }
 
-        /* --- LOG DI SISTEMA --- */
+        /* LOG SISTEMA */
         .log-list { display: flex; flex-direction: column; gap: 10px; max-height: 600px; overflow-y: auto; padding-right: 10px; }
         .log-item { background: rgba(255,255,255,0.02); border-left: 3px solid var(--accent-blue); padding: 15px; border-radius: 8px; display: flex; justify-content: space-between; align-items: center; }
         .log-item.eliminazione { border-left-color: var(--danger); }
@@ -169,21 +139,22 @@
         .log-meta { text-align: right; font-size: 0.85rem; color: #94a3b8; font-family: monospace; }
         .log-meta div { color: var(--accent-blue); margin-bottom: 4px; }
 
-        /* --- MODAL (ELIMINAZIONE E DETTAGLI PROVE) --- */
+        /* MODAL E DETTAGLI */
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100vh; background: rgba(0, 0, 0, 0.8); backdrop-filter: blur(5px); z-index: 10000; display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: opacity 0.3s ease; }
         .modal-overlay.active { opacity: 1; pointer-events: auto; }
-        
         .modal-content { background: var(--bg-panel); border: 1px solid var(--border-color); border-radius: 12px; padding: 35px; max-width: 450px; width: 90%; box-shadow: 0 20px 50px rgba(0,0,0,0.6); transform: translateY(20px); transition: transform 0.3s ease; }
         .modal-content.danger { border-color: var(--danger); text-align: center; }
         .modal-overlay.active .modal-content { transform: translateY(0); }
         .modal-icon { font-size: 3rem; color: var(--danger); margin-bottom: 20px; }
         
-        /* Modal Grande */
-        .modal-content.large { max-width: 800px; padding: 0; overflow: hidden; display: flex; flex-direction: column; max-height: 90vh; }
+        .modal-content.large { max-width: 900px; padding: 0; overflow: hidden; display: flex; flex-direction: column; max-height: 90vh; }
         .modal-header-large { padding: 20px 25px; background: #0b0e17; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; }
         .modal-header-large h3 { color: white; font-size: 1.3rem; }
         .modal-body-large { display: flex; flex-direction: column; padding: 25px; overflow-y: auto; gap: 20px; }
-        .dettaglio-info { background: rgba(255,255,255,0.02); padding: 15px; border-radius: 8px; border: 1px solid var(--border-color); font-size: 0.95rem; color: #cbd5e1; line-height: 1.6; }
+        .dettaglio-layout { display: flex; gap: 25px; align-items: flex-start; }
+        .dettaglio-image-container { width: 300px; flex-shrink: 0; background: rgba(0,0,0,0.3); border: 1px solid var(--border-color); border-radius: 12px; overflow: hidden; display: flex; justify-content: center; align-items: center; }
+        .dettaglio-image-container img { width: 100%; height: auto; object-fit: contain; }
+        .dettaglio-text-container { flex: 1; background: rgba(255,255,255,0.02); padding: 20px; border-radius: 12px; border: 1px solid var(--border-color); font-size: 0.95rem; color: #cbd5e1; line-height: 1.6; }
         .prove-section { border-top: 1px dashed rgba(255,255,255,0.1); padding-top: 20px; }
         .prove-list { display: flex; flex-direction: column; gap: 12px; margin-top: 15px; margin-bottom: 20px; }
         .prova-item { background: #07090f; border-left: 2px solid var(--accent-blue); padding: 12px 15px; border-radius: 0 8px 8px 0; }
@@ -193,19 +164,11 @@
         .add-prova-box input { flex: 1; background: #0a0d14; border: 1px solid var(--border-color); color: white; padding: 12px 15px; border-radius: 8px; font-family: 'Lexend'; outline: none; }
         .add-prova-box input:focus { border-color: var(--accent-blue); }
 
-        /* --- TOAST --- */
         .toast-container { position: fixed; top: 95px; right: 25px; z-index: 9999; display: flex; flex-direction: column; gap: 12px; pointer-events: none; }
         .toast { background: #161b26; border-left: 4px solid var(--accent-blue); color: white; padding: 16px 20px; border-radius: 8px; box-shadow: 0 10px 30px rgba(0,0,0,0.6); display: flex; align-items: center; gap: 15px; min-width: 320px; max-width: 400px; animation: slideInToast 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; pointer-events: auto; }
-        .toast.success { border-left-color: #22c55e; }
-        .toast.error { border-left-color: #ef4444; }
-        .toast.warning { border-left-color: #f59e0b; }
-        .toast-icon { font-size: 1.4rem; }
-        .toast.success .toast-icon { color: #22c55e; }
-        .toast.error .toast-icon { color: #ef4444; }
-        .toast.warning .toast-icon { color: #f59e0b; }
-        .toast-content { flex: 1; }
-        .toast-title { font-weight: 600; font-size: 0.95rem; margin-bottom: 4px; }
-        .toast-message { font-size: 0.85rem; color: #cbd5e1; line-height: 1.4; }
+        .toast.success { border-left-color: #22c55e; } .toast.error { border-left-color: #ef4444; } .toast.warning { border-left-color: #f59e0b; }
+        .toast-icon { font-size: 1.4rem; } .toast.success .toast-icon { color: #22c55e; } .toast.error .toast-icon { color: #ef4444; } .toast.warning .toast-icon { color: #f59e0b; }
+        .toast-content { flex: 1; } .toast-title { font-weight: 600; font-size: 0.95rem; margin-bottom: 4px; } .toast-message { font-size: 0.85rem; color: #cbd5e1; line-height: 1.4; }
         @keyframes slideInToast { from { transform: translateX(120%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
         @keyframes fadeOutToast { from { transform: translateX(0); opacity: 1; } to { transform: translateX(120%); opacity: 0; } }
         .nessun-dato { text-align: center; padding: 50px; color: var(--text-muted); font-size: 1.1rem; background: rgba(255,255,255,0.02); border-radius: 12px; border: 1px dashed var(--border-color); grid-column: 1 / -1; }
@@ -214,18 +177,13 @@
 <body>
 
     <div id="toast-container" class="toast-container"></div>
-
-    <div id="loading-overlay">
-        <i class="fas fa-circle-notch fa-spin"></i>
-        <h2>Accesso al Database</h2>
-        <p>Inizializzazione connessione sicura in corso...</p>
-    </div>
+    <div id="loading-overlay"><i class="fas fa-circle-notch fa-spin"></i><h2>Accesso al Database</h2><p>Inizializzazione connessione sicura...</p></div>
 
     <div id="delete-modal" class="modal-overlay">
         <div class="modal-content danger">
             <div class="modal-icon"><i class="fas fa-exclamation-triangle"></i></div>
             <h3 id="modal-delete-title">Conferma Eliminazione</h3>
-            <p>Sei sicuro di voler eliminare definitivamente questo record dal database cloud? L'azione verrà registrata nei log di sistema.</p>
+            <p>Sei sicuro di voler eliminare definitivamente questo record? L'azione verrà registrata nei log.</p>
             <div style="display: flex; gap: 15px; justify-content: center; margin-top: 20px;">
                 <button class="cyber-btn outline" onclick="document.getElementById('delete-modal').classList.remove('active')">Annulla</button>
                 <button class="cyber-btn danger" id="btn-confirm-delete"><i class="fas fa-trash"></i> Elimina Record</button>
@@ -235,19 +193,14 @@
 
     <div id="detail-modal" class="modal-overlay">
         <div class="modal-content large">
-            <div class="modal-header-large">
-                <h3 id="detail-title">Dettaglio Fascicolo</h3>
-                <button class="btn-icon" onclick="document.getElementById('detail-modal').classList.remove('active')"><i class="fas fa-times"></i></button>
-            </div>
+            <div class="modal-header-large"><h3 id="detail-title">Dettaglio</h3><button class="btn-icon" onclick="document.getElementById('detail-modal').classList.remove('active')"><i class="fas fa-times"></i></button></div>
             <div class="modal-body-large">
-                <div id="detail-info" class="dettaglio-info">
-                    </div>
+                <div id="detail-info"></div>
                 <div class="prove-section">
-                    <h4><i class="fas fa-paperclip"></i> Prove e Annotazioni Aggiuntive</h4>
-                    <div id="detail-prove-list" class="prove-list">
-                        </div>
+                    <h4><i class="fas fa-paperclip"></i> Prove e Annotazioni</h4>
+                    <div id="detail-prove-list" class="prove-list"></div>
                     <div class="add-prova-box">
-                        <input type="text" id="input-nuova-prova" placeholder="Scrivi una nuova nota o inserisci link a una prova...">
+                        <input type="text" id="input-nuova-prova" placeholder="Scrivi una nota o inserisci link a una prova...">
                         <button class="cyber-btn" id="btn-add-prova" onclick="aggiungiProva()"><i class="fas fa-plus"></i> Allega</button>
                     </div>
                 </div>
@@ -256,12 +209,8 @@
     </div>
 
     <div id="dashboard-section" class="hidden">
-        
         <div class="dashboard-sidebar">
-            <div class="sidebar-logo">
-                <img src="https://i.imgur.com/J3T1Kot.png" alt="Squadra Mobile">
-                <h2>SQ. MOBILE</h2>
-            </div>
+            <div class="sidebar-logo"><img src="https://i.imgur.com/J3T1Kot.png" alt="Squadra Mobile"><h2>SQ. MOBILE</h2></div>
             <ul class="sidebar-menu">
                 <li class="nav-item active" data-target="view-dashboard"><i class="fas fa-desktop"></i> <span>Home Operativa</span></li>
                 <li class="nav-item" data-target="view-annunci" id="nav-btn-comunicazioni"><i class="fas fa-bullhorn"></i> <span>Comunicazioni</span></li>
@@ -277,17 +226,13 @@
                 <div class="header-left"></div>
                 <div class="header-center">
                     <div class="header-search">
-                        <i class="fas fa-search"></i>
-                        <input type="text" id="global-search" placeholder="Ricerca globale (Targa, CF, Nome)...">
+                        <i class="fas fa-search"></i><input type="text" id="global-search" placeholder="Ricerca globale (Targa, CF, Nome)...">
                     </div>
                 </div>
                 <div class="header-right">
-                    
-                    <div class="notification-bell" id="bell-icon" title="Nuove Comunicazioni">
-                        <i class="fas fa-bell"></i>
-                        <span class="notification-badge hidden" id="unread-count">0</span>
+                    <div class="notification-bell" id="bell-icon" title="Comunicazioni">
+                        <i class="fas fa-bell"></i><span class="notification-badge hidden" id="unread-count">0</span>
                     </div>
-
                     <div class="live-clock" id="live-clock"><i class="far fa-clock"></i> --/--/---- - --:--:--</div>
                     <div class="header-user">
                         <div class="user-text-info">
@@ -300,194 +245,116 @@
             </header>
             
             <div class="dashboard-content">
-                
                 <div id="view-dashboard" class="view-section">
                     <div class="section-header">
-                        <div class="section-title">
-                            <h2 id="saluto-nome">Bentornato, Agente</h2>
-                            <p>Terminale Centrale connesso e operativo. Seleziona un portale rapido.</p>
-                        </div>
+                        <div class="section-title"><h2 id="saluto-nome">Bentornato</h2><p>Terminale Centrale connesso e operativo.</p></div>
                     </div>
-                    
                     <div class="home-grid">
                         <div class="home-card">
                             <div class="home-card-icon"><i class="fab fa-google-drive"></i></div>
                             <h3>Drive Condiviso</h3>
-                            <p>Accesso diretto all'archivio cloud protetto della Squadra Mobile per consultare file multimediali, foto segnaletiche e documenti integrativi condivisi tra gli agenti.</p>
+                            <p>Accesso all'archivio cloud protetto per consultare file multimediali e foto segnaletiche.</p>
                             <a href="#" target="_blank" class="cyber-btn"><i class="fas fa-external-link-alt"></i> Accedi al Drive</a>
                         </div>
-
                         <div class="home-card">
                             <div class="home-card-icon"><i class="fas fa-table"></i></div>
                             <h3>Stato Verbali e Rapporti</h3>
-                            <p>Collegamento istantaneo al foglio operativo presenze e controllo dello stato di pubblicazione e approvazione dei verbali stilati dalle pattuglie.</p>
+                            <p>Collegamento al foglio operativo per il controllo e approvazione dei verbali stilati.</p>
                             <a href="#" target="_blank" class="cyber-btn outline"><i class="fas fa-file-invoice"></i> Consulta Foglio Verbali</a>
+                        </div>
+                    </div>
+                    <div class="home-charts-container">
+                        <div class="chart-box">
+                            <h4><i class="fas fa-chart-pie"></i> Stato Globale Indagini</h4>
+                            <div class="chart-wrapper" style="height: 250px;"><canvas id="chartIndagini"></canvas></div>
+                        </div>
+                        <div class="chart-box">
+                            <h4><i class="fas fa-chart-bar"></i> Trend Identificazioni</h4>
+                            <div class="chart-wrapper" style="height: 250px; width: 100%;"><canvas id="chartRischio"></canvas></div>
                         </div>
                     </div>
                 </div>
 
                 <div id="view-annunci" class="view-section hidden">
                     <div class="section-header">
-                        <div class="section-title">
-                            <h2>Comunicazioni e Direttive</h2>
-                            <p>Bacheca ufficiale per gli avvisi del comando e le direttive operative.</p>
-                        </div>
+                        <div class="section-title"><h2>Comunicazioni e Direttive</h2><p>Bacheca ufficiale per gli avvisi del comando.</p></div>
                         <button id="btn-toggle-form-ann" class="cyber-btn hidden"><i class="fas fa-bullhorn"></i> Pubblica Avviso</button>
                     </div>
-
                     <div id="form-container-ann" class="form-panel hidden">
                         <h3 id="form-titolo-ann"><i class="fas fa-pen"></i> Nuova Comunicazione</h3>
                         <form id="form-annuncio">
                             <div class="form-grid">
-                                <div class="form-group full">
-                                    <label>Oggetto / Titolo</label>
-                                    <input type="text" id="ann-titolo" placeholder="Es. Aggiornamento turni settimanali" required>
-                                </div>
-                                <div class="form-group">
-                                    <label>Priorità</label>
-                                    <select id="ann-priorita">
-                                        <option value="normale">Normale (Informativo)</option>
-                                        <option value="alta">Alta (Importante)</option>
-                                        <option value="urgente">Urgente (Immediato/Rosso)</option>
-                                    </select>
-                                </div>
-                                <div class="form-group full">
-                                    <label>Corpo del Messaggio</label>
-                                    <textarea id="ann-testo" rows="4" placeholder="Scrivi la comunicazione da inviare a tutti gli agenti..." required></textarea>
-                                </div>
+                                <div class="form-group full"><label>Oggetto / Titolo</label><input type="text" id="ann-titolo" required></div>
+                                <div class="form-group"><label>Priorità</label><select id="ann-priorita"><option value="normale">Normale</option><option value="alta">Alta</option><option value="urgente">Urgente</option></select></div>
+                                <div class="form-group full"><label>Corpo del Messaggio</label><textarea id="ann-testo" rows="4" required></textarea></div>
                             </div>
                             <div class="form-actions">
                                 <button type="button" class="cyber-btn outline btn-annulla-form">Annulla</button>
-                                <button type="submit" class="cyber-btn"><i class="fas fa-paper-plane"></i> Pubblica Direttiva</button>
+                                <button type="submit" class="cyber-btn"><i class="fas fa-paper-plane"></i> Pubblica</button>
                             </div>
                         </form>
                     </div>
-
-                    <div id="grid-annunci" style="display:flex; flex-direction:column;">
-                        <div class="nessun-dato"><i class="fas fa-spinner fa-spin" style="font-size: 2rem; margin-bottom:10px;"></i><br>Sincronizzazione bacheca in corso...</div>
-                    </div>
+                    <div id="grid-annunci" style="display:flex; flex-direction:column;"><div class="nessun-dato"><i class="fas fa-spinner fa-spin"></i> Sincronizzazione...</div></div>
                 </div>
 
                 <div id="view-attenzionati" class="view-section hidden">
                     <div class="section-header">
-                        <div class="section-title">
-                            <h2>Soggetti Identificati</h2>
-                            <p>Registro interno delle Identificazioni e individui sotto sorveglianza.</p>
-                        </div>
+                        <div class="section-title"><h2>Soggetti Identificati</h2><p>Registro interno delle Identificazioni.</p></div>
                         <button id="btn-toggle-form-att" class="cyber-btn"><i class="fas fa-plus"></i> Nuova Identificazione</button>
                     </div>
-
                     <div id="form-container-att" class="form-panel hidden">
-                        <h3 id="form-titolo-att"><i class="fas fa-fingerprint"></i> Compilazione Identificazione</h3>
+                        <h3 id="form-titolo-att"><i class="fas fa-fingerprint"></i> Compilazione</h3>
                         <form id="form-attenzionato">
                             <input type="hidden" id="att-id" value="">
                             <div class="form-grid">
-                                <div class="form-group">
-                                    <label>Nome e Cognome</label>
-                                    <input type="text" id="att-nome" placeholder="Es. Mario Rossi">
-                                </div>
-                                <div class="form-group">
-                                    <label>Alias / Soprannome</label>
-                                    <input type="text" id="att-alias" placeholder="Es. Lo Smilzo">
-                                </div>
-                                <div class="form-group">
-                                    <label>Livello di Pericolo</label>
-                                    <select id="att-rischio">
-                                        <option value="basso">Rischio Basso (Monitoraggio)</option>
-                                        <option value="medio">Rischio Medio (Precedenti)</option>
-                                        <option value="alto">Rischio Alto (Armato/Pericoloso)</option>
-                                    </select>
-                                </div>
-                                <div class="form-group">
-                                    <label>Affiliazione / Banda</label>
-                                    <input type="text" id="att-banda" placeholder="Es. Nessuna">
-                                </div>
-                                <div class="form-group full">
-                                    <label>URL Foto (Es. Imgur)</label>
-                                    <input type="url" id="att-foto" placeholder="https://i.imgur.com/...">
-                                </div>
-                                <div class="form-group full">
-                                    <label>Motivo dell'Attenzione Investigativa</label>
-                                    <textarea id="att-motivo" rows="3" placeholder="Descrivi il motivo per cui il soggetto è sotto sorveglianza..."></textarea>
-                                </div>
+                                <div class="form-group"><label>Nome e Cognome</label><input type="text" id="att-nome"></div>
+                                <div class="form-group"><label>Alias</label><input type="text" id="att-alias"></div>
+                                <div class="form-group"><label>Livello di Pericolo</label><select id="att-rischio"><option value="basso">Basso</option><option value="medio">Medio</option><option value="alto">Alto</option></select></div>
+                                <div class="form-group"><label>Affiliazione / Banda</label><input type="text" id="att-banda"></div>
+                                <div class="form-group full"><label>URL Foto (Es. Imgur)</label><input type="url" id="att-foto"></div>
+                                <div class="form-group full"><label>Motivo</label><textarea id="att-motivo" rows="3"></textarea></div>
                             </div>
                             <div class="form-actions">
                                 <button type="button" class="cyber-btn outline btn-annulla-form">Annulla</button>
-                                <button type="submit" class="cyber-btn" id="btn-submit-att"><i class="fas fa-cloud-upload-alt"></i> <span>Registra nel Database</span></button>
+                                <button type="submit" class="cyber-btn" id="btn-submit-att"><i class="fas fa-save"></i> <span>Registra</span></button>
                             </div>
                         </form>
                     </div>
-
                     <div id="grid-attenzionati" class="data-grid"></div>
                 </div>
 
                 <div id="view-fascicoli" class="view-section hidden">
                     <div class="section-header">
-                        <div class="section-title">
-                            <h2>Fascicoli D'Indagine</h2>
-                            <p>Gestione operativa dei casi, indagini in corso e protocolli investigativi.</p>
-                        </div>
+                        <div class="section-title"><h2>Fascicoli D'Indagine</h2><p>Gestione operativa dei casi in corso.</p></div>
                         <button id="btn-toggle-form-fas" class="cyber-btn"><i class="fas fa-folder-plus"></i> Crea Fascicolo</button>
                     </div>
-
                     <div id="form-container-fas" class="form-panel hidden">
-                        <h3 id="form-titolo-fas"><i class="fas fa-folder-open"></i> Creazione Fascicolo D'Indagine</h3>
+                        <h3 id="form-titolo-fas"><i class="fas fa-folder-open"></i> Creazione</h3>
                         <form id="form-fascicolo">
                             <input type="hidden" id="fas-id" value="">
                             <div class="form-grid">
-                                <div class="form-group full">
-                                    <label>Titolo / Nome Operazione</label>
-                                    <input type="text" id="fas-titolo" placeholder="Es. Operazione Scacco Matto">
-                                </div>
-                                <div class="form-group">
-                                    <label>Reati Ipotizzati</label>
-                                    <input type="text" id="fas-reati" placeholder="Es. Estorsione, Associazione a delinquere">
-                                </div>
-                                <div class="form-group">
-                                    <label>Stato Indagine</label>
-                                    <select id="fas-stato">
-                                        <option value="aperto">Aperta / In Corso</option>
-                                        <option value="attesa">In Attesa di Sviluppi</option>
-                                        <option value="chiuso">Chiusa / Archiviata</option>
-                                    </select>
-                                </div>
-                                <div class="form-group">
-                                    <label>Soggetti Coinvolti</label>
-                                    <input type="text" id="fas-soggetti" placeholder="Nomi separati da virgola...">
-                                </div>
-                                <div class="form-group full">
-                                    <label>URL Immagine Copertina/Prove</label>
-                                    <input type="url" id="fas-foto" placeholder="https://i.imgur.com/...">
-                                </div>
-                                <div class="form-group full">
-                                    <label>Descrizione e Dettagli Investigativi</label>
-                                    <textarea id="fas-dettagli" rows="5" placeholder="Inserisci tutti i dettagli dell'indagine, luoghi, prove raccolte..."></textarea>
-                                </div>
+                                <div class="form-group full"><label>Titolo Operazione</label><input type="text" id="fas-titolo"></div>
+                                <div class="form-group"><label>Reati</label><input type="text" id="fas-reati"></div>
+                                <div class="form-group"><label>Stato Indagine</label><select id="fas-stato"><option value="aperto">Aperta</option><option value="attesa">In Attesa</option><option value="chiuso">Chiusa</option></select></div>
+                                <div class="form-group"><label>Soggetti Coinvolti</label><input type="text" id="fas-soggetti"></div>
+                                <div class="form-group full"><label>URL Copertina</label><input type="url" id="fas-foto"></div>
+                                <div class="form-group full"><label>Dettagli Investigativi</label><textarea id="fas-dettagli" rows="5"></textarea></div>
                             </div>
                             <div class="form-actions">
                                 <button type="button" class="cyber-btn outline btn-annulla-form">Annulla</button>
-                                <button type="submit" class="cyber-btn" id="btn-submit-fas"><i class="fas fa-cloud-upload-alt"></i> <span>Registra Fascicolo</span></button>
+                                <button type="submit" class="cyber-btn" id="btn-submit-fas"><i class="fas fa-save"></i> <span>Registra</span></button>
                             </div>
                         </form>
                     </div>
-
                     <div id="grid-fascicoli" class="data-grid"></div>
                 </div>
 
                 <div id="view-logs" class="view-section hidden">
-                    <div class="section-header">
-                        <div class="section-title">
-                            <h2>Registro di Sistema (Log)</h2>
-                            <p>Tracciamento in tempo reale delle operazioni eseguite nel database dipartimentale.</p>
-                        </div>
-                    </div>
+                    <div class="section-header"><div class="section-title"><h2>Registro (Log)</h2><p>Tracciamento operazioni database.</p></div></div>
                     <div class="form-panel" style="padding: 20px;">
-                        <div id="logs-container" class="log-list">
-                            <div class="nessun-dato"><i class="fas fa-spinner fa-spin"></i> Sincronizzazione Log in corso...</div>
-                        </div>
+                        <div id="logs-container" class="log-list"><div class="nessun-dato"><i class="fas fa-spinner fa-spin"></i> Sincronizzazione...</div></div>
                     </div>
                 </div>
-
             </div>
         </div>
     </div>
@@ -496,61 +363,31 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-app.js";
         import { getFirestore, collection, addDoc, updateDoc, deleteDoc, doc, onSnapshot, getDoc, arrayUnion, query, orderBy } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-firestore.js";
 
-        const firebaseConfig = {
-            apiKey: "AIzaSyDPyEfr0KbWtYDeM5-EFTl3s3VGVB_8Yi8",
-            authDomain: "database-dta.firebaseapp.com",
-            projectId: "database-dta",
-            storageBucket: "database-dta.firebasestorage.app",
-            messagingSenderId: "229305773627",
-            appId: "1:229305773627:web:ec3d17f5fcb3c65fdb761e"
-        };
-        const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
+        const firebaseConfig = { apiKey: "AIzaSyDPyEfr0KbWtYDeM5-EFTl3s3VGVB_8Yi8", authDomain: "database-dta.firebaseapp.com", projectId: "database-dta", storageBucket: "database-dta.firebasestorage.app", messagingSenderId: "229305773627", appId: "1:229305773627:web:ec3d17f5fcb3c65fdb761e" };
+        const app = initializeApp(firebaseConfig); const db = getFirestore(app);
 
-        // --- Data e Ora ---
-        setInterval(() => { 
-            const now = new Date();
-            const dateStr = now.toLocaleDateString('it-IT');
-            const timeStr = now.toLocaleTimeString('it-IT', { hour12: false });
-            document.getElementById('live-clock').innerHTML = `<i class="far fa-clock"></i> ${dateStr} - ${timeStr}`; 
-        }, 1000);
+        setInterval(() => { const now = new Date(); document.getElementById('live-clock').innerHTML = `<i class="far fa-clock"></i> ${now.toLocaleDateString('it-IT')} - ${now.toLocaleTimeString('it-IT', { hour12: false })}`; }, 1000);
 
         function showToast(title, message, type = 'info') {
-            const container = document.getElementById('toast-container');
-            const toast = document.createElement('div');
-            toast.className = `toast ${type}`;
+            const container = document.getElementById('toast-container'); const toast = document.createElement('div'); toast.className = `toast ${type}`;
             let iconClass = type === 'success' ? 'fa-check-circle' : (type === 'error' ? 'fa-exclamation-triangle' : 'fa-info-circle');
             if(type === 'warning') iconClass = 'fa-exclamation-triangle';
-            toast.innerHTML = `<div class="toast-icon"><i class="fas ${iconClass}"></i></div>
-                               <div class="toast-content"><div class="toast-title">${title}</div><div class="toast-message">${message}</div></div>`;
-            container.appendChild(toast);
-            setTimeout(() => { toast.style.animation = 'fadeOutToast 0.4s ease-out forwards'; setTimeout(() => toast.remove(), 400); }, 4500);
+            toast.innerHTML = `<div class="toast-icon"><i class="fas ${iconClass}"></i></div><div class="toast-content"><div class="toast-title">${title}</div><div class="toast-message">${message}</div></div>`;
+            container.appendChild(toast); setTimeout(() => { toast.style.animation = 'fadeOutToast 0.4s ease-out forwards'; setTimeout(() => toast.remove(), 400); }, 4500);
         }
 
-        // --- Setup Utente ---
-        let utenteCorrente = null;
-        let matricolaPura = "Sconosciuto";
-        let isAdmin = false;
-
+        let utenteCorrente = null; let matricolaPura = "Sconosciuto"; let isAdmin = false;
         const utenteString = localStorage.getItem('utenteLoggato');
-        if (!utenteString) {
-            alert("Accesso Negato: Connessione non autorizzata."); window.location.href = 'index.html';
-        } else {
+        if (!utenteString) { alert("Accesso Negato"); window.location.href = 'index.html'; } else {
             utenteCorrente = JSON.parse(utenteString);
-            let mat = utenteCorrente.matricola || "";
-            matricolaPura = mat.includes('-') ? mat.split('-').pop() : mat;
-            
-            const nomeUtente = utenteCorrente.nome || 'Sconosciuto';
-            const gradoUtente = utenteCorrente.grado ? ` - ${utenteCorrente.grado}` : '';
+            let mat = utenteCorrente.matricola || ""; matricolaPura = mat.includes('-') ? mat.split('-').pop() : mat;
+            const nomeUtente = utenteCorrente.nome || 'Sconosciuto'; const gradoUtente = utenteCorrente.grado ? ` - ${utenteCorrente.grado}` : '';
             document.getElementById('display-nome-top').innerText = `${nomeUtente}${gradoUtente}`;
             document.getElementById('display-matricola-top').innerText = `Matricola: ${matricolaPura}`;
-            
             document.getElementById('saluto-nome').innerText = `Bentornato, ${utenteCorrente.nome || 'Agente'}`;
 
             if (utenteCorrente.admin && utenteCorrente.admin.toLowerCase() === 'sì' || utenteCorrente.admin === 'si') {
-                isAdmin = true;
-                document.getElementById('nav-logs').classList.remove('hidden');
-                document.getElementById('btn-toggle-form-ann').classList.remove('hidden');
+                isAdmin = true; document.getElementById('nav-logs').classList.remove('hidden'); document.getElementById('btn-toggle-form-ann').classList.remove('hidden');
             }
 
             setTimeout(() => {
@@ -559,520 +396,204 @@
                     document.getElementById('loading-overlay').style.display = 'none';
                     document.getElementById('dashboard-section').classList.remove('hidden');
                     showToast("Identità Verificata", "Connessione stabilita.", "success");
+                    inizializzaGrafici();
                 }, 500); 
             }, 1000); 
         }
 
-        document.getElementById('btn-logout').addEventListener('click', () => {
-            localStorage.removeItem('utenteLoggato'); window.location.href = 'index.html';
-        });
+        document.getElementById('btn-logout').addEventListener('click', () => { localStorage.removeItem('utenteLoggato'); window.location.href = 'index.html'; });
 
-        // --- Registrazione LOG ---
-        async function registraLog(azione, dettaglio) {
-            try {
-                await addDoc(collection(db, "logs"), {
-                    azione: azione,
-                    dettaglio: dettaglio,
-                    autore: `${utenteCorrente.nome} - ${matricolaPura}`,
-                    timestamp: new Date().getTime(),
-                    dataOra: new Date().toLocaleString('it-IT')
-                });
-            } catch(e) {}
+        function inizializzaGrafici() {
+            new Chart(document.getElementById('chartIndagini').getContext('2d'), { type: 'doughnut', data: { labels: ['Aperti', 'In Attesa', 'Archiviati'], datasets: [{ data: [15, 6, 21], backgroundColor: ['#2563eb', '#f59e0b', '#475569'], borderWidth: 0 }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: { color: '#cbd5e1' } } }, cutout: '70%' } });
+            new Chart(document.getElementById('chartRischio').getContext('2d'), { type: 'bar', data: { labels: ['Gen', 'Feb', 'Mar', 'Apr', 'Mag', 'Giu'], datasets: [{ label: 'Identificazioni', data: [12, 19, 14, 8, 22, 17], backgroundColor: 'rgba(37, 99, 235, 0.8)', borderRadius: 6 }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#94a3b8' } }, x: { grid: { display: false }, ticks: { color: '#94a3b8' } } } } });
         }
 
-        const qLogs = query(collection(db, "logs"), orderBy("timestamp", "desc"));
-        onSnapshot(qLogs, (snapshot) => {
-            const container = document.getElementById('logs-container');
-            container.innerHTML = '';
-            if(snapshot.empty) { container.innerHTML = `<div class="nessun-dato">Nessun log registrato.</div>`; return; }
+        async function registraLog(azione, dettaglio) {
+            try { await addDoc(collection(db, "logs"), { azione: azione, dettaglio: dettaglio, autore: `${utenteCorrente.nome} - ${matricolaPura}`, timestamp: new Date().getTime(), dataOra: new Date().toLocaleString('it-IT') }); } catch(e) {}
+        }
+
+        onSnapshot(query(collection(db, "logs"), orderBy("timestamp", "desc")), (snapshot) => {
+            const container = document.getElementById('logs-container'); container.innerHTML = '';
+            if(snapshot.empty) { container.innerHTML = `<div class="nessun-dato">Nessun log.</div>`; return; }
             snapshot.forEach(docSnap => {
-                const data = docSnap.data();
-                const isEliminazione = data.azione.toLowerCase().includes('eliminazione') ? 'eliminazione' : '';
-                container.innerHTML += `
-                    <div class="log-item ${isEliminazione}">
-                        <div class="log-info">
-                            <strong><i class="fas fa-terminal"></i> ${data.azione}</strong>
-                            <span>${data.dettaglio}</span>
-                        </div>
-                        <div class="log-meta">
-                            <div><i class="fas fa-user"></i> ${data.autore}</div>
-                            ${data.dataOra}
-                        </div>
-                    </div>
-                `;
+                const data = docSnap.data(); const isElim = data.azione.toLowerCase().includes('eliminazione') ? 'eliminazione' : '';
+                container.innerHTML += `<div class="log-item ${isElim}"><div class="log-info"><strong><i class="fas fa-terminal"></i> ${data.azione}</strong><span>${data.dettaglio}</span></div><div class="log-meta"><div><i class="fas fa-user"></i> ${data.autore}</div>${data.dataOra}</div></div>`;
             });
         });
 
-        // --- Gestione Annunci e Notifiche (Campanella) ---
         const formAnn = document.getElementById('form-annuncio');
         let annunciLetti = JSON.parse(localStorage.getItem('annunciLetti')) || [];
         let currentAnnunciIds = [];
 
-        document.getElementById('btn-toggle-form-ann').addEventListener('click', () => {
-            document.getElementById('form-container-ann').classList.remove('hidden');
-        });
-
-        // Campanella Header Navigazione
-        document.getElementById('bell-icon').addEventListener('click', () => {
-            document.getElementById('nav-btn-comunicazioni').click();
-        });
+        document.getElementById('btn-toggle-form-ann').addEventListener('click', () => { document.getElementById('form-container-ann').classList.remove('hidden'); });
+        document.getElementById('bell-icon').addEventListener('click', () => { document.getElementById('nav-btn-comunicazioni').click(); });
 
         function updateBadgeNotifiche() {
-            let unreadCount = 0;
-            currentAnnunciIds.forEach(id => {
-                if(!annunciLetti.includes(id)) unreadCount++;
-            });
+            let unreadCount = 0; currentAnnunciIds.forEach(id => { if(!annunciLetti.includes(id)) unreadCount++; });
             const badge = document.getElementById('unread-count');
-            if(unreadCount > 0) {
-                badge.innerText = unreadCount;
-                badge.classList.remove('hidden');
-            } else {
-                badge.classList.add('hidden');
-            }
+            if(unreadCount > 0) { badge.innerText = unreadCount; badge.classList.remove('hidden'); } else { badge.classList.add('hidden'); }
         }
 
         window.segnaComeLetto = function(id) {
-            if(!annunciLetti.includes(id)) {
-                annunciLetti.push(id);
-                localStorage.setItem('annunciLetti', JSON.stringify(annunciLetti));
-                document.getElementById('btn-letto-' + id).style.display = 'none';
-                updateBadgeNotifiche();
-            }
+            if(!annunciLetti.includes(id)) { annunciLetti.push(id); localStorage.setItem('annunciLetti', JSON.stringify(annunciLetti)); document.getElementById('btn-letto-' + id).style.display = 'none'; updateBadgeNotifiche(); }
         };
 
         formAnn.addEventListener('submit', async (e) => {
             e.preventDefault();
-            const payload = {
-                titolo: document.getElementById('ann-titolo').value.trim(),
-                priorita: document.getElementById('ann-priorita').value,
-                testo: document.getElementById('ann-testo').value.trim(),
-                autore: `${utenteCorrente.nome} - ${utenteCorrente.grado || 'Admin'}`,
-                timestamp: new Date().getTime(),
-                dataOra: new Date().toLocaleString('it-IT')
-            };
-            try {
-                await addDoc(collection(db, "annunci"), payload);
-                registraLog("Annuncio Pubblicato", `Creata direttiva: ${payload.titolo}`);
-                showToast("Comunicazione Inviata", "L'annuncio è visibile a tutti gli agenti.", "success");
-                formAnn.reset();
-                document.getElementById('form-container-ann').classList.add('hidden');
-            } catch(e) { showToast("Errore di Rete", "Impossibile pubblicare.", "error"); }
+            const payload = { titolo: document.getElementById('ann-titolo').value.trim(), priorita: document.getElementById('ann-priorita').value, testo: document.getElementById('ann-testo').value.trim(), autore: `${utenteCorrente.nome} - ${utenteCorrente.grado || 'Admin'}`, timestamp: new Date().getTime(), dataOra: new Date().toLocaleString('it-IT') };
+            try { await addDoc(collection(db, "annunci"), payload); registraLog("Annuncio Pubblicato", `Creata direttiva: ${payload.titolo}`); showToast("Comunicazione Inviata", "Avviso pubblicato.", "success"); formAnn.reset(); document.getElementById('form-container-ann').classList.add('hidden'); } catch(e) { showToast("Errore", "Impossibile pubblicare.", "error"); }
         });
 
         onSnapshot(query(collection(db, "annunci"), orderBy("timestamp", "desc")), (snapshot) => {
-            const grid = document.getElementById('grid-annunci');
-            grid.innerHTML = '';
-            currentAnnunciIds = [];
-            
-            if(snapshot.empty) {
-                grid.innerHTML = `<div class="nessun-dato"><i class="fas fa-check-circle" style="font-size:2rem; margin-bottom:10px; color:#22c55e;"></i><br>Nessuna comunicazione in sospeso.</div>`;
-                updateBadgeNotifiche();
-                return;
-            }
-            
+            const grid = document.getElementById('grid-annunci'); grid.innerHTML = ''; currentAnnunciIds = [];
+            if(snapshot.empty) { grid.innerHTML = `<div class="nessun-dato">Nessuna comunicazione.</div>`; updateBadgeNotifiche(); return; }
             snapshot.forEach(docSnap => {
-                const data = docSnap.data();
-                const id = docSnap.id;
-                currentAnnunciIds.push(id);
-                
+                const data = docSnap.data(); const id = docSnap.id; currentAnnunciIds.push(id);
                 let badgeUrgent = data.priorita === 'urgente' ? `<span class="badge-urgent">URGENTE</span>` : '';
                 const isLetto = annunciLetti.includes(id);
-                
-                let btnLetto = isLetto ? '' : `<button class="cyber-btn small success" id="btn-letto-${id}" onclick="segnaComeLetto('${id}')"><i class="fas fa-check"></i> Segna come Presa Visione</button>`;
-                
+                let btnLetto = isLetto ? '' : `<button class="cyber-btn small success" id="btn-letto-${id}" onclick="segnaComeLetto('${id}')"><i class="fas fa-check"></i> Segna Letto</button>`;
                 let btnEliminaAdmin = isAdmin ? `<button class="btn-icon delete" onclick="richiediEliminazione('${id}', 'annunci')" title="Elimina Annuncio"><i class="fas fa-trash"></i></button>` : '';
-
-                const card = document.createElement('div');
-                card.className = `annuncio-card ${data.priorita}`;
-                card.innerHTML = `
-                    <div class="annuncio-header">
-                        <div class="annuncio-title">${badgeUrgent} ${data.titolo}</div>
-                        <div class="annuncio-meta">
-                            <span><i class="fas fa-user-circle"></i> ${data.autore}</span>
-                            <span><i class="fas fa-clock"></i> ${data.dataOra}</span>
-                            ${btnEliminaAdmin}
-                        </div>
-                    </div>
-                    <div class="annuncio-body">${data.testo}</div>
-                    <div class="annuncio-footer">
-                        ${btnLetto}
-                    </div>
-                `;
+                const card = document.createElement('div'); card.className = `annuncio-card ${data.priorita}`;
+                card.innerHTML = `<div class="annuncio-header"><div class="annuncio-title">${badgeUrgent} ${data.titolo}</div><div class="annuncio-meta"><span><i class="fas fa-user-circle"></i> ${data.autore}</span><span><i class="fas fa-clock"></i> ${data.dataOra}</span>${btnEliminaAdmin}</div></div><div class="annuncio-body">${data.testo}</div><div class="annuncio-footer">${btnLetto}</div>`;
                 grid.appendChild(card);
             });
             updateBadgeNotifiche();
         });
 
-        // --- Ricerca Globale Migliorata ---
         const searchInput = document.getElementById('global-search');
         searchInput.addEventListener('input', function(e) {
             const term = this.value.toLowerCase();
-            const cards = document.querySelectorAll('.db-card, .annuncio-card');
-            cards.forEach(card => {
-                const text = card.innerText.toLowerCase();
-                card.style.display = text.includes(term) ? 'flex' : 'none';
+            document.querySelectorAll('.db-card, .annuncio-card').forEach(card => {
+                card.style.display = card.innerText.toLowerCase().includes(term) ? 'flex' : 'none';
             });
         });
 
-        // --- Navigazione Viste ---
-        const navItems = document.querySelectorAll('.nav-item');
-        const views = document.querySelectorAll('.view-section');
+        const navItems = document.querySelectorAll('.nav-item'); const views = document.querySelectorAll('.view-section');
         navItems.forEach(item => {
             item.addEventListener('click', () => {
-                if(!item.hasAttribute('data-target')) return;
-                searchInput.value = '';
-                document.querySelectorAll('.db-card, .annuncio-card').forEach(card => card.style.display = 'flex');
-                navItems.forEach(n => n.classList.remove('active'));
-                item.classList.add('active');
-                views.forEach(v => v.classList.add('hidden'));
-                document.getElementById(item.getAttribute('data-target')).classList.remove('hidden');
+                if(!item.hasAttribute('data-target')) return; searchInput.value = ''; document.querySelectorAll('.db-card, .annuncio-card').forEach(card => card.style.display = 'flex');
+                navItems.forEach(n => n.classList.remove('active')); item.classList.add('active'); views.forEach(v => v.classList.add('hidden')); document.getElementById(item.getAttribute('data-target')).classList.remove('hidden');
             });
         });
 
-        // --- GESTIONE MODAL DETTAGLI E PROVE ---
-        let detailId = null;
-        let detailCollection = null;
-
+        let detailId = null; let detailCollection = null;
         window.apriDettaglio = async function(id, collectionName) {
-            detailId = id;
-            detailCollection = collectionName;
-            
+            detailId = id; detailCollection = collectionName;
             const docSnap = await getDoc(doc(db, collectionName, id));
             if(docSnap.exists()) {
-                const data = docSnap.data();
-                document.getElementById('detail-title').innerText = data.nome || data.titolo;
-                
-                let infoHtml = `<p style="margin-bottom:10px;"><i class="fas fa-user-tie"></i> <strong>Aperto da:</strong> ${data.firmaNome} (${data.firmaMatricola}) in data ${data.dataInserimento}</p>`;
-                if(collectionName === 'attenzionati') {
-                    infoHtml += `<p><strong>Motivo Segnalazione:</strong> ${data.motivo}</p>`;
-                } else {
-                    infoHtml += `<p><strong>Dettagli Operativi:</strong> ${data.dettagli}</p>`;
-                }
-                document.getElementById('detail-info').innerHTML = infoHtml;
-                
-                renderProve(data.prove || []);
-                document.getElementById('detail-modal').classList.add('active');
+                const data = docSnap.data(); document.getElementById('detail-title').innerText = collectionName === 'attenzionati' ? `Identificazione: ${data.nome}` : `Fascicolo: ${data.titolo}`;
+                let fotoHtml = `<div style="width:100%; height:250px; display:flex; align-items:center; justify-content:center; font-size:4rem; color:#64748b;"><i class="fas fa-file-invoice"></i></div>`;
+                if(data.fotoUrl && data.fotoUrl.trim() !== '') { fotoHtml = `<img src="${data.fotoUrl}" alt="Foto">`; }
+                let textHtml = ``;
+                if(collectionName === 'attenzionati') { textHtml = `<p><strong>Alias:</strong> ${data.alias}</p><p><strong>Rischio:</strong> <span style="text-transform:uppercase; color:var(--accent-blue); font-weight:bold;">${data.rischio}</span></p><p><strong>Affiliazione:</strong> ${data.banda}</p><p><strong>Data:</strong> ${data.dataInserimento}</p><hr style="border:0; border-top:1px solid rgba(255,255,255,0.05); margin:15px 0;"><p><strong>Motivo:</strong><br>${data.motivo}</p>`; } 
+                else { textHtml = `<p><strong>Reati:</strong> ${data.reati}</p><p><strong>Stato:</strong> <span style="text-transform:uppercase; color:var(--accent-blue); font-weight:bold;">${data.stato}</span></p><p><strong>Soggetti:</strong> ${data.soggetti}</p><p><strong>Data:</strong> ${data.dataInserimento}</p><hr style="border:0; border-top:1px solid rgba(255,255,255,0.05); margin:15px 0;"><p><strong>Dettagli:</strong><br>${data.dettagli}</p>`; }
+                const footerHtml = `<div style="margin-top:20px; font-size:0.85rem; color:#94a3b8; padding-top:15px; border-top: 1px solid rgba(255,255,255,0.05);"><i class="fas fa-user-tie"></i> Creato da: ${data.firmaNome} (${data.firmaMatricola})</div>`;
+                document.getElementById('detail-info').innerHTML = `<div class="dettaglio-layout"><div class="dettaglio-image-container">${fotoHtml}</div><div class="dettaglio-text-container">${textHtml}${footerHtml}</div></div>`;
+                renderProve(data.prove || []); document.getElementById('detail-modal').classList.add('active');
             }
         };
 
         function renderProve(proveArray) {
-            const list = document.getElementById('detail-prove-list');
-            list.innerHTML = '';
-            if(proveArray.length === 0) {
-                list.innerHTML = `<p style="color:#64748b; font-size:0.9rem;">Nessuna prova o annotazione presente in questo fascicolo.</p>`;
-                return;
-            }
-            proveArray.forEach(p => {
-                list.innerHTML += `<div class="prova-item"><p>${p.testo}</p><small><i class="fas fa-pen"></i> ${p.autore} | ${p.data}</small></div>`;
-            });
+            const list = document.getElementById('detail-prove-list'); list.innerHTML = '';
+            if(proveArray.length === 0) { list.innerHTML = `<p style="color:#64748b; font-size:0.9rem;">Nessuna prova presente.</p>`; return; }
+            proveArray.forEach(p => { list.innerHTML += `<div class="prova-item"><p>${p.testo}</p><small><i class="fas fa-pen"></i> ${p.autore} | ${p.data}</small></div>`; });
         }
 
         window.aggiungiProva = async function() {
-            const textInput = document.getElementById('input-nuova-prova');
-            const testo = textInput.value.trim();
-            if(!testo) return;
-            
-            const btn = document.getElementById('btn-add-prova');
-            btn.disabled = true;
-
-            const nuovaProva = {
-                testo: testo,
-                autore: `${utenteCorrente.nome} - ${matricolaPura}`,
-                data: new Date().toLocaleString('it-IT')
-            };
-
+            const testInput = document.getElementById('input-nuova-prova'); const testo = testInput.value.trim(); if(!testo) return;
+            document.getElementById('btn-add-prova').disabled = true;
+            const nuovaProva = { testo: testo, autore: `${utenteCorrente.nome} - ${matricolaPura}`, data: new Date().toLocaleString('it-IT') };
             try {
-                await updateDoc(doc(db, detailCollection, detailId), {
-                    prove: arrayUnion(nuovaProva)
-                });
-                textInput.value = '';
-                document.getElementById('detail-prove-list').innerHTML += `<div class="prova-item"><p>${nuovaProva.testo}</p><small><i class="fas fa-pen"></i> ${nuovaProva.autore} | ${nuovaProva.data}</small></div>`;
-                
-                registraLog("Aggiunta Prova", `Allegata nuova prova al record ID: ${detailId}`);
-                showToast("Annotazione Salvata", "Prova allegata al fascicolo con successo.", "success");
-            } catch(e) {
-                showToast("Errore Database", "Impossibile allegare la prova.", "error");
-            } finally {
-                btn.disabled = false;
-            }
+                await updateDoc(doc(db, detailCollection, detailId), { prove: arrayUnion(nuovaProva) });
+                testInput.value = ''; document.getElementById('detail-prove-list').innerHTML += `<div class="prova-item"><p>${nuovaProva.testo}</p><small><i class="fas fa-pen"></i> ${nuovaProva.autore} | ${nuovaProva.data}</small></div>`;
+                registraLog("Aggiunta Prova", `Allegata prova a record ID: ${detailId}`); showToast("Annotazione Salvata", "Prova allegata.", "success");
+            } catch(e) { showToast("Errore Database", "Impossibile allegare la prova.", "error"); } finally { document.getElementById('btn-add-prova').disabled = false; }
         };
 
-        // --- GESTIONE MODAL ELIMINAZIONE MIGLIORATA CON NOMI NEI LOG ---
         let deleteInfo = { id: null, collectionName: null };
-        window.richiediEliminazione = function(id, collectionName) {
-            deleteInfo = { id, collectionName };
-            document.getElementById('delete-modal').classList.add('active');
-        };
-
+        window.richiediEliminazione = function(id, collectionName) { deleteInfo = { id, collectionName }; document.getElementById('delete-modal').classList.add('active'); };
         document.getElementById('btn-confirm-delete').addEventListener('click', async () => {
             if(deleteInfo.id && deleteInfo.collectionName) {
                 try {
-                    const docRef = doc(db, deleteInfo.collectionName, deleteInfo.id);
-                    const docSnap = await getDoc(docRef);
-                    let nomeRecord = "Sconosciuto";
-                    if(docSnap.exists()){
-                        nomeRecord = docSnap.data().nome || docSnap.data().titolo || "Record senza nome";
-                    }
-
-                    await deleteDoc(docRef);
-                    
-                    let sezioneLog = deleteInfo.collectionName === 'attenzionati' ? 'Identificazioni' : 
-                                     (deleteInfo.collectionName === 'fascicoli' ? 'Fascicoli' : 'Comunicazioni');
-
-                    registraLog("Eliminazione", `Cancellato: ${nomeRecord} (Sezione: ${sezioneLog})`);
-                    showToast("Record Eliminato", "Il record è stato cancellato dal database cloud.", "error");
-                } catch (error) {
-                    showToast("Errore Database", "Permessi insufficienti o errore di rete.", "error");
-                }
+                    const docSnap = await getDoc(doc(db, deleteInfo.collectionName, deleteInfo.id));
+                    let nomeRec = docSnap.exists() ? (docSnap.data().nome || docSnap.data().titolo || "Record") : "Record";
+                    await deleteDoc(doc(db, deleteInfo.collectionName, deleteInfo.id));
+                    registraLog("Eliminazione", `Cancellato: ${nomeRec} (${deleteInfo.collectionName})`);
+                    showToast("Eliminato", "Record rimosso dal server.", "error");
+                } catch (error) { showToast("Errore", "Permessi insufficienti.", "error"); }
                 document.getElementById('delete-modal').classList.remove('active');
             }
         });
+        document.querySelectorAll('.btn-annulla-form').forEach(btn => { btn.addEventListener('click', (e) => { e.target.closest('.form-panel').classList.add('hidden'); e.target.closest('form').reset(); }); });
 
-        document.querySelectorAll('.btn-annulla-form').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                e.target.closest('.form-panel').classList.add('hidden');
-                e.target.closest('form').reset();
-            });
-        });
-
-        /* ==========================================
-           MODULO: IDENTIFICAZIONI (SOGGETTI ATTENZIONATI) 
-           ========================================== */
-        const formAtt = document.getElementById('form-attenzionato');
-        const gridAtt = document.getElementById('grid-attenzionati');
-        
+        const formAtt = document.getElementById('form-attenzionato'); const gridAtt = document.getElementById('grid-attenzionati');
         onSnapshot(collection(db, "attenzionati"), (snapshot) => {
             gridAtt.innerHTML = '';
-            if(snapshot.empty) {
-                gridAtt.innerHTML = `<div class="nessun-dato"><i class="fas fa-fingerprint" style="font-size: 2rem; margin-bottom:10px;"></i><br>Nessuna Identificazione presente nel server.</div>`;
-                return;
-            }
+            if(snapshot.empty) { gridAtt.innerHTML = `<div class="nessun-dato">Nessuna Identificazione presente.</div>`; return; }
             snapshot.forEach((docSnap) => {
-                const data = docSnap.data();
-                const id = docSnap.id;
-                
-                let rischioTesto = data.rischio === 'medio' ? "Rischio Medio" : (data.rischio === 'alto' ? "Rischio Alto" : "Rischio Basso");
-                const isAutorizzato = (isAdmin || utenteCorrente.matricola === data.firmaMatricolaCompleta);
-                
-                let fotoHtml = `<div class="card-foto"><i class="fas fa-user-secret"></i></div>`;
-                if(data.fotoUrl && data.fotoUrl.trim() !== '') {
-                    fotoHtml = `<img src="${data.fotoUrl}" class="card-foto" alt="Foto Sospettato">`;
-                }
-
-                let azioniHtml = `<div class="card-actions"><button class="btn-icon" onclick="apriDettaglio('${id}', 'attenzionati')" title="Apri Dettagli e Prove"><i class="fas fa-eye"></i></button>`;
-                if(isAutorizzato) {
-                    azioniHtml += `<button class="btn-icon edit" onclick="modificaAttenzionato('${id}')" title="Modifica Dati"><i class="fas fa-edit"></i></button>
-                                   <button class="btn-icon delete" onclick="richiediEliminazione('${id}', 'attenzionati')" title="Elimina"><i class="fas fa-trash-alt"></i></button>`;
-                }
-                azioniHtml += `</div>`;
-
-                const card = document.createElement('div');
-                card.className = 'db-card';
-                card.innerHTML = `
-                    <div class="card-header">
-                        ${fotoHtml}
-                        <div class="card-info">
-                            <h4>${data.nome}</h4>
-                            <span class="subtitle">Alias: "${data.alias}"</span>
-                        </div>
-                        <div class="badge-status ${data.rischio}">${rischioTesto}</div>
-                    </div>
-                    <div class="card-body">
-                        <p><strong>Affiliazione:</strong> ${data.banda}</p>
-                        <p><strong>Motivo Attenzione:</strong> ${data.motivo.substring(0, 80)}...</p>
-                    </div>
-                    <div class="card-footer">
-                        <div class="firma-agente"><i class="fas fa-pen-nib"></i> da: ${data.firmaNome} - ${data.firmaMatricola}</div>
-                        ${azioniHtml}
-                    </div>
-                `;
+                const data = docSnap.data(); const id = docSnap.id;
+                let rischioTesto = data.rischio === 'medio' ? "Medio" : (data.rischio === 'alto' ? "Alto" : "Basso");
+                const isAuth = (isAdmin || utenteCorrente.matricola === data.firmaMatricolaCompleta);
+                let fotoHtml = data.fotoUrl ? `<img src="${data.fotoUrl}" class="card-foto">` : `<div class="card-foto"><i class="fas fa-user-secret"></i></div>`;
+                let btnDelEdit = isAuth ? `<button class="btn-icon edit" onclick="modificaAttenzionato('${id}')"><i class="fas fa-edit"></i></button><button class="btn-icon delete" onclick="richiediEliminazione('${id}', 'attenzionati')"><i class="fas fa-trash-alt"></i></button>` : '';
+                const card = document.createElement('div'); card.className = 'db-card';
+                card.innerHTML = `<div class="card-header">${fotoHtml}<div class="card-info"><h4>${data.nome}</h4><span class="subtitle">Alias: "${data.alias}"</span></div><div class="badge-status ${data.rischio}">${rischioTesto}</div></div><div class="card-body"><p><strong>Affiliazione:</strong> ${data.banda}</p><p><strong>Motivo:</strong> ${data.motivo.substring(0, 80)}...</p></div><div class="card-footer"><div class="firma-agente"><i class="fas fa-pen-nib"></i> ${data.firmaNome} - ${data.firmaMatricola}</div><div class="card-actions"><button class="btn-icon" onclick="apriDettaglio('${id}', 'attenzionati')"><i class="fas fa-eye"></i></button>${btnDelEdit}</div></div>`;
                 gridAtt.appendChild(card);
             });
         });
 
-        document.getElementById('btn-toggle-form-att').addEventListener('click', () => {
-            formAtt.reset(); document.getElementById('att-id').value = ""; 
-            document.getElementById('form-titolo-att').innerHTML = '<i class="fas fa-fingerprint"></i> Nuova Identificazione';
-            document.getElementById('form-container-att').classList.remove('hidden');
-        });
+        document.getElementById('btn-toggle-form-att').addEventListener('click', () => { formAtt.reset(); document.getElementById('att-id').value = ""; document.getElementById('form-titolo-att').innerHTML = '<i class="fas fa-fingerprint"></i> Nuova Identificazione'; document.getElementById('form-container-att').classList.remove('hidden'); });
 
         formAtt.addEventListener('submit', async (e) => {
             e.preventDefault();
-            const nomeInput = document.getElementById('att-nome').value.trim();
-            const motivoInput = document.getElementById('att-motivo').value.trim();
-            if(!nomeInput || !motivoInput) { showToast("Campi Mancanti", "Compila almeno Nome e Motivo.", "warning"); return; }
-
-            const idEdit = document.getElementById('att-id').value;
-            const payload = {
-                nome: nomeInput,
-                alias: document.getElementById('att-alias').value.trim() || 'Nessuno',
-                rischio: document.getElementById('att-rischio').value,
-                fotoUrl: document.getElementById('att-foto').value.trim(),
-                banda: document.getElementById('att-banda').value.trim() || 'Sconosciuta',
-                motivo: motivoInput,
-                dataInserimento: new Date().toLocaleDateString('it-IT'),
-                firmaNome: utenteCorrente.nome || "Sconosciuto",
-                firmaMatricola: matricolaPura, 
-                firmaMatricolaCompleta: utenteCorrente.matricola
-            };
-
-            const btnSubmit = document.getElementById('btn-submit-att');
-            btnSubmit.disabled = true;
-
+            const payload = { nome: document.getElementById('att-nome').value.trim(), alias: document.getElementById('att-alias').value.trim() || 'Nessuno', rischio: document.getElementById('att-rischio').value, fotoUrl: document.getElementById('att-foto').value.trim(), banda: document.getElementById('att-banda').value.trim() || 'Sconosciuta', motivo: document.getElementById('att-motivo').value.trim(), dataInserimento: new Date().toLocaleDateString('it-IT'), firmaNome: utenteCorrente.nome, firmaMatricola: matricolaPura, firmaMatricolaCompleta: utenteCorrente.matricola };
+            if(!payload.nome || !payload.motivo) return showToast("Attenzione", "Compila Nome e Motivo.", "warning");
+            document.getElementById('btn-submit-att').disabled = true;
             try {
-                if(idEdit) {
-                    await updateDoc(doc(db, "attenzionati", idEdit), payload);
-                    registraLog("Modifica Identificazione", `Aggiornati dati di ${payload.nome}`);
-                    showToast("Record Aggiornato", "Modifiche salvate in cloud.", "success");
-                } else {
-                    payload.prove = [];
-                    await addDoc(collection(db, "attenzionati"), payload);
-                    registraLog("Nuova Identificazione", `Inserito soggetto nel database: ${payload.nome}`);
-                    showToast("Identificazione Creata", "Salvata nel database centrale.", "success");
-                }
+                if(document.getElementById('att-id').value) { await updateDoc(doc(db, "attenzionati", document.getElementById('att-id').value), payload); registraLog("Modifica", `Aggiornata Identificazione di ${payload.nome}`); showToast("Aggiornato", "Modifiche salvate.", "success"); } 
+                else { payload.prove = []; await addDoc(collection(db, "attenzionati"), payload); registraLog("Creazione", `Nuova Identificazione: ${payload.nome}`); showToast("Creato", "Salvato nel db.", "success"); }
                 formAtt.reset(); document.getElementById('form-container-att').classList.add('hidden');
-            } catch(err) {
-                showToast("Errore Database", "Impossibile salvare il documento.", "error");
-            } finally { btnSubmit.disabled = false; }
+            } catch(err) { showToast("Errore", "Salvataggio fallito.", "error"); } finally { document.getElementById('btn-submit-att').disabled = false; }
         });
 
         window.modificaAttenzionato = async function(id) {
             const docSnap = await getDoc(doc(db, "attenzionati", id));
-            if (docSnap.exists()) {
-                const data = docSnap.data();
-                document.getElementById('att-id').value = id;
-                document.getElementById('att-nome').value = data.nome || '';
-                document.getElementById('att-alias').value = data.alias === 'Nessuno' ? '' : data.alias;
-                document.getElementById('att-rischio').value = data.rischio || 'basso';
-                document.getElementById('att-foto').value = data.fotoUrl || '';
-                document.getElementById('att-banda').value = data.banda === 'Sconosciuta' ? '' : data.banda;
-                document.getElementById('att-motivo').value = data.motivo || '';
-
-                document.getElementById('form-titolo-att').innerHTML = '<i class="fas fa-edit"></i> Modifica Identificazione...';
-                document.getElementById('form-container-att').classList.remove('hidden');
-                document.querySelector('.dashboard-main').scrollTo({ top: 0, behavior: 'smooth' });
-            }
+            if (docSnap.exists()) { const data = docSnap.data(); document.getElementById('att-id').value = id; document.getElementById('att-nome').value = data.nome; document.getElementById('att-alias').value = data.alias === 'Nessuno' ? '' : data.alias; document.getElementById('att-rischio').value = data.rischio; document.getElementById('att-foto').value = data.fotoUrl; document.getElementById('att-banda').value = data.banda === 'Sconosciuta' ? '' : data.banda; document.getElementById('att-motivo').value = data.motivo; document.getElementById('form-titolo-att').innerHTML = '<i class="fas fa-edit"></i> Modifica Identificazione...'; document.getElementById('form-container-att').classList.remove('hidden'); document.querySelector('.dashboard-main').scrollTo({ top: 0, behavior: 'smooth' }); }
         };
 
-        /* ==========================================
-           MODULO: FASCICOLI D'INDAGINE
-           ========================================== */
-        const formFas = document.getElementById('form-fascicolo');
-        const gridFas = document.getElementById('grid-fascicoli');
-        
+        const formFas = document.getElementById('form-fascicolo'); const gridFas = document.getElementById('grid-fascicoli');
         onSnapshot(collection(db, "fascicoli"), (snapshot) => {
             gridFas.innerHTML = '';
-            if(snapshot.empty) {
-                gridFas.innerHTML = `<div class="nessun-dato"><i class="fas fa-folder-open" style="font-size: 2rem; margin-bottom:10px;"></i><br>Nessun Fascicolo D'Indagine aperto nel server.</div>`;
-                return;
-            }
+            if(snapshot.empty) { gridFas.innerHTML = `<div class="nessun-dato">Nessun Fascicolo aperto.</div>`; return; }
             snapshot.forEach((docSnap) => {
-                const data = docSnap.data();
-                const id = docSnap.id;
-                
-                let statoTesto = data.stato === 'attesa' ? "In Attesa" : (data.stato === 'chiuso' ? "Chiuso/Archiviato" : "Indagine Aperta");
-                const isAutorizzato = (isAdmin || utenteCorrente.matricola === data.firmaMatricolaCompleta);
-                
-                let fotoHtml = `<div class="card-foto"><i class="fas fa-file-invoice"></i></div>`;
-                if(data.fotoUrl && data.fotoUrl.trim() !== '') {
-                    fotoHtml = `<img src="${data.fotoUrl}" class="card-foto" style="border-radius:0;" alt="Copertina Fascicolo">`;
-                }
-
-                let azioniHtml = `<div class="card-actions"><button class="btn-icon" onclick="apriDettaglio('${id}', 'fascicoli')" title="Apri Dettagli e Prove"><i class="fas fa-eye"></i></button>`;
-                if(isAutorizzato) {
-                    azioniHtml += `<button class="btn-icon edit" onclick="modificaFascicolo('${id}')" title="Modifica Fascicolo"><i class="fas fa-edit"></i></button>
-                                   <button class="btn-icon delete" onclick="richiediEliminazione('${id}', 'fascicoli')" title="Elimina Fascicolo"><i class="fas fa-trash-alt"></i></button>`;
-                }
-                azioniHtml += `</div>`;
-
-                const card = document.createElement('div');
-                card.className = 'db-card';
-                card.innerHTML = `
-                    <div class="card-header">
-                        ${fotoHtml}
-                        <div class="card-info">
-                            <h4>${data.titolo}</h4>
-                            <span class="subtitle">Reati: ${data.reati}</span>
-                        </div>
-                        <div class="badge-status ${data.stato}">${statoTesto}</div>
-                    </div>
-                    <div class="card-body">
-                        <p><strong>Soggetti Coinvolti:</strong> ${data.soggetti}</p>
-                        <p><strong>Dettagli:</strong> ${data.dettagli.substring(0, 80)}...</p>
-                    </div>
-                    <div class="card-footer">
-                        <div class="firma-agente"><i class="fas fa-pen-nib"></i> da: ${data.firmaNome} - ${data.firmaMatricola}</div>
-                        ${azioniHtml}
-                    </div>
-                `;
+                const data = docSnap.data(); const id = docSnap.id;
+                let statoTesto = data.stato === 'attesa' ? "In Attesa" : (data.stato === 'chiuso' ? "Archiviato" : "Aperta");
+                const isAuth = (isAdmin || utenteCorrente.matricola === data.firmaMatricolaCompleta);
+                let fotoHtml = data.fotoUrl ? `<img src="${data.fotoUrl}" class="card-foto" style="border-radius:0;">` : `<div class="card-foto"><i class="fas fa-file-invoice"></i></div>`;
+                let btnDelEdit = isAuth ? `<button class="btn-icon edit" onclick="modificaFascicolo('${id}')"><i class="fas fa-edit"></i></button><button class="btn-icon delete" onclick="richiediEliminazione('${id}', 'fascicoli')"><i class="fas fa-trash-alt"></i></button>` : '';
+                const card = document.createElement('div'); card.className = 'db-card';
+                card.innerHTML = `<div class="card-header">${fotoHtml}<div class="card-info"><h4>${data.titolo}</h4><span class="subtitle">Reati: ${data.reati}</span></div><div class="badge-status ${data.stato}">${statoTesto}</div></div><div class="card-body"><p><strong>Soggetti:</strong> ${data.soggetti}</p><p><strong>Dettagli:</strong> ${data.dettagli.substring(0, 80)}...</p></div><div class="card-footer"><div class="firma-agente"><i class="fas fa-pen-nib"></i> ${data.firmaNome} - ${data.firmaMatricola}</div><div class="card-actions"><button class="btn-icon" onclick="apriDettaglio('${id}', 'fascicoli')"><i class="fas fa-eye"></i></button>${btnDelEdit}</div></div>`;
                 gridFas.appendChild(card);
             });
         });
 
-        document.getElementById('btn-toggle-form-fas').addEventListener('click', () => {
-            formFas.reset(); document.getElementById('fas-id').value = ""; 
-            document.getElementById('form-titolo-fas').innerHTML = '<i class="fas fa-folder-open"></i> Creazione Fascicolo D\'Indagine';
-            document.getElementById('form-container-fas').classList.remove('hidden');
-        });
+        document.getElementById('btn-toggle-form-fas').addEventListener('click', () => { formFas.reset(); document.getElementById('fas-id').value = ""; document.getElementById('form-titolo-fas').innerHTML = '<i class="fas fa-folder-open"></i> Creazione Fascicolo'; document.getElementById('form-container-fas').classList.remove('hidden'); });
 
         formFas.addEventListener('submit', async (e) => {
             e.preventDefault();
-            const titolo = document.getElementById('fas-titolo').value.trim();
-            const reati = document.getElementById('fas-reati').value.trim();
-            const dettagli = document.getElementById('fas-dettagli').value.trim();
-            
-            if(!titolo || !reati || !dettagli) { showToast("Campi Mancanti", "Compila Titolo, Reati e Dettagli.", "warning"); return; }
-
-            const idEdit = document.getElementById('fas-id').value;
-            const payload = {
-                titolo: titolo,
-                reati: reati,
-                stato: document.getElementById('fas-stato').value,
-                soggetti: document.getElementById('fas-soggetti').value.trim() || 'Nessuno inserito',
-                fotoUrl: document.getElementById('fas-foto').value.trim(),
-                dettagli: dettagli,
-                dataInserimento: new Date().toLocaleDateString('it-IT'),
-                firmaNome: utenteCorrente.nome || "Sconosciuto",
-                firmaMatricola: matricolaPura,
-                firmaMatricolaCompleta: utenteCorrente.matricola
-            };
-
-            const btnSubmit = document.getElementById('btn-submit-fas');
-            btnSubmit.disabled = true;
-
+            const payload = { titolo: document.getElementById('fas-titolo').value.trim(), reati: document.getElementById('fas-reati').value.trim(), stato: document.getElementById('fas-stato').value, soggetti: document.getElementById('fas-soggetti').value.trim() || 'Nessuno', fotoUrl: document.getElementById('fas-foto').value.trim(), dettagli: document.getElementById('fas-dettagli').value.trim(), dataInserimento: new Date().toLocaleDateString('it-IT'), firmaNome: utenteCorrente.nome, firmaMatricola: matricolaPura, firmaMatricolaCompleta: utenteCorrente.matricola };
+            if(!payload.titolo || !payload.reati || !payload.dettagli) return showToast("Attenzione", "Compila Titolo, Reati e Dettagli.", "warning");
+            document.getElementById('btn-submit-fas').disabled = true;
             try {
-                if(idEdit) {
-                    await updateDoc(doc(db, "fascicoli", idEdit), payload);
-                    registraLog("Modifica Fascicolo", `Aggiornato fascicolo: ${payload.titolo}`);
-                    showToast("Fascicolo Aggiornato", "Modifiche salvate in cloud.", "success");
-                } else {
-                    payload.prove = [];
-                    await addDoc(collection(db, "fascicoli"), payload);
-                    registraLog("Nuovo Fascicolo", `Aperto fascicolo d'indagine: ${payload.titolo}`);
-                    showToast("Fascicolo Creato", "Archiviato nel server.", "success");
-                }
+                if(document.getElementById('fas-id').value) { await updateDoc(doc(db, "fascicoli", document.getElementById('fas-id').value), payload); registraLog("Modifica", `Aggiornato Fascicolo: ${payload.titolo}`); showToast("Aggiornato", "Modifiche salvate.", "success"); } 
+                else { payload.prove = []; await addDoc(collection(db, "fascicoli"), payload); registraLog("Creazione", `Nuovo Fascicolo: ${payload.titolo}`); showToast("Creato", "Fascicolo aperto.", "success"); }
                 formFas.reset(); document.getElementById('form-container-fas').classList.add('hidden');
-            } catch(err) {
-                showToast("Errore Database", "Impossibile salvare il documento.", "error");
-            } finally { btnSubmit.disabled = false; }
+            } catch(err) { showToast("Errore", "Impossibile salvare.", "error"); } finally { document.getElementById('btn-submit-fas').disabled = false; }
         });
 
         window.modificaFascicolo = async function(id) {
             const docSnap = await getDoc(doc(db, "fascicoli", id));
-            if (docSnap.exists()) {
-                const data = docSnap.data();
-                document.getElementById('fas-id').value = id;
-                document.getElementById('fas-titolo').value = data.titolo || '';
-                document.getElementById('fas-reati').value = data.reati || '';
-                document.getElementById('fas-stato').value = data.stato || 'aperto';
-                document.getElementById('fas-soggetti').value = data.soggetti === 'Nessuno inserito' ? '' : data.soggetti;
-                document.getElementById('fas-foto').value = data.fotoUrl || '';
-                document.getElementById('fas-dettagli').value = data.dettagli || '';
-
-                document.getElementById('form-titolo-fas').innerHTML = '<i class="fas fa-edit"></i> Modifica Dati Fascicolo...';
-                document.getElementById('form-container-fas').classList.remove('hidden');
-                document.querySelector('.dashboard-main').scrollTo({ top: 0, behavior: 'smooth' });
-            }
+            if (docSnap.exists()) { const data = docSnap.data(); document.getElementById('fas-id').value = id; document.getElementById('fas-titolo').value = data.titolo; document.getElementById('fas-reati').value = data.reati; document.getElementById('fas-stato').value = data.stato; document.getElementById('fas-soggetti').value = data.soggetti === 'Nessuno' ? '' : data.soggetti; document.getElementById('fas-foto').value = data.fotoUrl; document.getElementById('fas-dettagli').value = data.dettagli; document.getElementById('form-titolo-fas').innerHTML = '<i class="fas fa-edit"></i> Modifica Fascicolo...'; document.getElementById('form-container-fas').classList.remove('hidden'); document.querySelector('.dashboard-main').scrollTo({ top: 0, behavior: 'smooth' }); }
         };
     </script>
 </body>
