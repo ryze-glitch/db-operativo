@@ -66,17 +66,15 @@
         .header-search input { background: transparent; border: none; color: white; outline: none; width: 100%; font-family: 'Lexend'; font-size: 0.95rem; }
         
         .header-right { flex: 0 0 auto; display: flex; align-items: center; justify-content: flex-end; gap: 20px; }
-        .status-dot { width: 8px; height: 8px; background-color: #22c55e; border-radius: 50%; box-shadow: 0 0 10px #22c55e; animation: pulse 2s infinite; margin-right: 5px;}
         
-        /* CSS AGGIORNATO PER DATA/ORA SU SINGOLA RIGA */
         .live-clock { display: flex; align-items: center; gap: 10px; font-family: monospace; font-size: 1rem; color: var(--text-main); font-weight: 600; letter-spacing: 1px; background: rgba(255,255,255,0.03); padding: 8px 14px; border-radius: 8px; border: 1px solid var(--border-color); white-space: nowrap; }
         
-        /* CSS AGGIORNATO PER ALLINEAMENTO PROFILO */
-        .header-user { display: flex; align-items: center; gap: 15px; font-weight: 500; border-left: 1px solid var(--border-color); padding-left: 20px; white-space: nowrap; text-align: right; }
-        .header-user span { color: var(--text-muted); font-size: 0.9rem; line-height: 1.3; }
+        /* PROFILO UTENTE IN ALTO A DESTRA */
+        .header-user { display: flex; align-items: center; gap: 15px; border-left: 1px solid var(--border-color); padding-left: 20px; white-space: nowrap; }
+        .user-text-info { display: flex; flex-direction: column; text-align: right; }
+        .user-text-info .user-name { color: white; font-weight: 600; font-size: 0.95rem; }
+        .user-text-info .user-mat { color: var(--text-muted); font-size: 0.8rem; font-family: monospace; letter-spacing: 0.5px; }
         .user-avatar { width: 42px; height: 42px; min-width: 42px; background: rgba(37, 99, 235, 0.1); border: 1px solid var(--accent-blue); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--accent-blue); font-size: 1.1rem; }
-
-        @keyframes pulse { 0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7); } 70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(34, 197, 94, 0); } 100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); } }
 
         /* --- CONTENUTO E BOTTONI --- */
         .dashboard-content { padding: 40px; }
@@ -260,10 +258,12 @@
                     </div>
                 </div>
                 <div class="header-right">
-                    <div class="status-dot"></div>
                     <div class="live-clock" id="live-clock"><i class="far fa-clock"></i> --/--/---- - --:--:--</div>
                     <div class="header-user">
-                        <span><b style="color:white; font-size:1rem;" id="display-matricola">Agente: ----</b></span>
+                        <div class="user-text-info">
+                            <div id="display-nome-top" class="user-name">Agente</div>
+                            <div id="display-matricola-top" class="user-mat">Matricola: ----</div>
+                        </div>
                         <div class="user-avatar"><i class="fas fa-user-shield"></i></div>
                     </div>
                 </div>
@@ -472,7 +472,11 @@
             let mat = utenteCorrente.matricola || "";
             matricolaPura = mat.includes('-') ? mat.split('-').pop() : mat;
             
-            document.getElementById('display-matricola').innerText = `Agente: ${matricolaPura}`;
+            // Popola il box utente in alto a destra
+            document.getElementById('display-nome-top').innerText = `${utenteCorrente.grado || ''} ${utenteCorrente.nome || 'Sconosciuto'}`.trim();
+            document.getElementById('display-matricola-top').innerText = `Matricola: ${matricolaPura}`;
+            
+            // Saluto grande nella dashboard
             document.getElementById('saluto-nome').innerText = `Bentornato, ${utenteCorrente.nome || 'Agente'}`;
 
             // Controllo Admin per mostrare menu LOG
