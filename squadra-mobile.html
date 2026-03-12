@@ -65,11 +65,16 @@
         .header-search:focus-within { border-color: var(--accent-blue); box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15); }
         .header-search input { background: transparent; border: none; color: white; outline: none; width: 100%; font-family: 'Lexend'; font-size: 0.95rem; }
         
-        .header-right { flex: 0 0 auto; display: flex; align-items: center; justify-content: flex-end; gap: 20px; }
+        .header-right { flex: 0 0 auto; display: flex; align-items: center; justify-content: flex-end; gap: 25px; }
         
+        /* CAMPANELLA NOTIFICHE */
+        .notification-bell { position: relative; cursor: pointer; color: var(--text-muted); font-size: 1.3rem; transition: color 0.2s; display: flex; align-items: center; }
+        .notification-bell:hover { color: white; }
+        .notification-badge { position: absolute; top: -6px; right: -8px; background: var(--danger); color: white; font-size: 0.65rem; font-weight: bold; border-radius: 50px; padding: 2px 6px; border: 2px solid rgba(16, 20, 31, 0.98); min-width: 18px; text-align: center; }
+
         .live-clock { display: flex; align-items: center; gap: 10px; font-family: monospace; font-size: 1rem; color: var(--text-main); font-weight: 600; letter-spacing: 1px; background: rgba(255,255,255,0.03); padding: 8px 14px; border-radius: 8px; border: 1px solid var(--border-color); white-space: nowrap; }
         
-        /* PROFILO UTENTE IN ALTO A DESTRA (AGGIORNATO) */
+        /* PROFILO UTENTE */
         .header-user { display: flex; align-items: center; gap: 15px; border-left: 1px solid var(--border-color); padding-left: 20px; white-space: nowrap; text-align: right; }
         .user-text-info { display: flex; flex-direction: column; text-align: right; }
         .user-text-info .user-name { color: white; font-weight: 600; font-size: 0.95rem; }
@@ -92,13 +97,20 @@
         .cyber-btn.outline:hover { background: rgba(37, 99, 235, 0.1); }
         .cyber-btn.danger { background: var(--danger); }
         .cyber-btn.danger:hover { background: #dc2626; box-shadow: 0 5px 15px rgba(239, 68, 68, 0.4); }
+        .cyber-btn.small { padding: 8px 16px; font-size: 0.85rem; }
+        .cyber-btn.success { background: #22c55e; }
+        .cyber-btn.success:hover { background: #16a34a; box-shadow: 0 5px 15px rgba(34, 197, 94, 0.4); }
 
-        /* CARDS PRINCIPALI */
-        .dashboard-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 25px; }
-        .dash-card { background: var(--bg-panel); border: 1px solid var(--border-color); border-radius: 12px; padding: 30px 25px; transition: transform 0.3s; display: flex; flex-direction: column; }
-        .dash-card:hover { transform: translateY(-5px); border-color: var(--accent-blue); box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
-        .dash-card h3 { display: flex; align-items: center; gap: 12px; color: var(--accent-blue); margin-bottom: 15px; font-size: 1.25rem; font-weight: 600; }
-        .dash-card p { color: var(--text-muted); font-size: 0.95rem; margin-bottom: 25px; line-height: 1.6; flex-grow: 1; }
+        /* --- DASHBOARD HOME AGGIORNATA (DRIVE E VERBALI) --- */
+        .home-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; }
+        .home-card { background: linear-gradient(145deg, #161b26 0%, #0a0d14 100%); border: 1px solid var(--border-color); border-radius: 16px; padding: 40px; display: flex; flex-direction: column; justify-content: center; align-items: flex-start; transition: all 0.3s; position: relative; overflow: hidden; }
+        .home-card::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 4px; background: var(--accent-blue); opacity: 0.5; transition: opacity 0.3s; }
+        .home-card:hover { transform: translateY(-5px); border-color: var(--accent-blue); box-shadow: 0 20px 40px rgba(0,0,0,0.4); }
+        .home-card:hover::before { opacity: 1; }
+        
+        .home-card-icon { width: 70px; height: 70px; background: rgba(37, 99, 235, 0.1); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 2.2rem; color: var(--accent-blue); margin-bottom: 25px; border: 1px solid rgba(37, 99, 235, 0.2); }
+        .home-card h3 { font-size: 1.8rem; color: white; margin-bottom: 15px; font-weight: 700; }
+        .home-card p { color: var(--text-muted); font-size: 1.05rem; line-height: 1.6; margin-bottom: 35px; max-width: 90%; }
 
         /* FORMS */
         .form-panel { background: #161b26; border: 1px solid var(--accent-blue); border-radius: 12px; padding: 30px; margin-bottom: 40px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
@@ -111,7 +123,7 @@
         .form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color: var(--accent-blue); box-shadow: 0 0 0 2px rgba(37,99,235,0.2); }
         .form-actions { display: flex; justify-content: flex-end; gap: 15px; }
 
-        /* GRIGLIA DATI (FASCICOLI/ATTENZIONATI) */
+        /* GRIGLIA DATI E CARDS */
         .data-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 25px; }
         .db-card { background: var(--bg-panel); border: 1px solid var(--border-color); border-radius: 12px; overflow: hidden; display: flex; flex-direction: column; transition: all 0.3s; position: relative; }
         .db-card:hover { border-color: #475569; transform: translateY(-4px); box-shadow: 0 15px 30px rgba(0,0,0,0.4); }
@@ -135,16 +147,17 @@
         .btn-icon.edit:hover { background: rgba(37,99,235,0.1); color: var(--accent-blue); border-color: var(--accent-blue); }
         .btn-icon.delete:hover { background: rgba(239,68,68,0.1); color: var(--danger); border-color: var(--danger); }
 
-        /* --- STILE LISTA ANNUNCI --- */
-        .annuncio-card { background: rgba(255,255,255,0.02); border-left: 4px solid var(--accent-blue); padding: 25px; border-radius: 8px; border-top: 1px solid var(--border-color); border-right: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color); transition: all 0.3s; margin-bottom: 15px; }
+        /* --- STILE LISTA ANNUNCI (CON PRESA VISIONE) --- */
+        .annuncio-card { background: rgba(255,255,255,0.02); border-left: 4px solid var(--accent-blue); padding: 25px; border-radius: 8px; border-top: 1px solid var(--border-color); border-right: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color); transition: all 0.3s; margin-bottom: 15px; display: flex; flex-direction: column; }
         .annuncio-card:hover { background: rgba(255,255,255,0.04); }
         .annuncio-card.alta { border-left-color: var(--warning); }
         .annuncio-card.urgente { border-left-color: var(--danger); background: rgba(239, 68, 68, 0.05); }
-        .annuncio-card.urgente:hover { background: rgba(239, 68, 68, 0.08); }
+        
         .annuncio-header { display: flex; justify-content: space-between; margin-bottom: 15px; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 10px; }
         .annuncio-title { font-size: 1.3rem; font-weight: 700; color: white; display:flex; align-items:center; gap: 10px;}
-        .annuncio-meta { font-size: 0.85rem; color: var(--text-muted); display: flex; gap: 20px; font-family: monospace;}
-        .annuncio-body { font-size: 1rem; color: #cbd5e1; line-height: 1.6; white-space: pre-wrap; }
+        .annuncio-meta { font-size: 0.85rem; color: var(--text-muted); display: flex; align-items: center; gap: 20px; font-family: monospace;}
+        .annuncio-body { font-size: 1rem; color: #cbd5e1; line-height: 1.6; white-space: pre-wrap; margin-bottom: 15px;}
+        .annuncio-footer { border-top: 1px solid rgba(255,255,255,0.05); padding-top: 15px; display: flex; justify-content: space-between; align-items: center; }
         .badge-urgent { background: var(--danger); color: white; padding: 3px 8px; border-radius: 4px; font-size: 0.7rem; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; }
 
         /* --- LOG DI SISTEMA --- */
@@ -165,19 +178,17 @@
         .modal-overlay.active .modal-content { transform: translateY(0); }
         .modal-icon { font-size: 3rem; color: var(--danger); margin-bottom: 20px; }
         
-        /* Modal Grande (Dettagli e Prove) */
+        /* Modal Grande */
         .modal-content.large { max-width: 800px; padding: 0; overflow: hidden; display: flex; flex-direction: column; max-height: 90vh; }
         .modal-header-large { padding: 20px 25px; background: #0b0e17; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; }
         .modal-header-large h3 { color: white; font-size: 1.3rem; }
         .modal-body-large { display: flex; flex-direction: column; padding: 25px; overflow-y: auto; gap: 20px; }
-        
         .dettaglio-info { background: rgba(255,255,255,0.02); padding: 15px; border-radius: 8px; border: 1px solid var(--border-color); font-size: 0.95rem; color: #cbd5e1; line-height: 1.6; }
         .prove-section { border-top: 1px dashed rgba(255,255,255,0.1); padding-top: 20px; }
         .prove-list { display: flex; flex-direction: column; gap: 12px; margin-top: 15px; margin-bottom: 20px; }
         .prova-item { background: #07090f; border-left: 2px solid var(--accent-blue); padding: 12px 15px; border-radius: 0 8px 8px 0; }
         .prova-item p { color: white; margin-bottom: 8px; font-size: 0.95rem; }
         .prova-item small { color: var(--text-muted); font-family: monospace; font-size: 0.8rem; }
-        
         .add-prova-box { display: flex; gap: 10px; }
         .add-prova-box input { flex: 1; background: #0a0d14; border: 1px solid var(--border-color); color: white; padding: 12px 15px; border-radius: 8px; font-family: 'Lexend'; outline: none; }
         .add-prova-box input:focus { border-color: var(--accent-blue); }
@@ -252,8 +263,8 @@
                 <h2>SQ. MOBILE</h2>
             </div>
             <ul class="sidebar-menu">
-                <li class="nav-item active" data-target="view-dashboard"><i class="fas fa-desktop"></i> <span>Terminale</span></li>
-                <li class="nav-item" data-target="view-annunci"><i class="fas fa-bell"></i> <span>Comunicazioni</span></li>
+                <li class="nav-item active" data-target="view-dashboard"><i class="fas fa-desktop"></i> <span>Home Operativa</span></li>
+                <li class="nav-item" data-target="view-annunci" id="nav-btn-comunicazioni"><i class="fas fa-bullhorn"></i> <span>Comunicazioni</span></li>
                 <li class="nav-item" data-target="view-attenzionati"><i class="fas fa-crosshairs"></i> <span>Identificazioni</span></li>
                 <li class="nav-item" data-target="view-fascicoli"><i class="fas fa-folder-open"></i> <span>Fascicoli D'Indagine</span></li>
                 <li class="nav-item hidden" id="nav-logs" data-target="view-logs"><i class="fas fa-list-alt"></i> <span>Log di Sistema</span></li>
@@ -271,6 +282,12 @@
                     </div>
                 </div>
                 <div class="header-right">
+                    
+                    <div class="notification-bell" id="bell-icon" title="Nuove Comunicazioni">
+                        <i class="fas fa-bell"></i>
+                        <span class="notification-badge hidden" id="unread-count">0</span>
+                    </div>
+
                     <div class="live-clock" id="live-clock"><i class="far fa-clock"></i> --/--/---- - --:--:--</div>
                     <div class="header-user">
                         <div class="user-text-info">
@@ -288,24 +305,23 @@
                     <div class="section-header">
                         <div class="section-title">
                             <h2 id="saluto-nome">Bentornato, Agente</h2>
-                            <p>Seleziona un'operazione rapida per procedere con le indagini.</p>
+                            <p>Terminale Centrale connesso e operativo. Seleziona un portale rapido.</p>
                         </div>
                     </div>
-                    <div class="dashboard-cards">
-                        <div class="dash-card">
-                            <h3><i class="fas fa-search"></i> Ricerca Anagrafica</h3>
-                            <p>Accedi all'anagrafe e verifica eventuali precedenti o mandati di cattura.</p>
-                            <button class="cyber-btn w-100">Apri Modulo</button>
+                    
+                    <div class="home-grid">
+                        <div class="home-card">
+                            <div class="home-card-icon"><i class="fab fa-google-drive"></i></div>
+                            <h3>Drive Condiviso</h3>
+                            <p>Accesso diretto all'archivio cloud protetto della Squadra Mobile per consultare file multimediali, foto segnaletiche e documenti integrativi condivisi tra gli agenti.</p>
+                            <a href="#" target="_blank" class="cyber-btn"><i class="fas fa-external-link-alt"></i> Accedi al Drive</a>
                         </div>
-                        <div class="dash-card">
-                            <h3><i class="fas fa-car"></i> Visura Targa</h3>
-                            <p>Controllo intestatario veicolo, copertura assicurativa e stato del mezzo.</p>
-                            <button class="cyber-btn w-100">Apri Modulo</button>
-                        </div>
-                        <div class="dash-card">
-                            <h3><i class="fas fa-folder-open"></i> Indagini in Corso</h3>
-                            <p>Gestisci l'elenco dei fascicoli investigativi della Squadra Mobile.</p>
-                            <button class="cyber-btn w-100" onclick="document.querySelectorAll('.nav-item')[3].click()">Apri Modulo</button>
+
+                        <div class="home-card">
+                            <div class="home-card-icon"><i class="fas fa-table"></i></div>
+                            <h3>Stato Verbali e Rapporti</h3>
+                            <p>Collegamento istantaneo al foglio operativo presenze e controllo dello stato di pubblicazione e approvazione dei verbali stilati dalle pattuglie.</p>
+                            <a href="#" target="_blank" class="cyber-btn outline"><i class="fas fa-file-invoice"></i> Consulta Foglio Verbali</a>
                         </div>
                     </div>
                 </div>
@@ -491,7 +507,7 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-        // --- Data e Ora Formattata (Sulla stessa riga) ---
+        // --- Data e Ora ---
         setInterval(() => { 
             const now = new Date();
             const dateStr = now.toLocaleDateString('it-IT');
@@ -514,6 +530,7 @@
         // --- Setup Utente ---
         let utenteCorrente = null;
         let matricolaPura = "Sconosciuto";
+        let isAdmin = false;
 
         const utenteString = localStorage.getItem('utenteLoggato');
         if (!utenteString) {
@@ -523,17 +540,15 @@
             let mat = utenteCorrente.matricola || "";
             matricolaPura = mat.includes('-') ? mat.split('-').pop() : mat;
             
-            // Popola il box utente in alto a destra (Nome - Grado)
             const nomeUtente = utenteCorrente.nome || 'Sconosciuto';
             const gradoUtente = utenteCorrente.grado ? ` - ${utenteCorrente.grado}` : '';
             document.getElementById('display-nome-top').innerText = `${nomeUtente}${gradoUtente}`;
             document.getElementById('display-matricola-top').innerText = `Matricola: ${matricolaPura}`;
             
-            // Saluto grande nella dashboard
             document.getElementById('saluto-nome').innerText = `Bentornato, ${utenteCorrente.nome || 'Agente'}`;
 
-            // Controllo Admin per mostrare menu LOG e bottone crea Annunci
             if (utenteCorrente.admin && utenteCorrente.admin.toLowerCase() === 'sì' || utenteCorrente.admin === 'si') {
+                isAdmin = true;
                 document.getElementById('nav-logs').classList.remove('hidden');
                 document.getElementById('btn-toggle-form-ann').classList.remove('hidden');
             }
@@ -552,7 +567,7 @@
             localStorage.removeItem('utenteLoggato'); window.location.href = 'index.html';
         });
 
-        // --- Registrazione LOG nel Cloud ---
+        // --- Registrazione LOG ---
         async function registraLog(azione, dettaglio) {
             try {
                 await addDoc(collection(db, "logs"), {
@@ -562,18 +577,14 @@
                     timestamp: new Date().getTime(),
                     dataOra: new Date().toLocaleString('it-IT')
                 });
-            } catch(e) { console.error("Errore salvataggio log", e); }
+            } catch(e) {}
         }
 
-        // Recupero LOG in tempo reale
         const qLogs = query(collection(db, "logs"), orderBy("timestamp", "desc"));
         onSnapshot(qLogs, (snapshot) => {
             const container = document.getElementById('logs-container');
             container.innerHTML = '';
-            if(snapshot.empty) {
-                container.innerHTML = `<div class="nessun-dato">Nessun log registrato.</div>`;
-                return;
-            }
+            if(snapshot.empty) { container.innerHTML = `<div class="nessun-dato">Nessun log registrato.</div>`; return; }
             snapshot.forEach(docSnap => {
                 const data = docSnap.data();
                 const isEliminazione = data.azione.toLowerCase().includes('eliminazione') ? 'eliminazione' : '';
@@ -592,11 +603,42 @@
             });
         });
 
-        // --- Gestione Annunci (Comunicazioni) ---
+        // --- Gestione Annunci e Notifiche (Campanella) ---
         const formAnn = document.getElementById('form-annuncio');
+        let annunciLetti = JSON.parse(localStorage.getItem('annunciLetti')) || [];
+        let currentAnnunciIds = [];
+
         document.getElementById('btn-toggle-form-ann').addEventListener('click', () => {
             document.getElementById('form-container-ann').classList.remove('hidden');
         });
+
+        // Campanella Header Navigazione
+        document.getElementById('bell-icon').addEventListener('click', () => {
+            document.getElementById('nav-btn-comunicazioni').click();
+        });
+
+        function updateBadgeNotifiche() {
+            let unreadCount = 0;
+            currentAnnunciIds.forEach(id => {
+                if(!annunciLetti.includes(id)) unreadCount++;
+            });
+            const badge = document.getElementById('unread-count');
+            if(unreadCount > 0) {
+                badge.innerText = unreadCount;
+                badge.classList.remove('hidden');
+            } else {
+                badge.classList.add('hidden');
+            }
+        }
+
+        window.segnaComeLetto = function(id) {
+            if(!annunciLetti.includes(id)) {
+                annunciLetti.push(id);
+                localStorage.setItem('annunciLetti', JSON.stringify(annunciLetti));
+                document.getElementById('btn-letto-' + id).style.display = 'none';
+                updateBadgeNotifiche();
+            }
+        };
 
         formAnn.addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -610,26 +652,36 @@
             };
             try {
                 await addDoc(collection(db, "annunci"), payload);
-                registraLog("Annuncio", `Pubblicata nuova direttiva: ${payload.titolo}`);
+                registraLog("Annuncio Pubblicato", `Creata direttiva: ${payload.titolo}`);
                 showToast("Comunicazione Inviata", "L'annuncio è visibile a tutti gli agenti.", "success");
                 formAnn.reset();
                 document.getElementById('form-container-ann').classList.add('hidden');
-            } catch(e) {
-                showToast("Errore di Rete", "Impossibile pubblicare.", "error");
-            }
+            } catch(e) { showToast("Errore di Rete", "Impossibile pubblicare.", "error"); }
         });
 
         onSnapshot(query(collection(db, "annunci"), orderBy("timestamp", "desc")), (snapshot) => {
             const grid = document.getElementById('grid-annunci');
             grid.innerHTML = '';
+            currentAnnunciIds = [];
+            
             if(snapshot.empty) {
                 grid.innerHTML = `<div class="nessun-dato"><i class="fas fa-check-circle" style="font-size:2rem; margin-bottom:10px; color:#22c55e;"></i><br>Nessuna comunicazione in sospeso.</div>`;
+                updateBadgeNotifiche();
                 return;
             }
+            
             snapshot.forEach(docSnap => {
                 const data = docSnap.data();
-                let badgeUrgent = data.priorita === 'urgente' ? `<span class="badge-urgent">URGENTE</span>` : '';
+                const id = docSnap.id;
+                currentAnnunciIds.push(id);
                 
+                let badgeUrgent = data.priorita === 'urgente' ? `<span class="badge-urgent">URGENTE</span>` : '';
+                const isLetto = annunciLetti.includes(id);
+                
+                let btnLetto = isLetto ? '' : `<button class="cyber-btn small success" id="btn-letto-${id}" onclick="segnaComeLetto('${id}')"><i class="fas fa-check"></i> Segna come Presa Visione</button>`;
+                
+                let btnEliminaAdmin = isAdmin ? `<button class="btn-icon delete" onclick="richiediEliminazione('${id}', 'annunci')" title="Elimina Annuncio"><i class="fas fa-trash"></i></button>` : '';
+
                 const card = document.createElement('div');
                 card.className = `annuncio-card ${data.priorita}`;
                 card.innerHTML = `
@@ -638,12 +690,17 @@
                         <div class="annuncio-meta">
                             <span><i class="fas fa-user-circle"></i> ${data.autore}</span>
                             <span><i class="fas fa-clock"></i> ${data.dataOra}</span>
+                            ${btnEliminaAdmin}
                         </div>
                     </div>
                     <div class="annuncio-body">${data.testo}</div>
+                    <div class="annuncio-footer">
+                        ${btnLetto}
+                    </div>
                 `;
                 grid.appendChild(card);
             });
+            updateBadgeNotifiche();
         });
 
         // --- Ricerca Globale Migliorata ---
@@ -663,17 +720,14 @@
         navItems.forEach(item => {
             item.addEventListener('click', () => {
                 if(!item.hasAttribute('data-target')) return;
-                
                 searchInput.value = '';
                 document.querySelectorAll('.db-card, .annuncio-card').forEach(card => card.style.display = 'flex');
-
                 navItems.forEach(n => n.classList.remove('active'));
                 item.classList.add('active');
                 views.forEach(v => v.classList.add('hidden'));
                 document.getElementById(item.getAttribute('data-target')).classList.remove('hidden');
             });
         });
-
 
         // --- GESTIONE MODAL DETTAGLI E PROVE ---
         let detailId = null;
@@ -753,7 +807,6 @@
         document.getElementById('btn-confirm-delete').addEventListener('click', async () => {
             if(deleteInfo.id && deleteInfo.collectionName) {
                 try {
-                    // Ottieni il nome prima di cancellarlo per metterlo nel log
                     const docRef = doc(db, deleteInfo.collectionName, deleteInfo.id);
                     const docSnap = await getDoc(docRef);
                     let nomeRecord = "Sconosciuto";
@@ -761,11 +814,12 @@
                         nomeRecord = docSnap.data().nome || docSnap.data().titolo || "Record senza nome";
                     }
 
-                    // Esegui cancellazione
                     await deleteDoc(docRef);
                     
-                    // Registra il log con il nome corretto
-                    registraLog("Eliminazione", `Cancellato: ${nomeRecord} (Sezione: ${deleteInfo.collectionName})`);
+                    let sezioneLog = deleteInfo.collectionName === 'attenzionati' ? 'Identificazioni' : 
+                                     (deleteInfo.collectionName === 'fascicoli' ? 'Fascicoli' : 'Comunicazioni');
+
+                    registraLog("Eliminazione", `Cancellato: ${nomeRecord} (Sezione: ${sezioneLog})`);
                     showToast("Record Eliminato", "Il record è stato cancellato dal database cloud.", "error");
                 } catch (error) {
                     showToast("Errore Database", "Permessi insufficienti o errore di rete.", "error");
@@ -798,22 +852,17 @@
                 const id = docSnap.id;
                 
                 let rischioTesto = data.rischio === 'medio' ? "Rischio Medio" : (data.rischio === 'alto' ? "Rischio Alto" : "Rischio Basso");
-                const isAutorizzato = (utenteCorrente.admin && utenteCorrente.admin.toLowerCase() === 'sì' || utenteCorrente.matricola === data.firmaMatricolaCompleta);
+                const isAutorizzato = (isAdmin || utenteCorrente.matricola === data.firmaMatricolaCompleta);
                 
                 let fotoHtml = `<div class="card-foto"><i class="fas fa-user-secret"></i></div>`;
                 if(data.fotoUrl && data.fotoUrl.trim() !== '') {
                     fotoHtml = `<img src="${data.fotoUrl}" class="card-foto" alt="Foto Sospettato">`;
                 }
 
-                let azioniHtml = `
-                    <div class="card-actions">
-                        <button class="btn-icon" onclick="apriDettaglio('${id}', 'attenzionati')" title="Apri Dettagli e Prove"><i class="fas fa-eye"></i></button>
-                `;
+                let azioniHtml = `<div class="card-actions"><button class="btn-icon" onclick="apriDettaglio('${id}', 'attenzionati')" title="Apri Dettagli e Prove"><i class="fas fa-eye"></i></button>`;
                 if(isAutorizzato) {
-                    azioniHtml += `
-                        <button class="btn-icon edit" onclick="modificaAttenzionato('${id}')" title="Modifica Dati"><i class="fas fa-edit"></i></button>
-                        <button class="btn-icon delete" onclick="richiediEliminazione('${id}', 'attenzionati')" title="Elimina"><i class="fas fa-trash-alt"></i></button>
-                    `;
+                    azioniHtml += `<button class="btn-icon edit" onclick="modificaAttenzionato('${id}')" title="Modifica Dati"><i class="fas fa-edit"></i></button>
+                                   <button class="btn-icon delete" onclick="richiediEliminazione('${id}', 'attenzionati')" title="Elimina"><i class="fas fa-trash-alt"></i></button>`;
                 }
                 azioniHtml += `</div>`;
 
@@ -833,9 +882,7 @@
                         <p><strong>Motivo Attenzione:</strong> ${data.motivo.substring(0, 80)}...</p>
                     </div>
                     <div class="card-footer">
-                        <div class="firma-agente">
-                            <i class="fas fa-pen-nib"></i> da: ${data.firmaNome} - ${data.firmaMatricola}
-                        </div>
+                        <div class="firma-agente"><i class="fas fa-pen-nib"></i> da: ${data.firmaNome} - ${data.firmaMatricola}</div>
                         ${azioniHtml}
                     </div>
                 `;
@@ -851,7 +898,6 @@
 
         formAtt.addEventListener('submit', async (e) => {
             e.preventDefault();
-            
             const nomeInput = document.getElementById('att-nome').value.trim();
             const motivoInput = document.getElementById('att-motivo').value.trim();
             if(!nomeInput || !motivoInput) { showToast("Campi Mancanti", "Compila almeno Nome e Motivo.", "warning"); return; }
@@ -876,12 +922,12 @@
             try {
                 if(idEdit) {
                     await updateDoc(doc(db, "attenzionati", idEdit), payload);
-                    registraLog("Modifica", `Modificata Identificazione di ${payload.nome}`);
+                    registraLog("Modifica Identificazione", `Aggiornati dati di ${payload.nome}`);
                     showToast("Record Aggiornato", "Modifiche salvate in cloud.", "success");
                 } else {
                     payload.prove = [];
                     await addDoc(collection(db, "attenzionati"), payload);
-                    registraLog("Creazione", `Aperta nuova Identificazione per ${payload.nome}`);
+                    registraLog("Nuova Identificazione", `Inserito soggetto nel database: ${payload.nome}`);
                     showToast("Identificazione Creata", "Salvata nel database centrale.", "success");
                 }
                 formAtt.reset(); document.getElementById('form-container-att').classList.add('hidden');
@@ -925,22 +971,17 @@
                 const id = docSnap.id;
                 
                 let statoTesto = data.stato === 'attesa' ? "In Attesa" : (data.stato === 'chiuso' ? "Chiuso/Archiviato" : "Indagine Aperta");
-                const isAutorizzato = (utenteCorrente.admin && utenteCorrente.admin.toLowerCase() === 'sì' || utenteCorrente.matricola === data.firmaMatricolaCompleta);
+                const isAutorizzato = (isAdmin || utenteCorrente.matricola === data.firmaMatricolaCompleta);
                 
                 let fotoHtml = `<div class="card-foto"><i class="fas fa-file-invoice"></i></div>`;
                 if(data.fotoUrl && data.fotoUrl.trim() !== '') {
                     fotoHtml = `<img src="${data.fotoUrl}" class="card-foto" style="border-radius:0;" alt="Copertina Fascicolo">`;
                 }
 
-                let azioniHtml = `
-                    <div class="card-actions">
-                        <button class="btn-icon" onclick="apriDettaglio('${id}', 'fascicoli')" title="Apri Dettagli e Prove"><i class="fas fa-eye"></i></button>
-                `;
+                let azioniHtml = `<div class="card-actions"><button class="btn-icon" onclick="apriDettaglio('${id}', 'fascicoli')" title="Apri Dettagli e Prove"><i class="fas fa-eye"></i></button>`;
                 if(isAutorizzato) {
-                    azioniHtml += `
-                        <button class="btn-icon edit" onclick="modificaFascicolo('${id}')" title="Modifica Fascicolo"><i class="fas fa-edit"></i></button>
-                        <button class="btn-icon delete" onclick="richiediEliminazione('${id}', 'fascicoli')" title="Elimina Fascicolo"><i class="fas fa-trash-alt"></i></button>
-                    `;
+                    azioniHtml += `<button class="btn-icon edit" onclick="modificaFascicolo('${id}')" title="Modifica Fascicolo"><i class="fas fa-edit"></i></button>
+                                   <button class="btn-icon delete" onclick="richiediEliminazione('${id}', 'fascicoli')" title="Elimina Fascicolo"><i class="fas fa-trash-alt"></i></button>`;
                 }
                 azioniHtml += `</div>`;
 
@@ -960,9 +1001,7 @@
                         <p><strong>Dettagli:</strong> ${data.dettagli.substring(0, 80)}...</p>
                     </div>
                     <div class="card-footer">
-                        <div class="firma-agente">
-                            <i class="fas fa-pen-nib"></i> da: ${data.firmaNome} - ${data.firmaMatricola}
-                        </div>
+                        <div class="firma-agente"><i class="fas fa-pen-nib"></i> da: ${data.firmaNome} - ${data.firmaMatricola}</div>
                         ${azioniHtml}
                     </div>
                 `;
@@ -978,7 +1017,6 @@
 
         formFas.addEventListener('submit', async (e) => {
             e.preventDefault();
-
             const titolo = document.getElementById('fas-titolo').value.trim();
             const reati = document.getElementById('fas-reati').value.trim();
             const dettagli = document.getElementById('fas-dettagli').value.trim();
@@ -1005,12 +1043,12 @@
             try {
                 if(idEdit) {
                     await updateDoc(doc(db, "fascicoli", idEdit), payload);
-                    registraLog("Modifica", `Modificato Fascicolo: ${payload.titolo}`);
+                    registraLog("Modifica Fascicolo", `Aggiornato fascicolo: ${payload.titolo}`);
                     showToast("Fascicolo Aggiornato", "Modifiche salvate in cloud.", "success");
                 } else {
                     payload.prove = [];
                     await addDoc(collection(db, "fascicoli"), payload);
-                    registraLog("Creazione", `Aperto nuovo Fascicolo: ${payload.titolo}`);
+                    registraLog("Nuovo Fascicolo", `Aperto fascicolo d'indagine: ${payload.titolo}`);
                     showToast("Fascicolo Creato", "Archiviato nel server.", "success");
                 }
                 formFas.reset(); document.getElementById('form-container-fas').classList.add('hidden');
