@@ -69,8 +69,8 @@
         
         .live-clock { display: flex; align-items: center; gap: 10px; font-family: monospace; font-size: 1rem; color: var(--text-main); font-weight: 600; letter-spacing: 1px; background: rgba(255,255,255,0.03); padding: 8px 14px; border-radius: 8px; border: 1px solid var(--border-color); white-space: nowrap; }
         
-        /* PROFILO UTENTE IN ALTO A DESTRA */
-        .header-user { display: flex; align-items: center; gap: 15px; border-left: 1px solid var(--border-color); padding-left: 20px; white-space: nowrap; }
+        /* PROFILO UTENTE IN ALTO A DESTRA (AGGIORNATO) */
+        .header-user { display: flex; align-items: center; gap: 15px; border-left: 1px solid var(--border-color); padding-left: 20px; white-space: nowrap; text-align: right; }
         .user-text-info { display: flex; flex-direction: column; text-align: right; }
         .user-text-info .user-name { color: white; font-weight: 600; font-size: 0.95rem; }
         .user-text-info .user-mat { color: var(--text-muted); font-size: 0.8rem; font-family: monospace; letter-spacing: 0.5px; }
@@ -134,6 +134,18 @@
         .btn-icon:hover { background: rgba(255,255,255,0.1); color: white; }
         .btn-icon.edit:hover { background: rgba(37,99,235,0.1); color: var(--accent-blue); border-color: var(--accent-blue); }
         .btn-icon.delete:hover { background: rgba(239,68,68,0.1); color: var(--danger); border-color: var(--danger); }
+
+        /* --- STILE LISTA ANNUNCI --- */
+        .annuncio-card { background: rgba(255,255,255,0.02); border-left: 4px solid var(--accent-blue); padding: 25px; border-radius: 8px; border-top: 1px solid var(--border-color); border-right: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color); transition: all 0.3s; margin-bottom: 15px; }
+        .annuncio-card:hover { background: rgba(255,255,255,0.04); }
+        .annuncio-card.alta { border-left-color: var(--warning); }
+        .annuncio-card.urgente { border-left-color: var(--danger); background: rgba(239, 68, 68, 0.05); }
+        .annuncio-card.urgente:hover { background: rgba(239, 68, 68, 0.08); }
+        .annuncio-header { display: flex; justify-content: space-between; margin-bottom: 15px; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 10px; }
+        .annuncio-title { font-size: 1.3rem; font-weight: 700; color: white; display:flex; align-items:center; gap: 10px;}
+        .annuncio-meta { font-size: 0.85rem; color: var(--text-muted); display: flex; gap: 20px; font-family: monospace;}
+        .annuncio-body { font-size: 1rem; color: #cbd5e1; line-height: 1.6; white-space: pre-wrap; }
+        .badge-urgent { background: var(--danger); color: white; padding: 3px 8px; border-radius: 4px; font-size: 0.7rem; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; }
 
         /* --- LOG DI SISTEMA --- */
         .log-list { display: flex; flex-direction: column; gap: 10px; max-height: 600px; overflow-y: auto; padding-right: 10px; }
@@ -241,6 +253,7 @@
             </div>
             <ul class="sidebar-menu">
                 <li class="nav-item active" data-target="view-dashboard"><i class="fas fa-desktop"></i> <span>Terminale</span></li>
+                <li class="nav-item" data-target="view-annunci"><i class="fas fa-bell"></i> <span>Comunicazioni</span></li>
                 <li class="nav-item" data-target="view-attenzionati"><i class="fas fa-crosshairs"></i> <span>Identificazioni</span></li>
                 <li class="nav-item" data-target="view-fascicoli"><i class="fas fa-folder-open"></i> <span>Fascicoli D'Indagine</span></li>
                 <li class="nav-item hidden" id="nav-logs" data-target="view-logs"><i class="fas fa-list-alt"></i> <span>Log di Sistema</span></li>
@@ -261,7 +274,7 @@
                     <div class="live-clock" id="live-clock"><i class="far fa-clock"></i> --/--/---- - --:--:--</div>
                     <div class="header-user">
                         <div class="user-text-info">
-                            <div id="display-nome-top" class="user-name">Agente</div>
+                            <div id="display-nome-top" class="user-name">Nome - Grado</div>
                             <div id="display-matricola-top" class="user-mat">Matricola: ----</div>
                         </div>
                         <div class="user-avatar"><i class="fas fa-user-shield"></i></div>
@@ -292,8 +305,50 @@
                         <div class="dash-card">
                             <h3><i class="fas fa-folder-open"></i> Indagini in Corso</h3>
                             <p>Gestisci l'elenco dei fascicoli investigativi della Squadra Mobile.</p>
-                            <button class="cyber-btn w-100" onclick="document.querySelectorAll('.nav-item')[2].click()">Apri Modulo</button>
+                            <button class="cyber-btn w-100" onclick="document.querySelectorAll('.nav-item')[3].click()">Apri Modulo</button>
                         </div>
+                    </div>
+                </div>
+
+                <div id="view-annunci" class="view-section hidden">
+                    <div class="section-header">
+                        <div class="section-title">
+                            <h2>Comunicazioni e Direttive</h2>
+                            <p>Bacheca ufficiale per gli avvisi del comando e le direttive operative.</p>
+                        </div>
+                        <button id="btn-toggle-form-ann" class="cyber-btn hidden"><i class="fas fa-bullhorn"></i> Pubblica Avviso</button>
+                    </div>
+
+                    <div id="form-container-ann" class="form-panel hidden">
+                        <h3 id="form-titolo-ann"><i class="fas fa-pen"></i> Nuova Comunicazione</h3>
+                        <form id="form-annuncio">
+                            <div class="form-grid">
+                                <div class="form-group full">
+                                    <label>Oggetto / Titolo</label>
+                                    <input type="text" id="ann-titolo" placeholder="Es. Aggiornamento turni settimanali" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>Priorità</label>
+                                    <select id="ann-priorita">
+                                        <option value="normale">Normale (Informativo)</option>
+                                        <option value="alta">Alta (Importante)</option>
+                                        <option value="urgente">Urgente (Immediato/Rosso)</option>
+                                    </select>
+                                </div>
+                                <div class="form-group full">
+                                    <label>Corpo del Messaggio</label>
+                                    <textarea id="ann-testo" rows="4" placeholder="Scrivi la comunicazione da inviare a tutti gli agenti..." required></textarea>
+                                </div>
+                            </div>
+                            <div class="form-actions">
+                                <button type="button" class="cyber-btn outline btn-annulla-form">Annulla</button>
+                                <button type="submit" class="cyber-btn"><i class="fas fa-paper-plane"></i> Pubblica Direttiva</button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <div id="grid-annunci" style="display:flex; flex-direction:column;">
+                        <div class="nessun-dato"><i class="fas fa-spinner fa-spin" style="font-size: 2rem; margin-bottom:10px;"></i><br>Sincronizzazione bacheca in corso...</div>
                     </div>
                 </div>
 
@@ -347,9 +402,7 @@
                         </form>
                     </div>
 
-                    <div id="grid-attenzionati" class="data-grid">
-                        <div class="nessun-dato"><i class="fas fa-spinner fa-spin" style="font-size: 2rem; margin-bottom:10px;"></i><br>Sincronizzazione col Cloud in corso...</div>
-                    </div>
+                    <div id="grid-attenzionati" class="data-grid"></div>
                 </div>
 
                 <div id="view-fascicoli" class="view-section hidden">
@@ -402,9 +455,7 @@
                         </form>
                     </div>
 
-                    <div id="grid-fascicoli" class="data-grid">
-                        <div class="nessun-dato"><i class="fas fa-spinner fa-spin" style="font-size: 2rem; margin-bottom:10px;"></i><br>Sincronizzazione col Cloud in corso...</div>
-                    </div>
+                    <div id="grid-fascicoli" class="data-grid"></div>
                 </div>
 
                 <div id="view-logs" class="view-section hidden">
@@ -472,16 +523,19 @@
             let mat = utenteCorrente.matricola || "";
             matricolaPura = mat.includes('-') ? mat.split('-').pop() : mat;
             
-            // Popola il box utente in alto a destra
-            document.getElementById('display-nome-top').innerText = `${utenteCorrente.grado || ''} ${utenteCorrente.nome || 'Sconosciuto'}`.trim();
+            // Popola il box utente in alto a destra (Nome - Grado)
+            const nomeUtente = utenteCorrente.nome || 'Sconosciuto';
+            const gradoUtente = utenteCorrente.grado ? ` - ${utenteCorrente.grado}` : '';
+            document.getElementById('display-nome-top').innerText = `${nomeUtente}${gradoUtente}`;
             document.getElementById('display-matricola-top').innerText = `Matricola: ${matricolaPura}`;
             
             // Saluto grande nella dashboard
             document.getElementById('saluto-nome').innerText = `Bentornato, ${utenteCorrente.nome || 'Agente'}`;
 
-            // Controllo Admin per mostrare menu LOG
+            // Controllo Admin per mostrare menu LOG e bottone crea Annunci
             if (utenteCorrente.admin && utenteCorrente.admin.toLowerCase() === 'sì' || utenteCorrente.admin === 'si') {
                 document.getElementById('nav-logs').classList.remove('hidden');
+                document.getElementById('btn-toggle-form-ann').classList.remove('hidden');
             }
 
             setTimeout(() => {
@@ -538,19 +592,68 @@
             });
         });
 
+        // --- Gestione Annunci (Comunicazioni) ---
+        const formAnn = document.getElementById('form-annuncio');
+        document.getElementById('btn-toggle-form-ann').addEventListener('click', () => {
+            document.getElementById('form-container-ann').classList.remove('hidden');
+        });
+
+        formAnn.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const payload = {
+                titolo: document.getElementById('ann-titolo').value.trim(),
+                priorita: document.getElementById('ann-priorita').value,
+                testo: document.getElementById('ann-testo').value.trim(),
+                autore: `${utenteCorrente.nome} - ${utenteCorrente.grado || 'Admin'}`,
+                timestamp: new Date().getTime(),
+                dataOra: new Date().toLocaleString('it-IT')
+            };
+            try {
+                await addDoc(collection(db, "annunci"), payload);
+                registraLog("Annuncio", `Pubblicata nuova direttiva: ${payload.titolo}`);
+                showToast("Comunicazione Inviata", "L'annuncio è visibile a tutti gli agenti.", "success");
+                formAnn.reset();
+                document.getElementById('form-container-ann').classList.add('hidden');
+            } catch(e) {
+                showToast("Errore di Rete", "Impossibile pubblicare.", "error");
+            }
+        });
+
+        onSnapshot(query(collection(db, "annunci"), orderBy("timestamp", "desc")), (snapshot) => {
+            const grid = document.getElementById('grid-annunci');
+            grid.innerHTML = '';
+            if(snapshot.empty) {
+                grid.innerHTML = `<div class="nessun-dato"><i class="fas fa-check-circle" style="font-size:2rem; margin-bottom:10px; color:#22c55e;"></i><br>Nessuna comunicazione in sospeso.</div>`;
+                return;
+            }
+            snapshot.forEach(docSnap => {
+                const data = docSnap.data();
+                let badgeUrgent = data.priorita === 'urgente' ? `<span class="badge-urgent">URGENTE</span>` : '';
+                
+                const card = document.createElement('div');
+                card.className = `annuncio-card ${data.priorita}`;
+                card.innerHTML = `
+                    <div class="annuncio-header">
+                        <div class="annuncio-title">${badgeUrgent} ${data.titolo}</div>
+                        <div class="annuncio-meta">
+                            <span><i class="fas fa-user-circle"></i> ${data.autore}</span>
+                            <span><i class="fas fa-clock"></i> ${data.dataOra}</span>
+                        </div>
+                    </div>
+                    <div class="annuncio-body">${data.testo}</div>
+                `;
+                grid.appendChild(card);
+            });
+        });
+
         // --- Ricerca Globale Migliorata ---
         const searchInput = document.getElementById('global-search');
         searchInput.addEventListener('input', function(e) {
             const term = this.value.toLowerCase();
-            // Cerca in tutte le cards presenti nel DOM
-            const cards = document.querySelectorAll('.db-card');
+            const cards = document.querySelectorAll('.db-card, .annuncio-card');
             cards.forEach(card => {
                 const text = card.innerText.toLowerCase();
-                if(text.includes(term)) {
-                    card.style.display = 'flex';
-                } else {
-                    card.style.display = 'none';
-                }
+                card.style.display = text.includes(term) ? 'flex' : 'none';
             });
         });
 
@@ -561,9 +664,8 @@
             item.addEventListener('click', () => {
                 if(!item.hasAttribute('data-target')) return;
                 
-                // Pulisce la barra di ricerca quando si cambia sezione per evitare bug visivi
                 searchInput.value = '';
-                document.querySelectorAll('.db-card').forEach(card => card.style.display = 'flex');
+                document.querySelectorAll('.db-card, .annuncio-card').forEach(card => card.style.display = 'flex');
 
                 navItems.forEach(n => n.classList.remove('active'));
                 item.classList.add('active');
@@ -573,7 +675,7 @@
         });
 
 
-        // --- GESTIONE MODAL DETTAGLI / PROVE ---
+        // --- GESTIONE MODAL DETTAGLI E PROVE ---
         let detailId = null;
         let detailCollection = null;
 
@@ -641,7 +743,7 @@
             }
         };
 
-        // --- GESTIONE MODAL ELIMINAZIONE GLOBALE ---
+        // --- GESTIONE MODAL ELIMINAZIONE MIGLIORATA CON NOMI NEI LOG ---
         let deleteInfo = { id: null, collectionName: null };
         window.richiediEliminazione = function(id, collectionName) {
             deleteInfo = { id, collectionName };
@@ -651,8 +753,19 @@
         document.getElementById('btn-confirm-delete').addEventListener('click', async () => {
             if(deleteInfo.id && deleteInfo.collectionName) {
                 try {
-                    await deleteDoc(doc(db, deleteInfo.collectionName, deleteInfo.id));
-                    registraLog("Eliminazione", `Cancellato un record dalla sezione ${deleteInfo.collectionName}`);
+                    // Ottieni il nome prima di cancellarlo per metterlo nel log
+                    const docRef = doc(db, deleteInfo.collectionName, deleteInfo.id);
+                    const docSnap = await getDoc(docRef);
+                    let nomeRecord = "Sconosciuto";
+                    if(docSnap.exists()){
+                        nomeRecord = docSnap.data().nome || docSnap.data().titolo || "Record senza nome";
+                    }
+
+                    // Esegui cancellazione
+                    await deleteDoc(docRef);
+                    
+                    // Registra il log con il nome corretto
+                    registraLog("Eliminazione", `Cancellato: ${nomeRecord} (Sezione: ${deleteInfo.collectionName})`);
                     showToast("Record Eliminato", "Il record è stato cancellato dal database cloud.", "error");
                 } catch (error) {
                     showToast("Errore Database", "Permessi insufficienti o errore di rete.", "error");
@@ -768,7 +881,7 @@
                 } else {
                     payload.prove = [];
                     await addDoc(collection(db, "attenzionati"), payload);
-                    registraLog("Creazione", `Creata nuova Identificazione per ${payload.nome}`);
+                    registraLog("Creazione", `Aperta nuova Identificazione per ${payload.nome}`);
                     showToast("Identificazione Creata", "Salvata nel database centrale.", "success");
                 }
                 formAtt.reset(); document.getElementById('form-container-att').classList.add('hidden');
