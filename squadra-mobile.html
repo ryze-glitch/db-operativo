@@ -295,6 +295,10 @@
                                     </select>
                                 </div>
                                 <div class="form-group">
+                                    <label>Affiliazione / Banda</label>
+                                    <input type="text" id="att-banda" placeholder="Es. Nessuna">
+                                </div>
+                                <div class="form-group full">
                                     <label>URL Foto (Es. Imgur)</label>
                                     <input type="url" id="att-foto" placeholder="https://i.imgur.com/...">
                                 </div>
@@ -350,7 +354,7 @@
                                     <label>Soggetti Coinvolti</label>
                                     <input type="text" id="fas-soggetti" placeholder="Nomi separati da virgola...">
                                 </div>
-                                <div class="form-group">
+                                <div class="form-group full">
                                     <label>URL Immagine Copertina/Prove</label>
                                     <input type="url" id="fas-foto" placeholder="https://i.imgur.com/...">
                                 </div>
@@ -376,7 +380,6 @@
     </div>
 
     <script type="module">
-        // Uso la versione 10.10.0 ufficiale di Firebase per massima stabilità
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-app.js";
         import { getFirestore, collection, addDoc, updateDoc, deleteDoc, doc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-firestore.js";
 
@@ -416,8 +419,6 @@
             alert("Accesso Negato: Connessione non autorizzata."); window.location.href = 'index.html';
         } else {
             utenteCorrente = JSON.parse(utenteString);
-            
-            // Protezione contro matricole indefinite o errate
             let mat = utenteCorrente.matricola || "";
             matricolaPura = mat.includes('-') ? mat.split('-').pop() : mat;
             
@@ -476,13 +477,11 @@
                     showToast("Record Eliminato", "Il record è stato cancellato dal database cloud.", "error");
                 } catch (error) {
                     showToast("Errore Database", "Permessi insufficienti o errore di rete.", "error");
-                    console.error("Errore eliminazione:", error);
                 }
                 deleteModal.classList.remove('active');
             }
         });
 
-        // Chiudi form generico
         document.querySelectorAll('.btn-annulla-form').forEach(btn => {
             btn.addEventListener('click', (e) => {
                 e.target.closest('.form-panel').classList.add('hidden');
@@ -562,7 +561,6 @@
         formAtt.addEventListener('submit', async (e) => {
             e.preventDefault();
             
-            // Validazione manuale e sicura
             const nomeInput = document.getElementById('att-nome').value.trim();
             const motivoInput = document.getElementById('att-motivo').value.trim();
             if(!nomeInput || !motivoInput) {
@@ -582,7 +580,7 @@
                 
                 firmaNome: utenteCorrente.nome || "Sconosciuto",
                 firmaMatricola: matricolaPura, 
-                firmaMatricolaCompleta: utenteCorrente.matricola // Usata in background per l'autorizzazione
+                firmaMatricolaCompleta: utenteCorrente.matricola
             };
 
             const btnSubmit = document.getElementById('btn-submit-att');
@@ -598,7 +596,6 @@
                 }
                 formAtt.reset(); document.getElementById('form-container-att').classList.add('hidden');
             } catch(err) {
-                console.error("Errore di Rete:", err);
                 showToast("Errore Database", "Impossibile salvare il documento nel Cloud.", "error");
             } finally {
                 btnSubmit.disabled = false;
@@ -698,7 +695,6 @@
         formFas.addEventListener('submit', async (e) => {
             e.preventDefault();
 
-            // Validazione manuale sicura
             const titolo = document.getElementById('fas-titolo').value.trim();
             const reati = document.getElementById('fas-reati').value.trim();
             const dettagli = document.getElementById('fas-dettagli').value.trim();
@@ -736,7 +732,6 @@
                 }
                 formFas.reset(); document.getElementById('form-container-fas').classList.add('hidden');
             } catch(err) {
-                console.error("Errore di Rete:", err);
                 showToast("Errore Database", "Impossibile salvare il documento nel Cloud.", "error");
             } finally {
                 btnSubmit.disabled = false;
