@@ -685,15 +685,14 @@
                     const webhookUrl = "https://discord.com/api/webhooks/1481913832774570098/wyc0inW8zgiDfzqYiRFn8_jS5GwnCFLmA-X73-a307LbPJBVvOIjaMbkoa7byYqTcR4S";
                     const embed = {
                         embeds: [{
-                            author: { name: "SISTEMA OPERATIVO CENTRALE - IPRP", icon_url: "https://i.imgur.com/SUM8B5x.png" },
-                            title: `📋 Nuovo Foglio Investigativo: ${payload.nome}`,
-                            description: `È stata registrata una nuova identificazione nel database della Squadra Mobile.\n\n**Dettagli Soggetto:**`,
+                            author: { name: "SISTEMA IDENTIFICAZIONE SM - IPRP X", icon_url: "https://i.imgur.com/SUM8B5x.png" },
+                            description: `> **Nuova Identifcazioen Registrata.**.\n\n**Dettagli del Soggetto:**`,
                             color: 2446043,
                             fields: [
-                                { name: "🎂 Data di Nascita", value: payload.dataNascita, inline: true },
-                                { name: "🔪 Motivazione", value: `\`${payload.motivazione}\``, inline: true },
-                                { name: "⏳ Scadenza Attenzione", value: discordDurataField, inline: false },
-                                { name: "📝 Commenti / Note", value: payload.commenti !== "//" ? payload.commenti : "Nessuna nota aggiuntiva.", inline: false }
+                                { name: "> **Data di Nascita:**", value: payload.dataNascita, inline: true },
+                                { name: "> **Motivazione:**", value: `\`${payload.motivazione}\``, inline: true },
+                                { name: "> **Scadenza Attenzione:**", value: discordDurataField, inline: false },
+                                { name: "> **Annotazioni:**", value: payload.commenti !== "//" ? payload.commenti : "Nessuna nota aggiuntiva.", inline: false }
                             ],
                             image: { url: payload.fotoUrl || "https://i.imgur.com/J3T1Kot.png" }, // IMMAGINE GRANDE
                             footer: { text: `Compilato da: ${payload.firmaNome} - ${payload.firmaMatricola}`, icon_url: "https://i.imgur.com/J3T1Kot.png" },
