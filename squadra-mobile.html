@@ -13,12 +13,14 @@
         body { background-color: var(--bg-dark); color: var(--text-main); overflow: hidden; }
         a { text-decoration: none; color: inherit; } .hidden { display: none !important; }
         
+        /* SCHERMATA CARICAMENTO */
         #loading-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100vh; background: var(--bg-dark); z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: opacity 0.5s ease; }
         #loading-overlay i { font-size: 3.5rem; color: var(--accent-blue); margin-bottom: 20px; }
         #loading-overlay h2 { font-size: 1.5rem; font-weight: 600; margin-bottom: 10px; }
         #loading-overlay p { color: var(--text-muted); font-size: 0.95rem; }
         .fade-out { opacity: 0; pointer-events: none; }
 
+        /* LAYOUT PRINCIPALE */
         #dashboard-section { display: flex; height: 100vh; width: 100%; background: var(--bg-dark); animation: slideInRight 0.4s ease-out; }
         .dashboard-sidebar { width: 280px; background: var(--bg-panel); border-right: 1px solid var(--border-color); display: flex; flex-direction: column; z-index: 20; }
         .sidebar-logo { padding: 25px 20px; display: flex; align-items: center; gap: 15px; border-bottom: 1px solid var(--border-color); }
@@ -32,6 +34,7 @@
         .sidebar-menu li.logout:hover { background: rgba(239, 68, 68, 0.1); color: #f87171; border-right-color: var(--danger); }
         .dashboard-main { flex: 1; display: flex; flex-direction: column; overflow-y: auto; position: relative; scroll-behavior: smooth; }
 
+        /* HEADER IN ALTO */
         .dashboard-header { height: 75px; min-height: 75px; background: rgba(16, 20, 31, 0.98); backdrop-filter: blur(15px); border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; padding: 0 30px; position: sticky; top: 0; z-index: 10; }
         .header-left { flex: 0 1 auto; }
         .header-center { flex: 1; display: flex; justify-content: flex-start; padding: 0 20px; }
@@ -50,6 +53,7 @@
         .user-text-info .user-mat { color: var(--text-muted); font-size: 0.8rem; font-family: monospace; letter-spacing: 0.5px; }
         .user-avatar { width: 42px; height: 42px; min-width: 42px; background: rgba(37, 99, 235, 0.1); border: 1px solid var(--accent-blue); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--accent-blue); font-size: 1.1rem; }
 
+        /* CONTENUTO VISTE */
         .dashboard-content { padding: 30px 40px; }
         .view-section { animation: fadeIn 0.3s ease-out; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
@@ -67,6 +71,7 @@
         .cyber-btn.success { background: var(--success); }
         .cyber-btn.success:hover { background: #16a34a; box-shadow: 0 5px 15px rgba(34, 197, 94, 0.4); }
 
+        /* DASHBOARD HOME */
         .kpi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-bottom: 30px; }
         .kpi-card { background: var(--bg-panel); border: 1px solid var(--border-color); border-radius: 12px; padding: 20px; display: flex; align-items: center; gap: 20px; box-shadow: 0 10px 20px rgba(0,0,0,0.2); transition: transform 0.3s; }
         .kpi-card:hover { transform: translateY(-5px); border-color: rgba(255,255,255,0.2); }
@@ -100,6 +105,7 @@
         .recent-info strong { display: block; color: white; font-size: 0.9rem; margin-bottom: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 200px; }
         .recent-info span { color: var(--text-muted); font-size: 0.75rem; font-family: monospace;}
 
+        /* FORMS */
         .form-panel { background: #161b26; border: 1px solid var(--accent-blue); border-radius: 12px; padding: 30px; margin-bottom: 40px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
         .form-panel h3 { margin-bottom: 20px; color: white; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; }
         .form-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; margin-bottom: 25px; }
@@ -110,6 +116,7 @@
         .form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color: var(--accent-blue); box-shadow: 0 0 0 2px rgba(37,99,235,0.2); }
         .form-actions { display: flex; justify-content: flex-end; gap: 15px; }
 
+        /* GRIGLIA DATI E CARDS */
         .data-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 25px; }
         .db-card { background: var(--bg-panel); border: 1px solid var(--border-color); border-radius: 12px; overflow: hidden; display: flex; flex-direction: column; transition: all 0.3s; position: relative; }
         .db-card:hover { border-color: #475569; transform: translateY(-4px); box-shadow: 0 15px 30px rgba(0,0,0,0.4); }
@@ -119,7 +126,7 @@
         .card-info h4 { font-size: 1.2rem; margin-bottom: 4px; color: white; padding-right: 70px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         
         /* FIX CORSIVO RIMOSSO DALLA SUBTITLE */
-        .card-info span.subtitle { font-size: 0.9rem; color: var(--text-muted); font-style: normal !important; display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .card-info span.subtitle { font-size: 0.9rem; color: var(--text-muted); font-style: normal; display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         
         .badge-status { position: absolute; top: 20px; right: 20px; padding: 4px 10px; border-radius: 6px; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
         .badge-status.basso, .badge-status.aperto { background: rgba(34, 197, 94, 0.1); color: #22c55e; border: 1px solid rgba(34, 197, 94, 0.2); }
@@ -135,6 +142,7 @@
         .btn-icon.edit:hover { background: rgba(37,99,235,0.1); color: var(--accent-blue); border-color: var(--accent-blue); }
         .btn-icon.delete:hover { background: rgba(239,68,68,0.1); color: var(--danger); border-color: var(--danger); }
 
+        /* LISTA ANNUNCI */
         .annuncio-card { background: rgba(255,255,255,0.02); border-left: 4px solid var(--accent-blue); padding: 25px; border-radius: 8px; border: 1px solid var(--border-color); transition: all 0.3s; margin-bottom: 15px; display: flex; flex-direction: column; }
         .annuncio-card.alta { border-left-color: var(--warning); }
         .annuncio-card.urgente { border-left-color: var(--danger); background: rgba(239, 68, 68, 0.05); }
@@ -145,6 +153,7 @@
         .annuncio-footer { border-top: 1px solid rgba(255,255,255,0.05); padding-top: 15px; display: flex; justify-content: space-between; align-items: center; }
         .badge-urgent { background: var(--danger); color: white; padding: 3px 8px; border-radius: 4px; font-size: 0.7rem; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; }
 
+        /* LOG SISTEMA */
         .log-list { display: flex; flex-direction: column; gap: 10px; max-height: 600px; overflow-y: auto; padding-right: 10px; }
         .log-item { background: rgba(255,255,255,0.02); border-left: 3px solid var(--accent-blue); padding: 15px; border-radius: 8px; display: flex; justify-content: space-between; align-items: center; }
         .log-item.eliminazione { border-left-color: var(--danger); }
@@ -153,6 +162,7 @@
         .log-meta { text-align: right; font-size: 0.85rem; color: #94a3b8; font-family: monospace; }
         .log-meta div { color: var(--accent-blue); margin-bottom: 4px; }
 
+        /* MODAL */
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100vh; background: rgba(0, 0, 0, 0.8); backdrop-filter: blur(5px); z-index: 10000; display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: opacity 0.3s ease; }
         .modal-overlay.active { opacity: 1; pointer-events: auto; }
         .modal-content { background: var(--bg-panel); border: 1px solid var(--border-color); border-radius: 12px; padding: 35px; max-width: 450px; width: 90%; box-shadow: 0 20px 50px rgba(0,0,0,0.6); transform: translateY(20px); transition: transform 0.3s ease; }
@@ -347,7 +357,6 @@
                         <h3 id="form-titolo-att"><i class="fas fa-fingerprint"></i> Compilazione Identificazione</h3>
                         <form id="form-attenzionato">
                             <input type="hidden" id="att-id" value="">
-                            <input type="hidden" id="att-discord-id" value="">
                             <div class="form-grid">
                                 <div class="form-group"><label>Nome e Cognome (CAPS)</label><input type="text" id="att-nome" placeholder="ES. MARIO ROSSI" required style="text-transform: uppercase;"></div>
                                 <div class="form-group"><label>Data di Nascita</label><input type="text" id="att-nascita" placeholder="Es. 01/01/1990" required></div>
@@ -425,9 +434,6 @@
 
         const firebaseConfig = { apiKey: "AIzaSyDPyEfr0KbWtYDeM5-EFTl3s3VGVB_8Yi8", authDomain: "database-dta.firebaseapp.com", projectId: "database-dta", storageBucket: "database-dta.firebasestorage.app", messagingSenderId: "229305773627", appId: "1:229305773627:web:ec3d17f5fcb3c65fdb761e" };
         const app = initializeApp(firebaseConfig); const db = getFirestore(app);
-
-        // WEBHOOK URL DISCORD
-        const WEBHOOK_URL = "https://discord.com/api/webhooks/1481913832774570098/wyc0inW8zgiDfzqYiRFn8_jS5GwnCFLmA-X73-a307LbPJBVvOIjaMbkoa7byYqTcR4S";
 
         setInterval(() => { const now = new Date(); document.getElementById('live-clock').innerHTML = `<i class="far fa-clock"></i> ${now.toLocaleDateString('it-IT')} - ${now.toLocaleTimeString('it-IT', { hour12: false })}`; }, 1000);
 
@@ -582,48 +588,23 @@
             } catch(e) { showToast("Errore Database", "Impossibile allegare la prova.", "error"); } finally { document.getElementById('btn-add-prova').disabled = false; }
         };
 
-        // --- ELIMINAZIONE GLOBALE E DISCORD DELETE ---
         let deleteInfo = { id: null, collectionName: null };
         window.richiediEliminazione = function(id, collectionName) { deleteInfo = { id, collectionName }; document.getElementById('delete-modal').classList.add('active'); };
-        
         document.getElementById('btn-confirm-delete').addEventListener('click', async () => {
             if(deleteInfo.id && deleteInfo.collectionName) {
                 try {
-                    const docRef = doc(db, deleteInfo.collectionName, deleteInfo.id);
-                    const docSnap = await getDoc(docRef);
-                    let nomeRecord = "Sconosciuto";
-                    let discordMsgId = null;
-
-                    if(docSnap.exists()){
-                        nomeRecord = docSnap.data().nome || docSnap.data().titolo || "Record senza nome";
-                        discordMsgId = docSnap.data().discordMsgId;
-                    }
-
-                    await deleteDoc(docRef);
-                    
-                    let sezioneLog = deleteInfo.collectionName === 'attenzionati' ? 'Identificazioni' : (deleteInfo.collectionName === 'fascicoli' ? 'Fascicoli' : 'Comunicazioni');
-                    registraLog("Eliminazione", `Cancellato: ${nomeRecord} (Sezione: ${sezioneLog})`);
-                    showToast("Record Eliminato", "Il record è stato cancellato dal database cloud.", "error");
-
-                    // Elimina il messaggio Discord se l'ID esiste
-                    if (deleteInfo.collectionName === 'attenzionati' && discordMsgId) {
-                        fetch(`${WEBHOOK_URL}/messages/${discordMsgId}`, { method: 'DELETE' }).catch(e => console.error("Errore rimozione Discord:", e));
-                    }
-
-                } catch (error) { showToast("Errore", "Permessi insufficienti o errore di rete.", "error"); }
+                    const docSnap = await getDoc(doc(db, deleteInfo.collectionName, deleteInfo.id));
+                    let nomeRec = docSnap.exists() ? (docSnap.data().nome || docSnap.data().titolo || "Record") : "Record";
+                    await deleteDoc(doc(db, deleteInfo.collectionName, deleteInfo.id));
+                    registraLog("Eliminazione", `Cancellato: ${nomeRec} (${deleteInfo.collectionName})`);
+                    showToast("Eliminato", "Record rimosso dal server.", "error");
+                } catch (error) { showToast("Errore", "Permessi insufficienti.", "error"); }
                 document.getElementById('delete-modal').classList.remove('active');
             }
         });
-        
-        document.querySelectorAll('.btn-annulla-form').forEach(btn => { 
-            btn.addEventListener('click', (e) => { 
-                e.target.closest('.form-panel').classList.add('hidden'); 
-                e.target.closest('form').reset(); 
-                if(document.getElementById('att-discord-id')) document.getElementById('att-discord-id').value = "";
-            }); 
-        });
+        document.querySelectorAll('.btn-annulla-form').forEach(btn => { btn.addEventListener('click', (e) => { e.target.closest('.form-panel').classList.add('hidden'); e.target.closest('form').reset(); }); });
 
-        /* ================= MODULO FOGLIO INVESTIGATIVO E DISCORD ================= */
+        /* ================= MODULO FOGLIO INVESTIGATIVO (ATTENZIONATI) E DISCORD ================= */
         const formAtt = document.getElementById('form-attenzionato'); const gridAtt = document.getElementById('grid-attenzionati');
         
         onSnapshot(collection(db, "attenzionati"), (snapshot) => {
@@ -657,13 +638,7 @@
             updateRecentFeed();
         });
 
-        document.getElementById('btn-toggle-form-att').addEventListener('click', () => { 
-            formAtt.reset(); 
-            document.getElementById('att-id').value = ""; 
-            document.getElementById('att-discord-id').value = ""; 
-            document.getElementById('form-titolo-att').innerHTML = '<i class="fas fa-fingerprint"></i> Nuova Identificazione'; 
-            document.getElementById('form-container-att').classList.remove('hidden'); 
-        });
+        document.getElementById('btn-toggle-form-att').addEventListener('click', () => { formAtt.reset(); document.getElementById('att-id').value = ""; document.getElementById('form-titolo-att').innerHTML = '<i class="fas fa-fingerprint"></i> Nuova Identificazione'; document.getElementById('form-container-att').classList.remove('hidden'); });
 
         formAtt.addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -683,82 +658,66 @@
             if(!payload.nome || !payload.dataNascita) return showToast("Attenzione", "Compila Nome e Data di Nascita.", "warning");
             document.getElementById('btn-submit-att').disabled = true;
             
-            const idEdit = document.getElementById('att-id').value;
-            const discordMsgId = document.getElementById('att-discord-id').value;
-
-            // DISCORD TIME CALCULATION
-            let discordDurataField = "";
-            let unixTimestamp = null;
-            if (payload.durata === "Scaduto") {
-                discordDurataField = "**SCADUTO ⛔**";
-            } else {
-                let days = parseInt(payload.durata);
-                let expirationDate = new Date();
-                expirationDate.setDate(expirationDate.getDate() + days);
-                unixTimestamp = Math.floor(expirationDate.getTime() / 1000);
-                discordDurataField = `<t:${unixTimestamp}:D> (<t:${unixTimestamp}:R>)`;
-            }
-
-            // PAYLOAD DISCORD (Embed standard con Immagine Grande in basso)
-            const embedDesc = `**Sezione:** Identificazioni e Soggetti\n\n**OGGETTO: AGGIORNAMENTO FOGLIO INVESTIGATIVO**\n\nSi porta all'attenzione del personale l'inserimento o l'aggiornamento di un soggetto nel database. Di seguito, i dettagli:\n\n**Dati Anagrafici**\n• **Nominativo:** ${payload.nome}\n• **Data di Nascita:** ${payload.dataNascita}\n\n**Dettagli Operativi**\n• **Motivazione:** ${payload.motivazione}\n• **Scadenza Attenzione:** ${discordDurataField}\n\n**Commenti / Note Aggiuntive**\n${payload.commenti !== "//" ? payload.commenti : "Nessuna nota."}`;
-
-            const discordPayload = {
-                embeds: [{
-                    author: { name: "SISTEMA OPERATIVO CENTRALE - IPRP", icon_url: "https://i.imgur.com/SUM8B5x.png" },
-                    description: embedDesc,
-                    color: 2895667, 
-                    image: { url: payload.fotoUrl && payload.fotoUrl !== "" ? payload.fotoUrl : "https://i.imgur.com/J3T1Kot.png" },
-                    footer: { text: `Compilato da: ${payload.firmaNome} - ${payload.firmaMatricola}`, icon_url: "https://i.imgur.com/J3T1Kot.png" },
-                    timestamp: new Date().toISOString()
-                }]
-            };
-
             try {
-                if(idEdit) { 
-                    await updateDoc(doc(db, "attenzionati", idEdit), payload); 
+                if(document.getElementById('att-id').value) { 
+                    await updateDoc(doc(db, "attenzionati", document.getElementById('att-id').value), payload); 
                     registraLog("Modifica", `Aggiornata Identificazione di ${payload.nome}`); 
                     showToast("Aggiornato", "Modifiche salvate.", "success"); 
-
-                    // UPDATE MESSAGGIO DISCORD
-                    if (discordMsgId) {
-                        fetch(`${WEBHOOK_URL}/messages/${discordMsgId}`, {
-                            method: 'PATCH',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify(discordPayload)
-                        }).catch(e => console.error("Webhook Update Error: ", e));
-                    }
                 } else { 
                     payload.prove = []; 
-                    
-                    // CREA MESSAGGIO DISCORD E SALVA L'ID
-                    let newDiscordMsgId = "";
-                    try {
-                        const res = await fetch(WEBHOOK_URL + "?wait=true", {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify(discordPayload)
-                        });
-                        if (res.ok) {
-                            const resData = await res.json();
-                            newDiscordMsgId = resData.id;
-                        }
-                    } catch(e) { console.error("Webhook Create Error:", e); }
-
-                    payload.discordMsgId = newDiscordMsgId;
                     await addDoc(collection(db, "attenzionati"), payload); 
-                    
                     registraLog("Creazione", `Nuova Identificazione: ${payload.nome}`); 
-                    showToast("Creato", "Salvato e inviato a Discord.", "success"); 
+                    showToast("Creato", "Salvato nel db.", "success"); 
+
+                    // --- DISCORD WEBHOOK CALCOLO TEMPO ---
+                    let discordDurataField = "";
+                    if (payload.durata === "Scaduto") {
+                        discordDurataField = "**SCADUTO ⛔**";
+                    } else {
+                        let days = parseInt(payload.durata);
+                        let expirationDate = new Date();
+                        expirationDate.setDate(expirationDate.getDate() + days);
+                        let unixTimestamp = Math.floor(expirationDate.getTime() / 1000);
+                        discordDurataField = `<t:${unixTimestamp}:D> (<t:${unixTimestamp}:R>)`;
+                    }
+
+                    // --- DISCORD WEBHOOK INVIO (COMPONENTS V2) ---
+                    const webhookUrl = "https://discord.com/api/webhooks/1481913832774570098/wyc0inW8zgiDfzqYiRFn8_jS5GwnCFLmA-X73-a307LbPJBVvOIjaMbkoa7byYqTcR4S";
+                    const embed = {
+                        embeds: [{
+                            author: { name: "SISTEMA IDENTIFICATIVO SM - IPRP x", icon_url: "https://i.imgur.com/SUM8B5x.png" },
+                            description: `> **Nuova Identificazione Registrata.**\n\n**Dettagli del Soggetto:**`,
+                            color: 2446043,
+                            fields: [
+                                { name: "> **Nome e Cognome:**", value: `\`${payload.nome}\``, inline: true },
+                                { name: "> **Data di Nascita:**", value: payload.dataNascita, inline: true },
+                                { name: "> **Motivazione:**", value: `\`${payload.motivazione}\``, inline: true },
+                                { name: "> **Scadenza Attenzione:**", value: discordDurataField, inline: false },
+                                { name: "> **Annotazioni:**", value: payload.commenti !== "//" ? payload.commenti : "Nessuna nota aggiuntiva.", inline: false }
+                            ],
+                            image: { url: payload.fotoUrl || "https://i.imgur.com/J3T1Kot.png" }, // IMMAGINE GRANDE
+                            footer: { text: `Compilato da: ${payload.firmaNome} - ${payload.firmaMatricola}`, icon_url: "https://i.imgur.com/J3T1Kot.png" },
+                            timestamp: new Date().toISOString()
+                        }],
+                        components: [
+                            {
+                                type: 1,
+                                components: [
+                                    {
+                                        type: 2,
+                                        style: 5,
+                                        label: "Apri Terminale IPRP",
+                                        url: "https://ryze-glitch.github.io/db-operativo/", 
+                                        emoji: { name: "🖥️" }
+                                    }
+                                ]
+                            }
+                        ]
+                    };
+                    fetch(webhookUrl, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(embed) }).catch(e => console.error("Webhook error: ", e));
                 }
-                
-                formAtt.reset(); 
-                document.getElementById('att-discord-id').value = "";
-                document.getElementById('form-container-att').classList.add('hidden');
-            } catch(err) { 
-                showToast("Errore", "Salvataggio fallito.", "error"); 
-            } finally { 
-                document.getElementById('btn-submit-att').disabled = false; 
-            }
+                formAtt.reset(); document.getElementById('form-container-att').classList.add('hidden');
+            } catch(err) { showToast("Errore", "Salvataggio fallito.", "error"); } finally { document.getElementById('btn-submit-att').disabled = false; }
         });
 
         window.modificaAttenzionato = async function(id) {
@@ -766,7 +725,6 @@
             if (docSnap.exists()) { 
                 const data = docSnap.data(); 
                 document.getElementById('att-id').value = id; 
-                document.getElementById('att-discord-id').value = data.discordMsgId || ''; 
                 document.getElementById('att-nome').value = data.nome; 
                 document.getElementById('att-nascita').value = data.dataNascita; 
                 document.getElementById('att-motivazione').value = data.motivazione; 
@@ -774,8 +732,7 @@
                 document.getElementById('att-foto').value = data.fotoUrl; 
                 document.getElementById('att-commenti').value = data.commenti === '//' ? '' : data.commenti; 
                 document.getElementById('form-titolo-att').innerHTML = '<i class="fas fa-edit"></i> Modifica Identificazione...'; 
-                document.getElementById('form-container-att').classList.remove('hidden'); 
-                document.querySelector('.dashboard-main').scrollTo({ top: 0, behavior: 'smooth' }); 
+                document.getElementById('form-container-att').classList.remove('hidden'); document.querySelector('.dashboard-main').scrollTo({ top: 0, behavior: 'smooth' }); 
             }
         };
 
