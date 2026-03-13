@@ -110,6 +110,12 @@
         .form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color: var(--accent-blue); box-shadow: 0 0 0 2px rgba(37,99,235,0.2); }
         .form-actions { display: flex; justify-content: flex-end; gap: 15px; }
 
+        /* SISTEMA TAG MULTIPLI PER MOTIVAZIONE */
+        .tags-container { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+        .motivazione-tag { background: rgba(37, 99, 235, 0.2); border: 1px solid var(--accent-blue); color: white; padding: 6px 12px; border-radius: 6px; font-size: 0.85rem; display: flex; align-items: center; gap: 8px; font-weight: 500; }
+        .motivazione-tag i { cursor: pointer; color: #f87171; transition: 0.2s; }
+        .motivazione-tag i:hover { color: var(--danger); transform: scale(1.2); }
+
         .data-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 25px; }
         .db-card { background: var(--bg-panel); border: 1px solid var(--border-color); border-radius: 12px; overflow: hidden; display: flex; flex-direction: column; transition: all 0.3s; position: relative; }
         .db-card:hover { border-color: #475569; transform: translateY(-4px); box-shadow: 0 15px 30px rgba(0,0,0,0.4); }
@@ -346,6 +352,9 @@
                         <form id="form-attenzionato">
                             <input type="hidden" id="att-id" value="">
                             <input type="hidden" id="att-discord-id" value="">
+                            
+                            <input type="hidden" id="att-motivazione-nascosta" required>
+
                             <div class="form-grid">
                                 <div class="form-group"><label>Nome e Cognome (CAPS)</label><input type="text" id="att-nome" placeholder="ES. MARIO ROSSI" required style="text-transform: uppercase;"></div>
                                 <div class="form-group"><label>Data di Nascita</label><input type="text" id="att-nascita" placeholder="Es. 01/01/1990" required></div>
@@ -354,8 +363,9 @@
                                     <input type="date" id="att-applicazione" required>
                                 </div>
                                 <div class="form-group">
-                                    <label>Motivazione</label>
-                                    <select id="att-motivazione">
+                                    <label>Aggiungi Motivazione (Multipla)</label>
+                                    <select id="att-motivazione-seleziona">
+                                        <option value="">-- Seleziona una motivazione --</option>
                                         <option value="SPARATORIA">SPARATORIA</option>
                                         <option value="ARMI IN VISTA">ARMI IN VISTA</option>
                                         <option value="MISURA CAUTELARE">MISURA CAUTELARE</option>
@@ -365,6 +375,7 @@
                                         <option value="VENDITA DI ARMI">VENDITA DI ARMI</option>
                                         <option value="FASCICOLO IN CORSO">FASCICOLO IN CORSO</option>
                                     </select>
+                                    <div id="motivazioni-container" class="tags-container"></div>
                                 </div>
                                 <div class="form-group">
                                     <label>Durata dell'Attenzione</label>
@@ -436,6 +447,7 @@
         const firebaseConfig = { apiKey: "AIzaSyDPyEfr0KbWtYDeM5-EFTl3s3VGVB_8Yi8", authDomain: "database-dta.firebaseapp.com", projectId: "database-dta", storageBucket: "database-dta.firebasestorage.app", messagingSenderId: "229305773627", appId: "1:229305773627:web:ec3d17f5fcb3c65fdb761e" };
         const app = initializeApp(firebaseConfig); const db = getFirestore(app);
 
+        // WEBHOOK URL DISCORD
         const WEBHOOK_URL = "https://discord.com/api/webhooks/1481913832774570098/wyc0inW8zgiDfzqYiRFn8_jS5GwnCFLmA-X73-a307LbPJBVvOIjaMbkoa7byYqTcR4S";
 
         setInterval(() => { const now = new Date(); document.getElementById('live-clock').innerHTML = `<i class="far fa-clock"></i> ${now.toLocaleDateString('it-IT')} - ${now.toLocaleTimeString('it-IT', { hour12: false })}`; }, 1000);
@@ -629,12 +641,42 @@
                 e.target.closest('.form-panel').classList.add('hidden'); 
                 e.target.closest('form').reset(); 
                 if(document.getElementById('att-discord-id')) document.getElementById('att-discord-id').value = "";
+                
+                // Pulisce anche l'array dei tag motivazioni
+                motivazioniSelezionate = [];
+                renderMotivazioni();
             }); 
         });
 
-        /* ================= MODULO FOGLIO INVESTIGATIVO E DISCORD ================= */
+        /* ================= MODULO FOGLIO INVESTIGATIVO (ATTENZIONATI) E DISCORD ================= */
         const formAtt = document.getElementById('form-attenzionato'); const gridAtt = document.getElementById('grid-attenzionati');
         
+        // GESTIONE MULTIPLA MOTIVAZIONI CON TAGS
+        let motivazioniSelezionate = [];
+        
+        document.getElementById('att-motivazione-seleziona').addEventListener('change', function() {
+            const val = this.value;
+            if (val && !motivazioniSelezionate.includes(val)) {
+                motivazioniSelezionate.push(val);
+                renderMotivazioni();
+            }
+            this.value = ''; // Resetta select
+        });
+
+        window.rimuoviMotivazione = function(val) {
+            motivazioniSelezionate = motivazioniSelezionate.filter(m => m !== val);
+            renderMotivazioni();
+        };
+
+        function renderMotivazioni() {
+            const container = document.getElementById('motivazioni-container');
+            container.innerHTML = '';
+            motivazioniSelezionate.forEach(m => {
+                container.innerHTML += `<div class="motivazione-tag">${m} <i class="fas fa-times" onclick="rimuoviMotivazione('${m}')"></i></div>`;
+            });
+            document.getElementById('att-motivazione-nascosta').value = motivazioniSelezionate.join(', ');
+        }
+
         onSnapshot(collection(db, "attenzionati"), (snapshot) => {
             gridAtt.innerHTML = '';
             let countTot = 0; let d15 = 0; let d30 = 0; let d60 = 0;
@@ -668,6 +710,8 @@
 
         document.getElementById('btn-toggle-form-att').addEventListener('click', () => { 
             formAtt.reset(); 
+            motivazioniSelezionate = [];
+            renderMotivazioni();
             document.getElementById('att-id').value = ""; 
             document.getElementById('att-discord-id').value = ""; 
             document.getElementById('form-titolo-att').innerHTML = '<i class="fas fa-fingerprint"></i> Nuova Identificazione'; 
@@ -676,11 +720,17 @@
 
         formAtt.addEventListener('submit', async (e) => {
             e.preventDefault();
+            
+            if (motivazioniSelezionate.length === 0) {
+                showToast("Attenzione", "Inserisci almeno una Motivazione.", "warning");
+                return;
+            }
+
             const payload = { 
                 nome: document.getElementById('att-nome').value.trim().toUpperCase(), 
                 dataNascita: document.getElementById('att-nascita').value || 'Sconosciuta', 
                 dataApplicazione: document.getElementById('att-applicazione').value,
-                motivazione: document.getElementById('att-motivazione').value, 
+                motivazione: motivazioniSelezionate.join(', '), // Trasforma array in stringa con virgola
                 durata: document.getElementById('att-durata').value,
                 fotoUrl: document.getElementById('att-foto').value.trim(), 
                 commenti: document.getElementById('att-commenti').value.trim() || '//', 
@@ -696,7 +746,7 @@
             const idEdit = document.getElementById('att-id').value;
             const discordMsgId = document.getElementById('att-discord-id').value;
 
-            // DISCORD TIME CALCULATION NATIVO
+            // DISCORD TIME CALCULATION
             let discordDurataField = "";
             let dataAppDate = new Date(payload.dataApplicazione);
             if (isNaN(dataAppDate.getTime())) dataAppDate = new Date();
@@ -720,12 +770,13 @@
                 discordDurataField = `<t:${unixTimestamp}:R>`;
             }
 
-            const embedTitleText = idEdit ? `> **Aggiornamento Identificazione Registrata.**\n\n**Dettagli del Soggetto:**` : `> **Nuova Identificazione Registrata.**\n\n**Dettagli del Soggetto:**`;
-
+            // PAYLOAD DISCORD (Embed Classico con Immagine in Basso)
+            const embedDesc = `> **Aggiornamento Foglio Investigativo.**\n\n**Dettagli del Soggetto:**`;
+            
             const discordPayload = {
                 embeds: [{
                     author: { name: "SISTEMA IDENTIFICATIVO SM - IPRP x", icon_url: "https://i.imgur.com/SUM8B5x.png" },
-                    description: embedTitleText,
+                    description: idEdit ? `> **Aggiornamento Identificazione Registrata.**\n\n**Dettagli del Soggetto:**` : `> **Nuova Identificazione Registrata.**\n\n**Dettagli del Soggetto:**`,
                     color: 2446043,
                     fields: [
                         { name: "> **Nome e Cognome:**", value: `\`${payload.nome}\``, inline: true },
@@ -792,6 +843,8 @@
                 }
                 
                 formAtt.reset(); 
+                motivazioniSelezionate = [];
+                renderMotivazioni();
                 document.getElementById('att-discord-id').value = "";
                 document.getElementById('form-container-att').classList.add('hidden');
             } catch(err) { 
@@ -810,7 +863,11 @@
                 document.getElementById('att-nome').value = data.nome; 
                 document.getElementById('att-nascita').value = data.dataNascita; 
                 document.getElementById('att-applicazione').value = data.dataApplicazione || ''; 
-                document.getElementById('att-motivazione').value = data.motivazione; 
+                
+                // Ricostruisce i tag delle motivazioni
+                motivazioniSelezionate = data.motivazione ? data.motivazione.split(', ') : [];
+                renderMotivazioni();
+                
                 document.getElementById('att-durata').value = data.durata;
                 document.getElementById('att-foto').value = data.fotoUrl || ''; 
                 document.getElementById('att-commenti').value = data.commenti === '//' ? '' : data.commenti; 
@@ -865,7 +922,7 @@
 
         window.modificaFascicolo = async function(id) {
             const docSnap = await getDoc(doc(db, "fascicoli", id));
-            if (docSnap.exists()) { const data = docSnap.data(); document.getElementById('fas-id').value = id; document.getElementById('fas-titolo').value = data.titolo; document.getElementById('fas-reati').value = data.reati; document.getElementById('fas-stato').value = data.stato; document.getElementById('fas-soggetti').value = data.soggetti === 'Nessuno' ? '' : data.soggetti; document.getElementById('fas-foto').value = data.fotoUrl || ''; document.getElementById('fas-dettagli').value = data.dettagli; document.getElementById('form-titolo-fas').innerHTML = '<i class="fas fa-edit"></i> Modifica Fascicolo...'; document.getElementById('form-container-fas').classList.remove('hidden'); document.querySelector('.dashboard-main').scrollTo({ top: 0, behavior: 'smooth' }); }
+            if (docSnap.exists()) { const data = docSnap.data(); document.getElementById('fas-id').value = id; document.getElementById('fas-titolo').value = data.titolo; document.getElementById('fas-reati').value = data.reati; document.getElementById('fas-stato').value = data.stato; document.getElementById('fas-soggetti').value = data.soggetti === 'Nessuno' ? '' : data.soggetti; document.getElementById('fas-foto').value = data.fotoUrl; document.getElementById('fas-dettagli').value = data.dettagli; document.getElementById('form-titolo-fas').innerHTML = '<i class="fas fa-edit"></i> Modifica Fascicolo...'; document.getElementById('form-container-fas').classList.remove('hidden'); document.querySelector('.dashboard-main').scrollTo({ top: 0, behavior: 'smooth' }); }
         };
     </script>
 </body>
