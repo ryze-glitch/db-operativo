@@ -349,7 +349,7 @@
 
                 <div id="view-attenzionati" class="view-section hidden">
                     <div class="section-header">
-                        <div class="section-title"><h2>Foglio Investigativo</h2><p>Registro interno delle Identificazioni e Soggetti.</p></div>
+                        <div class="section-title"><h2>Soggetti Attenzionati</h2><p>Registro interno delle Identificazioni e Soggetti.</p></div>
                         <button id="btn-toggle-form-att" class="cyber-btn"><i class="fas fa-plus"></i> Nuova Identificazione</button>
                     </div>
 
@@ -686,9 +686,10 @@
                     const embed = {
                         embeds: [{
                             author: { name: "SISTEMA IDENTIFICAZIONE SM - IPRP X", icon_url: "https://i.imgur.com/SUM8B5x.png" },
-                            description: `> **Nuova Identifcazioen Registrata.**.\n\n**Dettagli del Soggetto:**`,
+                            description: `> **Nuova Identifcazione Registrata.**\n\n**Dettagli del Soggetto:**`,
                             color: 2446043,
                             fields: [
+                                { name: "> **Nome e Cognome:**", value: `\`${payload.nome}\``, inline: true },
                                 { name: "> **Data di Nascita:**", value: payload.dataNascita, inline: true },
                                 { name: "> **Motivazione:**", value: `\`${payload.motivazione}\``, inline: true },
                                 { name: "> **Scadenza Attenzione:**", value: discordDurataField, inline: false },
