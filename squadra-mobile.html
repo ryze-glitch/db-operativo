@@ -117,7 +117,9 @@
         .card-foto { width: 65px; height: 65px; min-width: 65px; background: #1e293b; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 2rem; color: #64748b; object-fit: cover; border: 1px solid rgba(255,255,255,0.1); }
         .card-info { overflow: hidden; }
         .card-info h4 { font-size: 1.2rem; margin-bottom: 4px; color: white; padding-right: 70px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .card-info span.subtitle { font-size: 0.9rem; color: var(--text-muted); font-style: normal; display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        
+        /* FIX CORSIVO RIMOSSO DALLA SUBTITLE */
+        .card-info span.subtitle { font-size: 0.9rem; color: var(--text-muted); font-style: normal !important; display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         
         .badge-status { position: absolute; top: 20px; right: 20px; padding: 4px 10px; border-radius: 6px; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
         .badge-status.basso, .badge-status.aperto { background: rgba(34, 197, 94, 0.1); color: #22c55e; border: 1px solid rgba(34, 197, 94, 0.2); }
@@ -373,7 +375,7 @@
                             </div>
                             <div class="form-actions">
                                 <button type="button" class="cyber-btn outline btn-annulla-form">Annulla</button>
-                                <button type="submit" class="cyber-btn" id="btn-submit-att"><i class="fas fa-save"></i> <span>Registra e Invia</span></button>
+                                <button type="submit" class="cyber-btn" id="btn-submit-att"><i class="fas fa-save"></i> <span>Registra e Invia a Discord</span></button>
                             </div>
                         </form>
                     </div>
@@ -424,7 +426,7 @@
         const firebaseConfig = { apiKey: "AIzaSyDPyEfr0KbWtYDeM5-EFTl3s3VGVB_8Yi8", authDomain: "database-dta.firebaseapp.com", projectId: "database-dta", storageBucket: "database-dta.firebasestorage.app", messagingSenderId: "229305773627", appId: "1:229305773627:web:ec3d17f5fcb3c65fdb761e" };
         const app = initializeApp(firebaseConfig); const db = getFirestore(app);
 
-        // WEBHOOK URL - DISCORD
+        // WEBHOOK URL DISCORD
         const WEBHOOK_URL = "https://discord.com/api/webhooks/1481913832774570098/wyc0inW8zgiDfzqYiRFn8_jS5GwnCFLmA-X73-a307LbPJBVvOIjaMbkoa7byYqTcR4S";
 
         setInterval(() => { const now = new Date(); document.getElementById('live-clock').innerHTML = `<i class="far fa-clock"></i> ${now.toLocaleDateString('it-IT')} - ${now.toLocaleTimeString('it-IT', { hour12: false })}`; }, 1000);
@@ -580,7 +582,7 @@
             } catch(e) { showToast("Errore Database", "Impossibile allegare la prova.", "error"); } finally { document.getElementById('btn-add-prova').disabled = false; }
         };
 
-        // --- GESTIONE MODAL ELIMINAZIONE ---
+        // --- ELIMINAZIONE GLOBALE E DISCORD DELETE ---
         let deleteInfo = { id: null, collectionName: null };
         window.richiediEliminazione = function(id, collectionName) { deleteInfo = { id, collectionName }; document.getElementById('delete-modal').classList.add('active'); };
         
@@ -597,16 +599,15 @@
                         discordMsgId = docSnap.data().discordMsgId;
                     }
 
-                    // Elimina da Firebase
                     await deleteDoc(docRef);
                     
                     let sezioneLog = deleteInfo.collectionName === 'attenzionati' ? 'Identificazioni' : (deleteInfo.collectionName === 'fascicoli' ? 'Fascicoli' : 'Comunicazioni');
                     registraLog("Eliminazione", `Cancellato: ${nomeRecord} (Sezione: ${sezioneLog})`);
                     showToast("Record Eliminato", "Il record è stato cancellato dal database cloud.", "error");
 
-                    // Elimina da Discord se esiste l'ID
+                    // Elimina il messaggio Discord se l'ID esiste
                     if (deleteInfo.collectionName === 'attenzionati' && discordMsgId) {
-                        fetch(`${WEBHOOK_URL}/messages/${discordMsgId}`, { method: 'DELETE' }).catch(e => console.error(e));
+                        fetch(`${WEBHOOK_URL}/messages/${discordMsgId}`, { method: 'DELETE' }).catch(e => console.error("Errore rimozione Discord:", e));
                     }
 
                 } catch (error) { showToast("Errore", "Permessi insufficienti o errore di rete.", "error"); }
@@ -614,14 +615,15 @@
             }
         });
         
-        document.querySelectorAll('.btn-annulla-form').forEach(btn => { btn.addEventListener('click', (e) => { 
-            e.target.closest('.form-panel').classList.add('hidden'); 
-            e.target.closest('form').reset(); 
-            // Reset anche degli ID nascosti per evitare sovrascritture accidentali
-            if(document.getElementById('att-discord-id')) document.getElementById('att-discord-id').value = "";
-        }); });
+        document.querySelectorAll('.btn-annulla-form').forEach(btn => { 
+            btn.addEventListener('click', (e) => { 
+                e.target.closest('.form-panel').classList.add('hidden'); 
+                e.target.closest('form').reset(); 
+                if(document.getElementById('att-discord-id')) document.getElementById('att-discord-id').value = "";
+            }); 
+        });
 
-        /* ================= MODULO FOGLIO INVESTIGATIVO (ATTENZIONATI) E DISCORD ================= */
+        /* ================= MODULO FOGLIO INVESTIGATIVO E DISCORD ================= */
         const formAtt = document.getElementById('form-attenzionato'); const gridAtt = document.getElementById('grid-attenzionati');
         
         onSnapshot(collection(db, "attenzionati"), (snapshot) => {
@@ -684,59 +686,51 @@
             const idEdit = document.getElementById('att-id').value;
             const discordMsgId = document.getElementById('att-discord-id').value;
 
-            // PREPARAZIONE PAYLOAD DISCORD (STILE COMPONENTS V2 / MARKDOWN)
+            // DISCORD TIME CALCULATION
             let discordDurataField = "";
+            let unixTimestamp = null;
             if (payload.durata === "Scaduto") {
                 discordDurataField = "**SCADUTO ⛔**";
             } else {
                 let days = parseInt(payload.durata);
                 let expirationDate = new Date();
                 expirationDate.setDate(expirationDate.getDate() + days);
-                let unixTimestamp = Math.floor(expirationDate.getTime() / 1000);
+                unixTimestamp = Math.floor(expirationDate.getTime() / 1000);
                 discordDurataField = `<t:${unixTimestamp}:D> (<t:${unixTimestamp}:R>)`;
             }
 
-            const embedDesc = `**Foglio Investigativo** Squadra Mobile 🔎\n**Sezione:** Identificazioni e Soggetti\n\n**OGGETTO: NUOVA IDENTIFICAZIONE SOGGETTO**\n──────────────────────────────────────────\nSi porta all'attenzione del personale l'inserimento o l'aggiornamento di un soggetto nel database. Di seguito, i dettagli:\n\n\`Dati Anagrafici\`\n> 👤 **Nominativo:** ${payload.nome}\n> 📅 **Data di Nascita:** ${payload.dataNascita}\n\n\`Dettagli Operativi\`\n> ⚠️ **Motivazione:** ${payload.motivazione}\n> ⏳ **Scadenza:** ${discordDurataField}\n\n\`Annotazioni Aggiuntive\`\n> 📝 ${payload.commenti !== "//" ? payload.commenti : "Nessuna nota."}`;
+            // PAYLOAD DISCORD (Embed standard con Immagine Grande in basso)
+            const embedDesc = `**Sezione:** Identificazioni e Soggetti\n\n**OGGETTO: AGGIORNAMENTO FOGLIO INVESTIGATIVO**\n\nSi porta all'attenzione del personale l'inserimento o l'aggiornamento di un soggetto nel database. Di seguito, i dettagli:\n\n**Dati Anagrafici**\n• **Nominativo:** ${payload.nome}\n• **Data di Nascita:** ${payload.dataNascita}\n\n**Dettagli Operativi**\n• **Motivazione:** ${payload.motivazione}\n• **Scadenza Attenzione:** ${discordDurataField}\n\n**Commenti / Note Aggiuntive**\n${payload.commenti !== "//" ? payload.commenti : "Nessuna nota."}`;
 
             const discordPayload = {
                 embeds: [{
-                    author: { name: "SISTEMA IDENTFICAZIONE SM - IPRP X", icon_url: "https://i.imgur.com/SUM8B5x.png" },
+                    author: { name: "SISTEMA OPERATIVO CENTRALE - IPRP", icon_url: "https://i.imgur.com/SUM8B5x.png" },
                     description: embedDesc,
-                    color: 2446043,
+                    color: 2895667, 
+                    image: { url: payload.fotoUrl && payload.fotoUrl !== "" ? payload.fotoUrl : "https://i.imgur.com/J3T1Kot.png" },
                     footer: { text: `Compilato da: ${payload.firmaNome} - ${payload.firmaMatricola}`, icon_url: "https://i.imgur.com/J3T1Kot.png" },
                     timestamp: new Date().toISOString()
-                }],
-                components: [{
-                    type: 1,
-                    components: [{ type: 2, style: 5, label: "Apri Terminale IPRP", url: "https://ryze-glitch.github.io/db-operativo/", emoji: { name: "🖥️" } }]
                 }]
             };
 
-            // Se c'è la foto, mettiamola come miniatura elegante (thumbnail) e non come banner gigante
-            if (payload.fotoUrl && payload.fotoUrl.trim() !== "") {
-                discordPayload.embeds[0].thumbnail = { url: payload.fotoUrl };
-            }
-
             try {
                 if(idEdit) { 
-                    // EDIT SU FIREBASE
                     await updateDoc(doc(db, "attenzionati", idEdit), payload); 
                     registraLog("Modifica", `Aggiornata Identificazione di ${payload.nome}`); 
                     showToast("Aggiornato", "Modifiche salvate.", "success"); 
 
-                    // EDIT SU DISCORD
+                    // UPDATE MESSAGGIO DISCORD
                     if (discordMsgId) {
                         fetch(`${WEBHOOK_URL}/messages/${discordMsgId}`, {
                             method: 'PATCH',
                             headers: { 'Content-Type': 'application/json' },
                             body: JSON.stringify(discordPayload)
-                        }).catch(e => console.error(e));
+                        }).catch(e => console.error("Webhook Update Error: ", e));
                     }
-
                 } else { 
                     payload.prove = []; 
                     
-                    // 1. INVIA SU DISCORD E RECUPERA L'ID DEL MESSAGGIO (?wait=true)
+                    // CREA MESSAGGIO DISCORD E SALVA L'ID
                     let newDiscordMsgId = "";
                     try {
                         const res = await fetch(WEBHOOK_URL + "?wait=true", {
@@ -748,14 +742,13 @@
                             const resData = await res.json();
                             newDiscordMsgId = resData.id;
                         }
-                    } catch(e) { console.error("Discord error:", e); }
+                    } catch(e) { console.error("Webhook Create Error:", e); }
 
-                    // 2. SALVA SU FIREBASE CON L'ID DI DISCORD INCLUSO
                     payload.discordMsgId = newDiscordMsgId;
                     await addDoc(collection(db, "attenzionati"), payload); 
                     
                     registraLog("Creazione", `Nuova Identificazione: ${payload.nome}`); 
-                    showToast("Creato", "Salvato nel db e inviato a Discord.", "success"); 
+                    showToast("Creato", "Salvato e inviato a Discord.", "success"); 
                 }
                 
                 formAtt.reset(); 
@@ -773,7 +766,7 @@
             if (docSnap.exists()) { 
                 const data = docSnap.data(); 
                 document.getElementById('att-id').value = id; 
-                document.getElementById('att-discord-id').value = data.discordMsgId || ''; // Associa ID Discord
+                document.getElementById('att-discord-id').value = data.discordMsgId || ''; 
                 document.getElementById('att-nome').value = data.nome; 
                 document.getElementById('att-nascita').value = data.dataNascita; 
                 document.getElementById('att-motivazione').value = data.motivazione; 
@@ -781,7 +774,8 @@
                 document.getElementById('att-foto').value = data.fotoUrl; 
                 document.getElementById('att-commenti').value = data.commenti === '//' ? '' : data.commenti; 
                 document.getElementById('form-titolo-att').innerHTML = '<i class="fas fa-edit"></i> Modifica Identificazione...'; 
-                document.getElementById('form-container-att').classList.remove('hidden'); document.querySelector('.dashboard-main').scrollTo({ top: 0, behavior: 'smooth' }); 
+                document.getElementById('form-container-att').classList.remove('hidden'); 
+                document.querySelector('.dashboard-main').scrollTo({ top: 0, behavior: 'smooth' }); 
             }
         };
 
