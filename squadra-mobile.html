@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Database Operativo PDS - IPRP X</title>
+    <title>Terminale Operativo - Squadra Mobile</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -109,8 +109,6 @@
         .form-group input, .form-group select, .form-group textarea { background: #0a0d14; border: 1px solid var(--border-color); color: white; padding: 14px; border-radius: 8px; font-family: 'Lexend'; font-size: 0.95rem; outline: none; transition: 0.2s; }
         .form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color: var(--accent-blue); box-shadow: 0 0 0 2px rgba(37,99,235,0.2); }
         .form-actions { display: flex; justify-content: flex-end; gap: 15px; }
-
-        /* SISTEMA TAG MULTIPLI PER MOTIVAZIONE */
         .tags-container { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
         .motivazione-tag { background: rgba(37, 99, 235, 0.2); border: 1px solid var(--accent-blue); color: white; padding: 6px 12px; border-radius: 6px; font-size: 0.85rem; display: flex; align-items: center; gap: 8px; font-weight: 500; }
         .motivazione-tag i { cursor: pointer; color: #f87171; transition: 0.2s; }
@@ -124,12 +122,10 @@
         .card-info { overflow: hidden; }
         .card-info h4 { font-size: 1.2rem; margin-bottom: 4px; color: white; padding-right: 70px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .card-info span.subtitle { font-size: 0.9rem; color: var(--text-muted); font-style: normal !important; display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        
         .badge-status { position: absolute; top: 20px; right: 20px; padding: 4px 10px; border-radius: 6px; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
         .badge-status.basso, .badge-status.aperto { background: rgba(34, 197, 94, 0.1); color: #22c55e; border: 1px solid rgba(34, 197, 94, 0.2); }
         .badge-status.medio, .badge-status.attesa, .badge-status.warning { background: rgba(245, 158, 11, 0.1); color: var(--warning); border: 1px solid rgba(245, 158, 11, 0.2); }
         .badge-status.alto, .badge-status.chiuso, .badge-status.danger { background: rgba(239, 68, 68, 0.1); color: var(--danger); border: 1px solid rgba(239, 68, 68, 0.2); }
-
         .card-body { padding: 20px; flex-grow: 1; font-size: 0.9rem; color: #cbd5e1; line-height: 1.6; }
         .card-footer { background: rgba(0,0,0,0.2); padding: 15px 20px; border-top: 1px solid var(--border-color); font-size: 0.8rem; color: #94a3b8; display: flex; justify-content: space-between; align-items: center; }
         .firma-agente { display: flex; align-items: center; gap: 8px; font-family: monospace; font-size: 0.85rem;}
@@ -194,13 +190,13 @@
 <body>
 
     <div id="toast-container" class="toast-container"></div>
-    <div id="loading-overlay"><i class="fas fa-circle-notch fa-spin"></i><h2>Accesso al Database</h2><p>Inizializzazione connessione sicura...</p></div>
+    <div id="loading-overlay"><i class="fas fa-circle-notch fa-spin"></i><h2>Verifica Sicurezza</h2><p>Controllo credenziali server in corso...</p></div>
 
     <div id="delete-modal" class="modal-overlay">
         <div class="modal-content danger">
             <div class="modal-icon"><i class="fas fa-exclamation-triangle"></i></div>
             <h3 id="modal-delete-title">Conferma Eliminazione</h3>
-            <p>Sei sicuro di voler eliminare definitivamente questo record? L'azione verrà registrata nei log.</p>
+            <p>Sei sicuro di voler eliminare definitivamente questo record? L'azione verrà registrata nei log di sistema.</p>
             <div style="display: flex; gap: 15px; justify-content: center; margin-top: 20px;">
                 <button class="cyber-btn outline" onclick="document.getElementById('delete-modal').classList.remove('active')">Annulla</button>
                 <button class="cyber-btn danger" id="btn-confirm-delete"><i class="fas fa-trash"></i> Elimina Record</button>
@@ -231,7 +227,7 @@
             <ul class="sidebar-menu">
                 <li class="nav-item active" data-target="view-dashboard"><i class="fas fa-desktop"></i> <span>Home Operativa</span></li>
                 <li class="nav-item" data-target="view-annunci" id="nav-btn-comunicazioni"><i class="fas fa-bullhorn"></i> <span>Comunicazioni</span></li>
-                <li class="nav-item" data-target="view-attenzionati"><i class="fas fa-crosshairs"></i> <span>Soggetti Attenzionati</span></li>
+                <li class="nav-item" data-target="view-attenzionati"><i class="fas fa-crosshairs"></i> <span>Foglio Investigativo</span></li>
                 <li class="nav-item" data-target="view-fascicoli"><i class="fas fa-folder-open"></i> <span>Fascicoli D'Indagine</span></li>
                 <li class="nav-item hidden" id="nav-logs" data-target="view-logs"><i class="fas fa-list-alt"></i> <span>Log di Sistema</span></li>
                 <li class="logout" id="btn-logout"><i class="fas fa-sign-out-alt"></i> <span>Disconnetti</span></li>
@@ -253,7 +249,7 @@
                     <div class="live-clock" id="live-clock"><i class="far fa-clock"></i> --/--/---- - --:--:--</div>
                     <div class="header-user">
                         <div class="user-text-info">
-                            <div id="display-nome-top" class="user-name">Nome - Grado</div>
+                            <div id="display-nome-top" class="user-name">Caricamento...</div>
                             <div id="display-matricola-top" class="user-mat">Matricola: ----</div>
                         </div>
                         <div class="user-avatar"><i class="fas fa-user-shield"></i></div>
@@ -343,7 +339,7 @@
 
                 <div id="view-attenzionati" class="view-section hidden">
                     <div class="section-header">
-                        <div class="section-title"><h2>Soggetti Attenzionati</h2><p>Registro interno delle Identificazioni e Soggetti.</p></div>
+                        <div class="section-title"><h2>Foglio Investigativo</h2><p>Registro interno delle Identificazioni e Soggetti.</p></div>
                         <button id="btn-toggle-form-att" class="cyber-btn"><i class="fas fa-plus"></i> Nuova Identificazione</button>
                     </div>
 
@@ -352,7 +348,6 @@
                         <form id="form-attenzionato">
                             <input type="hidden" id="att-id" value="">
                             <input type="hidden" id="att-discord-id" value="">
-                            
                             <input type="hidden" id="att-motivazione-nascosta" required>
 
                             <div class="form-grid">
@@ -396,7 +391,7 @@
                             </div>
                             <div class="form-actions">
                                 <button type="button" class="cyber-btn outline btn-annulla-form">Annulla</button>
-                                <button type="submit" class="cyber-btn" id="btn-submit-att"><i class="fas fa-save"></i> <span>Registra e Invia a Discord</span></button>
+                                <button type="submit" class="cyber-btn" id="btn-submit-att"><i class="fas fa-save"></i> <span>Registra e Sincronizza</span></button>
                             </div>
                         </form>
                     </div>
@@ -442,13 +437,21 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-app.js";
-        import { getFirestore, collection, addDoc, updateDoc, deleteDoc, doc, onSnapshot, getDoc, arrayUnion, query, orderBy } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, updateDoc, deleteDoc, doc, onSnapshot, getDocs, query, where, orderBy, arrayUnion, getDoc } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-firestore.js";
 
         const firebaseConfig = { apiKey: "AIzaSyDPyEfr0KbWtYDeM5-EFTl3s3VGVB_8Yi8", authDomain: "database-dta.firebaseapp.com", projectId: "database-dta", storageBucket: "database-dta.firebasestorage.app", messagingSenderId: "229305773627", appId: "1:229305773627:web:ec3d17f5fcb3c65fdb761e" };
         const app = initializeApp(firebaseConfig); const db = getFirestore(app);
 
-        // WEBHOOK URL DISCORD
         const WEBHOOK_URL = "https://discord.com/api/webhooks/1481913832774570098/wyc0inW8zgiDfzqYiRFn8_jS5GwnCFLmA-X73-a307LbPJBVvOIjaMbkoa7byYqTcR4S";
+
+        // TIMEOUT INATTIVITA' (15 Minuti)
+        let inactivityTime = function () {
+            let time;
+            window.onload = resetTimer; document.onmousemove = resetTimer; document.onkeydown = resetTimer; document.onclick = resetTimer; document.onscroll = resetTimer;
+            function logout() { sessionStorage.removeItem('sessioneAttiva'); alert("Protocollo Sicurezza: Sessione scaduta per inattività."); window.location.href = 'index.html'; }
+            function resetTimer() { clearTimeout(time); time = setTimeout(logout, 900000); }
+        };
+        inactivityTime();
 
         setInterval(() => { const now = new Date(); document.getElementById('live-clock').innerHTML = `<i class="far fa-clock"></i> ${now.toLocaleDateString('it-IT')} - ${now.toLocaleTimeString('it-IT', { hour12: false })}`; }, 1000);
 
@@ -463,31 +466,54 @@
         let utenteCorrente = null; let matricolaPura = "Sconosciuto"; let isAdmin = false;
         let chartIndaginiInst = null; let chartRischioInst = null; let recentItemsData = [];
 
-        const utenteString = localStorage.getItem('utenteLoggato');
-        if (!utenteString) { alert("Accesso Negato"); window.location.href = 'index.html'; } else {
-            utenteCorrente = JSON.parse(utenteString);
-            let mat = utenteCorrente.matricola || ""; matricolaPura = mat.includes('-') ? mat.split('-').pop() : mat;
-            const nomeUtente = utenteCorrente.nome || 'Sconosciuto'; const gradoUtente = utenteCorrente.grado ? ` - ${utenteCorrente.grado}` : '';
-            document.getElementById('display-nome-top').innerText = `${nomeUtente}${gradoUtente}`;
-            document.getElementById('display-matricola-top').innerText = `Matricola: ${matricolaPura}`;
-            document.getElementById('saluto-nome').innerText = `Bentornato, ${utenteCorrente.nome || 'Agente'}`;
+        // VERIFICA SICUREZZA SERVER-SIDE
+        async function verificaSessione() {
+            const sessionData = sessionStorage.getItem('sessioneAttiva');
+            if (!sessionData) { window.location.href = 'index.html'; return; }
+            
+            const sessionParsed = JSON.parse(sessionData);
+            
+            try {
+                const q = query(collection(db, "agenti"), where("matricola", "==", sessionParsed.matricola));
+                const snap = await getDocs(q);
+                
+                if(snap.empty) {
+                    sessionStorage.removeItem('sessioneAttiva');
+                    window.location.href = 'index.html';
+                    return;
+                }
 
-            if (utenteCorrente.admin && utenteCorrente.admin.toLowerCase() === 'sì' || utenteCorrente.admin === 'si') {
-                isAdmin = true; document.getElementById('nav-logs').classList.remove('hidden'); document.getElementById('btn-toggle-form-ann').classList.remove('hidden');
-            }
+                utenteCorrente = snap.docs[0].data();
+                matricolaPura = sessionParsed.matricola.includes('-') ? sessionParsed.matricola.split('-').pop() : sessionParsed.matricola;
+                
+                const nomeUtente = utenteCorrente.nome || 'Sconosciuto'; 
+                const gradoUtente = utenteCorrente.grado ? ` - ${utenteCorrente.grado}` : '';
+                document.getElementById('display-nome-top').innerText = `${nomeUtente}${gradoUtente}`;
+                document.getElementById('display-matricola-top').innerText = `Matricola: ${matricolaPura}`;
+                document.getElementById('saluto-nome').innerText = `Bentornato, ${utenteCorrente.nome || 'Agente'}`;
 
-            setTimeout(() => {
+                if (utenteCorrente.admin && (utenteCorrente.admin.toLowerCase() === 'sì' || utenteCorrente.admin.toLowerCase() === 'si')) {
+                    isAdmin = true; document.getElementById('nav-logs').classList.remove('hidden'); document.getElementById('btn-toggle-form-ann').classList.remove('hidden');
+                }
+
                 document.getElementById('loading-overlay').classList.add('fade-out');
                 setTimeout(() => {
                     document.getElementById('loading-overlay').style.display = 'none';
                     document.getElementById('dashboard-section').classList.remove('hidden');
-                    showToast("Identità Verificata", "Connessione stabilita.", "success");
+                    showToast("Identità Verificata", "Connessione stabilita con server criptato.", "success");
                     inizializzaGrafici();
                 }, 500); 
-            }, 1000); 
-        }
 
-        document.getElementById('btn-logout').addEventListener('click', () => { localStorage.removeItem('utenteLoggato'); window.location.href = 'index.html'; });
+            } catch(e) {
+                console.error(e);
+                alert("Errore di connessione al Server Centrale.");
+                window.location.href = 'index.html';
+            }
+        }
+        
+        verificaSessione();
+
+        document.getElementById('btn-logout').addEventListener('click', () => { sessionStorage.removeItem('sessioneAttiva'); window.location.href = 'index.html'; });
 
         function inizializzaGrafici() {
             chartIndaginiInst = new Chart(document.getElementById('chartIndagini').getContext('2d'), { type: 'doughnut', data: { labels: ['Aperti', 'In Attesa', 'Archiviati'], datasets: [{ data: [0, 0, 0], backgroundColor: ['#2563eb', '#f59e0b', '#475569'], borderWidth: 0 }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'right', labels: { color: '#cbd5e1' } } }, cutout: '75%' } });
@@ -578,8 +604,11 @@
                 let fotoHtml = `<div style="width:100%; height:250px; display:flex; align-items:center; justify-content:center; font-size:4rem; color:#64748b;"><i class="fas fa-user-secret"></i></div>`;
                 if(data.fotoUrl && data.fotoUrl.trim() !== '') { fotoHtml = `<img src="${data.fotoUrl}" alt="Foto">`; }
                 let textHtml = ``;
-                if(collectionName === 'attenzionati') { textHtml = `<p><strong>Data Nascita:</strong> ${data.dataNascita}</p><p><strong>Motivazione:</strong> <span style="color:var(--accent-blue); font-weight:bold;">${data.motivazione}</span></p><p><strong>Durata Segnalazione:</strong> <span style="text-transform:uppercase; color:var(--danger); font-weight:bold;">${data.durata}</span></p><p><strong>Data Inserimento:</strong> ${data.dataInserimento}</p><hr style="border:0; border-top:1px solid rgba(255,255,255,0.05); margin:15px 0;"><p><strong>Commenti Aggiuntivi:</strong><br>${data.commenti}</p>`; } 
-                else { textHtml = `<p><strong>Reati:</strong> ${data.reati}</p><p><strong>Stato:</strong> <span style="text-transform:uppercase; color:var(--accent-blue); font-weight:bold;">${data.stato}</span></p><p><strong>Soggetti:</strong> ${data.soggetti}</p><p><strong>Data:</strong> ${data.dataInserimento}</p><hr style="border:0; border-top:1px solid rgba(255,255,255,0.05); margin:15px 0;"><p><strong>Dettagli:</strong><br>${data.dettagli}</p>`; }
+                if(collectionName === 'attenzionati') { 
+                    textHtml = `<p><strong>Data Nascita:</strong> ${data.dataNascita}</p><p><strong>Motivazione:</strong> <span style="color:var(--accent-blue); font-weight:bold;">${data.motivazione}</span></p><p><strong>Durata Segnalazione:</strong> <span style="text-transform:uppercase; color:var(--danger); font-weight:bold;">${data.durata}</span></p><p><strong>Data Applicazione:</strong> ${data.dataApplicazione}</p><hr style="border:0; border-top:1px solid rgba(255,255,255,0.05); margin:15px 0;"><p><strong>Commenti Aggiuntivi:</strong><br>${data.commenti}</p>`; 
+                } else { 
+                    textHtml = `<p><strong>Reati:</strong> ${data.reati}</p><p><strong>Stato:</strong> <span style="text-transform:uppercase; color:var(--accent-blue); font-weight:bold;">${data.stato}</span></p><p><strong>Soggetti:</strong> ${data.soggetti}</p><p><strong>Data:</strong> ${data.dataInserimento}</p><hr style="border:0; border-top:1px solid rgba(255,255,255,0.05); margin:15px 0;"><p><strong>Dettagli:</strong><br>${data.dettagli}</p>`; 
+                }
                 const footerHtml = `<div style="margin-top:20px; font-size:0.85rem; color:#94a3b8; padding-top:15px; border-top: 1px solid rgba(255,255,255,0.05);"><i class="fas fa-user-tie"></i> Creato da: ${data.firmaNome} (${data.firmaMatricola})</div>`;
                 document.getElementById('detail-info').innerHTML = `<div class="dettaglio-layout"><div class="dettaglio-image-container">${fotoHtml}</div><div class="dettaglio-text-container">${textHtml}${footerHtml}</div></div>`;
                 renderProve(data.prove || []); document.getElementById('detail-modal').classList.add('active');
@@ -641,39 +670,23 @@
                 e.target.closest('.form-panel').classList.add('hidden'); 
                 e.target.closest('form').reset(); 
                 if(document.getElementById('att-discord-id')) document.getElementById('att-discord-id').value = "";
-                
-                // Pulisce anche l'array dei tag motivazioni
-                motivazioniSelezionate = [];
-                renderMotivazioni();
+                motivazioniSelezionate = []; renderMotivazioni();
             }); 
         });
 
-        /* ================= MODULO FOGLIO INVESTIGATIVO (ATTENZIONATI) E DISCORD ================= */
+        /* ================= MODULO FOGLIO INVESTIGATIVO E DISCORD (TAG E TEMPO) ================= */
         const formAtt = document.getElementById('form-attenzionato'); const gridAtt = document.getElementById('grid-attenzionati');
         
-        // GESTIONE MULTIPLA MOTIVAZIONI CON TAGS
         let motivazioniSelezionate = [];
-        
         document.getElementById('att-motivazione-seleziona').addEventListener('change', function() {
             const val = this.value;
-            if (val && !motivazioniSelezionate.includes(val)) {
-                motivazioniSelezionate.push(val);
-                renderMotivazioni();
-            }
-            this.value = ''; // Resetta select
+            if (val && !motivazioniSelezionate.includes(val)) { motivazioniSelezionate.push(val); renderMotivazioni(); }
+            this.value = ''; 
         });
-
-        window.rimuoviMotivazione = function(val) {
-            motivazioniSelezionate = motivazioniSelezionate.filter(m => m !== val);
-            renderMotivazioni();
-        };
-
+        window.rimuoviMotivazione = function(val) { motivazioniSelezionate = motivazioniSelezionate.filter(m => m !== val); renderMotivazioni(); };
         function renderMotivazioni() {
-            const container = document.getElementById('motivazioni-container');
-            container.innerHTML = '';
-            motivazioniSelezionate.forEach(m => {
-                container.innerHTML += `<div class="motivazione-tag">${m} <i class="fas fa-times" onclick="rimuoviMotivazione('${m}')"></i></div>`;
-            });
+            const container = document.getElementById('motivazioni-container'); container.innerHTML = '';
+            motivazioniSelezionate.forEach(m => { container.innerHTML += `<div class="motivazione-tag">${m} <i class="fas fa-times" onclick="rimuoviMotivazione('${m}')"></i></div>`; });
             document.getElementById('att-motivazione-nascosta').value = motivazioniSelezionate.join(', ');
         }
 
@@ -691,13 +704,29 @@
                     
                     recentItemsData.push({ id: id, tipo: 'attenzionato', titolo: data.nome, autore: data.firmaNome, data: data.dataInserimento });
 
-                    let durataClass = data.durata === 'SCADUTO' ? 'basso' : (data.durata === '15 GIORNI' ? 'warning' : 'danger');
+                    let durataClass = data.durata === 'SCADUTO' ? 'basso' : (data.durata === 'PERMANENTE' ? 'danger' : 'warning');
+                    
+                    // CALCOLO SCADENZA DINAMICA PER LA UI WEB
+                    let uiDurataText = data.durata;
+                    if(data.durata !== "SCADUTO" && data.durata !== "PERMANENTE" && data.dataApplicazione) {
+                        let dataAppDate = new Date(data.dataApplicazione);
+                        let matchGiorni = data.durata.match(/(\d+) GIORNI/);
+                        let matchOre = data.durata.match(/(\d+) ORE/);
+                        if (matchGiorni) dataAppDate.setDate(dataAppDate.getDate() + parseInt(matchGiorni[1]));
+                        if (matchOre) dataAppDate.setHours(dataAppDate.getHours() + parseInt(matchOre[1]));
+                        
+                        if(new Date() > dataAppDate) {
+                            uiDurataText = "SCADUTO ⛔";
+                            durataClass = "basso";
+                        }
+                    }
+
                     const isAuth = (isAdmin || utenteCorrente.matricola === data.firmaMatricolaCompleta);
                     let fotoHtml = data.fotoUrl ? `<img src="${data.fotoUrl}" class="card-foto">` : `<div class="card-foto"><i class="fas fa-user-secret"></i></div>`;
                     let btnDelEdit = isAuth ? `<button class="btn-icon edit" onclick="modificaAttenzionato('${id}')"><i class="fas fa-edit"></i></button><button class="btn-icon delete" onclick="richiediEliminazione('${id}', 'attenzionati')"><i class="fas fa-trash-alt"></i></button>` : '';
                     
                     const card = document.createElement('div'); card.className = 'db-card';
-                    card.innerHTML = `<div class="card-header">${fotoHtml}<div class="card-info"><h4>${data.nome}</h4><span class="subtitle">Motivazione: ${data.motivazione}</span></div><div class="badge-status ${durataClass}">${data.durata}</div></div><div class="card-body"><p><strong>Data Nascita:</strong> ${data.dataNascita}</p><p><strong>Commenti:</strong> ${data.commenti.substring(0, 80)}...</p></div><div class="card-footer"><div class="firma-agente"><i class="fas fa-pen-nib"></i> ${data.firmaNome} - ${data.firmaMatricola}</div><div class="card-actions"><button class="btn-icon" onclick="apriDettaglio('${id}', 'attenzionati')"><i class="fas fa-eye"></i></button>${btnDelEdit}</div></div>`;
+                    card.innerHTML = `<div class="card-header">${fotoHtml}<div class="card-info"><h4>${data.nome}</h4><span class="subtitle">Motivazione: ${data.motivazione}</span></div><div class="badge-status ${durataClass}">${uiDurataText}</div></div><div class="card-body"><p><strong>Data Nascita:</strong> ${data.dataNascita}</p><p><strong>Commenti:</strong> ${data.commenti.substring(0, 80)}...</p></div><div class="card-footer"><div class="firma-agente"><i class="fas fa-pen-nib"></i> ${data.firmaNome} - ${data.firmaMatricola}</div><div class="card-actions"><button class="btn-icon" onclick="apriDettaglio('${id}', 'attenzionati')"><i class="fas fa-eye"></i></button>${btnDelEdit}</div></div>`;
                     gridAtt.appendChild(card);
                 });
             }
@@ -710,8 +739,7 @@
 
         document.getElementById('btn-toggle-form-att').addEventListener('click', () => { 
             formAtt.reset(); 
-            motivazioniSelezionate = [];
-            renderMotivazioni();
+            motivazioniSelezionate = []; renderMotivazioni();
             document.getElementById('att-id').value = ""; 
             document.getElementById('att-discord-id').value = ""; 
             document.getElementById('form-titolo-att').innerHTML = '<i class="fas fa-fingerprint"></i> Nuova Identificazione'; 
@@ -721,16 +749,13 @@
         formAtt.addEventListener('submit', async (e) => {
             e.preventDefault();
             
-            if (motivazioniSelezionate.length === 0) {
-                showToast("Attenzione", "Inserisci almeno una Motivazione.", "warning");
-                return;
-            }
+            if (motivazioniSelezionate.length === 0) { showToast("Attenzione", "Inserisci almeno una Motivazione.", "warning"); return; }
 
             const payload = { 
                 nome: document.getElementById('att-nome').value.trim().toUpperCase(), 
                 dataNascita: document.getElementById('att-nascita').value || 'Sconosciuta', 
                 dataApplicazione: document.getElementById('att-applicazione').value,
-                motivazione: motivazioniSelezionate.join(', '), // Trasforma array in stringa con virgola
+                motivazione: motivazioniSelezionate.join(', '), 
                 durata: document.getElementById('att-durata').value,
                 fotoUrl: document.getElementById('att-foto').value.trim(), 
                 commenti: document.getElementById('att-commenti').value.trim() || '//', 
@@ -770,13 +795,11 @@
                 discordDurataField = `<t:${unixTimestamp}:R>`;
             }
 
-            // PAYLOAD DISCORD (Embed Classico con Immagine in Basso)
-            const embedDesc = `> **Aggiornamento Foglio Investigativo.**\n\n**Dettagli del Soggetto:**`;
-            
+            // PAYLOAD DISCORD CLASSICO COME DA RICHIESTA
             const discordPayload = {
                 embeds: [{
                     author: { name: "SISTEMA IDENTIFICATIVO SM - IPRP x", icon_url: "https://i.imgur.com/SUM8B5x.png" },
-                    description: idEdit ? `> **Aggiornamento Identificazione Registrata.**\n\n**Dettagli del Soggetto:**` : `> **Nuova Identificazione Registrata.**\n\n**Dettagli del Soggetto:**`,
+                    description: `> **Nuova Identificazione Registrata.**\n\n**Dettagli del Soggetto:**`,
                     color: 2446043,
                     fields: [
                         { name: "> **Nome e Cognome:**", value: `\`${payload.nome}\``, inline: true },
@@ -785,25 +808,14 @@
                         { name: "> **Scadenza Attenzione:**", value: discordDurataField, inline: false },
                         { name: "> **Annotazioni:**", value: payload.commenti !== "//" ? payload.commenti : "Nessuna nota aggiuntiva.", inline: false }
                     ],
-                    image: { url: payload.fotoUrl && payload.fotoUrl !== "" ? payload.fotoUrl : "https://i.imgur.com/J3T1Kot.png" },
+                    image: { url: payload.fotoUrl || "https://i.imgur.com/J3T1Kot.png" },
                     footer: { text: `Compilato da: ${payload.firmaNome} - ${payload.firmaMatricola}`, icon_url: "https://i.imgur.com/J3T1Kot.png" },
                     timestamp: new Date().toISOString()
-                }],
-                components: [
-                    {
-                        type: 1,
-                        components: [
-                            {
-                                type: 2,
-                                style: 5,
-                                label: "Apri Terminale IPRP",
-                                url: "https://ryze-glitch.github.io/db-operativo/", 
-                                emoji: { name: "🖥️" }
-                            }
-                        ]
-                    }
-                ]
+                }]
             };
+
+            // Se è un update, cambiamo la descrizione
+            if (idEdit) discordPayload.embeds[0].description = `> **Aggiornamento Identificazione Registrata.**\n\n**Dettagli del Soggetto:**`;
 
             try {
                 if(idEdit) { 
@@ -811,7 +823,6 @@
                     registraLog("Modifica", `Aggiornata Identificazione di ${payload.nome}`); 
                     showToast("Aggiornato", "Modifiche salvate.", "success"); 
 
-                    // UPDATE MESSAGGIO DISCORD
                     if (discordMsgId) {
                         fetch(`${WEBHOOK_URL}/messages/${discordMsgId}`, {
                             method: 'PATCH',
@@ -829,11 +840,8 @@
                             headers: { 'Content-Type': 'application/json' },
                             body: JSON.stringify(discordPayload)
                         });
-                        if (res.ok) {
-                            const resData = await res.json();
-                            newDiscordMsgId = resData.id;
-                        }
-                    } catch(e) { console.error("Webhook create error:", e); }
+                        if (res.ok) { const resData = await res.json(); newDiscordMsgId = resData.id; }
+                    } catch(e) {}
 
                     payload.discordMsgId = newDiscordMsgId;
                     await addDoc(collection(db, "attenzionati"), payload); 
@@ -842,16 +850,10 @@
                     showToast("Creato", "Salvato e inviato a Discord.", "success"); 
                 }
                 
-                formAtt.reset(); 
-                motivazioniSelezionate = [];
-                renderMotivazioni();
+                formAtt.reset(); motivazioniSelezionate = []; renderMotivazioni();
                 document.getElementById('att-discord-id').value = "";
                 document.getElementById('form-container-att').classList.add('hidden');
-            } catch(err) { 
-                showToast("Errore", "Salvataggio fallito.", "error"); 
-            } finally { 
-                document.getElementById('btn-submit-att').disabled = false; 
-            }
+            } catch(err) { showToast("Errore", "Salvataggio fallito.", "error"); } finally { document.getElementById('btn-submit-att').disabled = false; }
         });
 
         window.modificaAttenzionato = async function(id) {
@@ -864,7 +866,6 @@
                 document.getElementById('att-nascita').value = data.dataNascita; 
                 document.getElementById('att-applicazione').value = data.dataApplicazione || ''; 
                 
-                // Ricostruisce i tag delle motivazioni
                 motivazioniSelezionate = data.motivazione ? data.motivazione.split(', ') : [];
                 renderMotivazioni();
                 
