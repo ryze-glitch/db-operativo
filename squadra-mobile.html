@@ -3,201 +3,168 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Play Console Workspace - Squadra Mobile</title>
+    <title>Google Play Console Style - Squadra Mobile</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Google+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         /* ==========================================
-           GOOGLE PLAY CONSOLE / GCP DARK THEME
+           GOOGLE PLAY CONSOLE THEME (EXACT MATCH)
            ========================================== */
         :root { 
-            --bg-color: #202124;
-            --surface: #303134;
-            --surface-hover: #3c4043;
-            --primary: #8ab4f8;
-            --on-primary: #202124;
-            --primary-bg-active: rgba(138, 180, 248, 0.12);
-            --text-main: #e8eaed;
-            --text-muted: #9aa0a6;
-            --border: #5f6368;
-            --border-light: rgba(255,255,255,0.12);
-            --danger: #f28b82;
-            --warning: #fdd663;
-            --success: #81c995;
-            
-            --border-radius-card: 8px; /* Stile Console, bordi netti */
+            --bg-color: #ffffff;
+            --surface: #ffffff;
+            --surface-hover: #f1f3f4;
+            --primary: #1a73e8;
+            --primary-bg-active: #e8f0fe;
+            --text-main: #202124;
+            --text-muted: #5f6368;
+            --border: #dadce0;
+            --danger: #d93025;
+            --warning: #f9ab00;
+            --success: #1e8e3e;
         }
         
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Roboto', sans-serif; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Lexend', sans-serif; }
         body { background-color: var(--bg-color); color: var(--text-main); font-weight: 400; overflow: hidden; font-size: 14px; }
-        h1, h2, h3, h4 { font-family: 'Google Sans', 'Roboto', sans-serif; font-weight: 500; }
+        h1, h2, h3, h4 { font-weight: 500; }
         a { text-decoration: none; color: inherit; } 
         .hidden { display: none !important; }
 
-        /* Effetti e Spinner */
         .ripple-surface { position: relative; overflow: hidden; cursor: pointer; }
-        .md-spinner { width: 40px; height: 40px; border: 3px solid rgba(138, 180, 248, 0.2); border-top: 3px solid var(--primary); border-radius: 50%; animation: md-spin 1s linear infinite; margin-bottom: 20px; }
+        .md-spinner { width: 40px; height: 40px; border: 3px solid rgba(26, 115, 232, 0.2); border-top: 3px solid var(--primary); border-radius: 50%; animation: md-spin 1s linear infinite; margin-bottom: 20px; }
         @keyframes md-spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
         .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100vh; background: var(--bg-color); z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: opacity 0.3s; }
-        .overlay h2 { font-size: 1.5rem; margin-bottom: 8px; font-family: 'Google Sans'; }
+        .overlay h2 { font-size: 1.5rem; margin-bottom: 8px; color: var(--text-main);}
         .overlay p { color: var(--text-muted); }
         .fade-out { opacity: 0; pointer-events: none; }
 
         /* ==========================================
-           LAYOUT GLOBALE (APP BAR SUPERIORE + SIDEBAR)
+           TOP APP BAR (PLAY CONSOLE STYLE)
            ========================================== */
-        #dashboard-section { display: flex; flex-direction: column; height: 100vh; width: 100%; }
+        #app-container { display: flex; flex-direction: column; height: 100vh; width: 100%; }
         
-        /* APP BAR (Stile tipico Google Console, barra in alto) */
-        .top-app-bar { height: 64px; background: var(--bg-color); border-bottom: 1px solid var(--border-light); display: flex; align-items: center; justify-content: space-between; padding: 0 24px; z-index: 100; flex-shrink: 0; }
-        .app-bar-left { display: flex; align-items: center; gap: 16px; width: 256px; }
+        .top-app-bar { height: 64px; background: var(--bg-color); border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; padding: 0 24px; z-index: 100; flex-shrink: 0; }
+        
+        .app-bar-left { display: flex; align-items: center; gap: 12px; }
         .app-bar-left img { width: 28px; }
-        .app-bar-left h2 { font-size: 1.25rem; color: var(--text-main); font-weight: 500; letter-spacing: 0.2px; }
+        .app-bar-left h2 { font-size: 1.3rem; color: var(--text-muted); font-weight: 500; letter-spacing: -0.5px; }
         
-        .header-search { flex: 1; max-width: 600px; position: relative; display: flex; align-items: center; }
-        .header-search i.fa-search { position: absolute; left: 16px; color: var(--text-muted); font-size: 1rem; }
-        .header-search input { width: 100%; height: 48px; background: rgba(255,255,255,0.08); border: 1px solid transparent; border-radius: 8px; padding: 0 48px; color: var(--text-main); font-size: 1rem; transition: 0.2s; }
-        .header-search input:focus { background: var(--surface); border-color: var(--primary); outline: none; box-shadow: 0 1px 2px rgba(0,0,0,0.3); }
-
         .app-bar-right { display: flex; align-items: center; gap: 12px; }
-        .icon-action { width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; border-radius: 50%; color: var(--text-muted); cursor: pointer; transition: 0.2s; font-size: 1.1rem;}
-        .icon-action:hover { background: rgba(255,255,255,0.08); color: var(--text-main); }
-        .user-avatar { width: 32px; height: 32px; background: var(--primary); color: var(--bg-color); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 500; font-size: 0.95rem; cursor: pointer; margin-left: 8px;}
+        
+        /* Pills esattamente come lo screenshot */
+        .header-pill { display: flex; align-items: center; gap: 8px; border: 1px solid var(--border); border-radius: 100px; padding: 6px 16px; font-size: 0.85rem; font-weight: 500; color: var(--text-muted); cursor: pointer; transition: 0.2s; height: 36px;}
+        .header-pill:hover { background: var(--surface-hover); color: var(--text-main); }
+        .header-pill i { font-size: 1rem; color: var(--primary); }
+        
+        .user-avatar { width: 32px; height: 32px; background: #e1e1e1; color: var(--text-main); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 500; font-size: 0.95rem; cursor: pointer; border: 1px solid var(--border); margin-left: 8px;}
 
-        /* CONTAINER CENTRALE */
+        /* ==========================================
+           MAIN WORKSPACE (SIDEBAR + CONTENT)
+           ========================================== */
         .workspace-container { display: flex; flex: 1; overflow: hidden; }
 
-        /* SIDEBAR (Google Play Console Style) */
-        .sidebar { width: 256px; background: var(--bg-color); border-right: 1px solid var(--border-light); display: flex; flex-direction: column; overflow-y: auto; padding-top: 16px; flex-shrink: 0; }
+        /* SIDEBAR (FEDELE ALL'IMMAGINE) */
+        .sidebar { width: 270px; background: var(--bg-color); border-right: 1px solid var(--border); display: flex; flex-direction: column; overflow-y: auto; padding-top: 16px; flex-shrink: 0; }
+        
+        .sidebar-back-link { display: flex; align-items: center; gap: 16px; padding: 0 24px; height: 48px; color: var(--text-main); font-weight: 400; font-size: 0.95rem; cursor: pointer; margin-bottom: 8px;}
+        .sidebar-back-link:hover { background: var(--surface-hover); }
         
         .sidebar-menu { list-style: none; display: flex; flex-direction: column; gap: 2px; }
         
-        .nav-group-header { display: flex; align-items: center; gap: 16px; padding: 0 24px; height: 40px; color: var(--text-muted); font-weight: 500; font-size: 0.85rem; cursor: pointer; user-select: none; text-transform: uppercase; letter-spacing: 0.5px; margin-top: 16px;}
-        .nav-group-header:hover { color: var(--text-main); }
-        .nav-group-header .chevron { margin-left: auto; transition: transform 0.2s; }
-        
-        .nav-group-content { display: flex; flex-direction: column; margin-top: 4px; }
-        .nav-item { display: flex; align-items: center; gap: 16px; height: 40px; padding-left: 24px; padding-right: 16px; color: var(--text-main); font-size: 0.9rem; cursor: pointer; transition: 0.1s; border-radius: 0 20px 20px 0; margin-right: 16px; position: relative; }
+        .nav-item { display: flex; align-items: center; gap: 16px; height: 48px; padding-left: 24px; padding-right: 16px; color: var(--text-main); font-size: 0.9rem; font-weight: 400; cursor: pointer; transition: 0.1s; border-radius: 0 24px 24px 0; margin-right: 12px; }
         .nav-item i { font-size: 1.1rem; width: 20px; text-align: center; color: var(--text-muted); }
         .nav-item:hover:not(.active):not(.locked) { background: var(--surface-hover); }
         
-        /* THE PLAY CONSOLE ACTIVE STATE */
-        .nav-item.active { background: var(--primary-bg-active); color: var(--primary); font-weight: 500; }
-        .nav-item.active i { color: var(--primary); }
-        .nav-item.active::before { content: ''; position: absolute; left: 0; top: 0; height: 100%; width: 4px; background: var(--primary); border-radius: 0 4px 4px 0; }
+        /* THE EXACT PLAY CONSOLE ACTIVE BLOCK (Monitor and improve) */
+        .nav-group-highlight { background: var(--primary-bg-active); border-radius: 0 24px 24px 0; margin-right: 12px; padding: 12px 0 12px 24px; display: flex; align-items: center; gap: 16px; color: var(--primary); font-weight: 500; cursor: pointer; margin-bottom: 8px; margin-top: 8px;}
+        .nav-group-highlight i { font-size: 1.1rem; width: 20px; text-align: center; color: var(--primary); }
 
-        .nav-item.locked { opacity: 0.5; cursor: not-allowed; }
-        .nav-item.locked .lock-icon { margin-left: auto; font-size: 0.8rem; }
+        /* Accordion Header (Policy and programs) */
+        .nav-accordion-header { display: flex; align-items: center; justify-content: space-between; height: 40px; padding-left: 24px; padding-right: 24px; color: var(--primary); font-size: 0.9rem; font-weight: 500; cursor: pointer; border-radius: 0 20px 20px 0; margin-right: 12px; transition: 0.2s;}
+        .nav-accordion-header:hover { background: var(--surface-hover); }
+        .nav-accordion-header .chevron { transition: transform 0.2s; font-size: 0.8rem; }
+        
+        /* Indented sub-items (App content) */
+        .nav-sub-item { display: flex; align-items: center; height: 40px; padding-left: 48px; padding-right: 16px; color: var(--text-main); font-size: 0.9rem; cursor: pointer; position: relative;}
+        .nav-sub-item:hover:not(.active) { background: var(--surface-hover); }
+        
+        /* ACTIVE SUB-ITEM (Blue text + Blue left line) */
+        .nav-sub-item.active { background: transparent; color: var(--primary); font-weight: 500; }
+        .nav-sub-item.active::before { content: ''; position: absolute; left: 0; top: 0; height: 100%; width: 4px; background: var(--primary); border-radius: 0 4px 4px 0; }
+
+        .locked { opacity: 0.5; cursor: not-allowed; }
 
         /* MAIN CONTENT AREA */
-        .main-content { flex: 1; background: var(--bg-color); overflow-y: auto; padding: 24px 32px; display: flex; flex-direction: column; }
+        .main-content { flex: 1; background: var(--bg-color); overflow-y: auto; padding: 40px 60px; display: flex; flex-direction: column; }
         
-        .view-header { margin-bottom: 24px; display: flex; justify-content: space-between; align-items: center; }
-        .view-header h2 { font-size: 1.5rem; color: var(--text-main); font-family: 'Google Sans'; }
+        /* Page Header Replicating Screenshot */
+        .page-breadcrumb { display: flex; align-items: center; gap: 8px; color: var(--text-muted); font-size: 0.85rem; margin-bottom: 12px; cursor: pointer; }
+        .page-title { font-size: 2.2rem; color: var(--text-main); font-weight: 500; margin-bottom: 24px; display: flex; justify-content: space-between; align-items: center; }
+        .page-divider { border: none; border-top: 1px solid var(--border); margin-bottom: 24px; }
+        .page-description { color: var(--text-main); font-size: 0.95rem; line-height: 1.5; margin-bottom: 40px; max-width: 900px; }
         
         /* ==========================================
-           COMPONENTS (CARDS, BUTTONS, FORMS)
+           COMPONENTS (FORMS & LAYOUT STILE "ADS")
            ========================================== */
-        .console-card { background: var(--surface); border: 1px solid var(--border-light); border-radius: var(--border-radius-card); padding: 24px; display: flex; flex-direction: column; }
         
-        .btn-primary { background: var(--primary); color: var(--bg-color); border: none; border-radius: 4px; padding: 0 16px; height: 36px; font-size: 0.875rem; font-weight: 500; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; transition: 0.2s; font-family: 'Google Sans'; }
-        .btn-primary:hover { background: #aecbfa; box-shadow: 0 1px 3px rgba(0,0,0,0.3); }
+        .btn-primary { background: var(--primary); color: #fff; border: none; border-radius: 4px; padding: 0 24px; height: 36px; font-size: 0.875rem; font-weight: 500; cursor: pointer; transition: 0.2s; display: inline-flex; align-items: center; gap: 8px;}
+        .btn-primary:hover { background: #1557b0; box-shadow: 0 1px 3px rgba(0,0,0,0.2); }
         
-        .btn-secondary { background: transparent; color: var(--primary); border: 1px solid var(--border); border-radius: 4px; padding: 0 16px; height: 36px; font-size: 0.875rem; font-weight: 500; cursor: pointer; transition: 0.2s; font-family: 'Google Sans'; }
-        .btn-secondary:hover { background: rgba(138, 180, 248, 0.04); border-color: var(--primary); }
+        .btn-secondary { background: transparent; color: var(--primary); border: 1px solid transparent; border-radius: 4px; padding: 0 16px; height: 36px; font-size: 0.875rem; font-weight: 500; cursor: pointer; transition: 0.2s; }
+        .btn-secondary:hover { background: var(--primary-bg-active); border-color: transparent; }
 
-        /* HERO CARD (Immagine gestita correttamente) */
-        .hero-card { display: flex; background: var(--surface); border: 1px solid var(--border-light); border-radius: var(--border-radius-card); overflow: hidden; margin-bottom: 24px; min-height: 200px; align-items: stretch; }
-        .hero-text-section { flex: 1; padding: 32px; display: flex; flex-direction: column; justify-content: center; }
-        .hero-text-section h2 { font-size: 1.75rem; color: var(--text-main); margin-bottom: 12px; font-family: 'Google Sans'; }
-        .hero-text-section p { color: var(--text-muted); font-size: 0.95rem; line-height: 1.5; margin-bottom: 24px; max-width: 600px; }
-        .hero-image-section { width: 350px; background: #000; position: relative; border-left: 1px solid var(--border-light); flex-shrink: 0;}
-        .hero-image-section img { width: 100%; height: 100%; object-fit: cover; opacity: 0.9; }
+        /* Layout Form orizzontale come screenshot */
+        .form-row { display: flex; align-items: flex-start; margin-bottom: 32px; gap: 40px;}
+        .form-label { width: 250px; font-size: 0.95rem; color: var(--text-main); font-weight: 400; flex-shrink: 0;}
+        .form-input-area { flex: 1; max-width: 700px; }
+        
+        .input-group { display: flex; flex-direction: column; gap: 8px; margin-bottom: 20px;}
+        .input-group input[type="text"], .input-group input[type="url"], .input-group input[type="date"], .input-group select, .input-group textarea { background: #fff; border: 1px solid var(--border); border-radius: 4px; padding: 12px 16px; color: var(--text-main); font-size: 0.95rem; outline: none; transition: 0.2s; font-family: 'Lexend', sans-serif;}
+        .input-group input:focus, .input-group select:focus, .input-group textarea:focus { border-color: var(--primary); border-width: 2px; padding: 11px 15px; }
 
-        /* KPI GRID */
-        .kpi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 24px; }
-        .kpi-card { background: var(--surface); border: 1px solid var(--border-light); border-radius: var(--border-radius-card); padding: 16px 20px; display: flex; flex-direction: column; justify-content: space-between; }
-        .kpi-title { font-size: 0.875rem; color: var(--text-muted); font-weight: 500; display: flex; align-items: center; gap: 8px; margin-bottom: 12px; }
-        .kpi-title i { font-size: 1.1rem; }
-        .kpi-value { font-size: 2rem; color: var(--text-main); font-family: 'Google Sans'; font-weight: 400; line-height: 1;}
+        /* KPI GRID FLAT */
+        .kpi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 32px; }
+        .kpi-card { border: 1px solid var(--border); border-radius: var(--border-radius-card); padding: 20px; display: flex; flex-direction: column; background: #fff;}
+        .kpi-title { font-size: 0.85rem; color: var(--text-muted); font-weight: 500; margin-bottom: 12px; display: flex; align-items: center; gap: 8px;}
+        .kpi-value { font-size: 2.2rem; color: var(--text-main); font-weight: 500; line-height: 1;}
 
-        /* MAIN DASHBOARD GRID */
         .dashboard-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 24px; }
-        .console-card h3 { font-size: 1.1rem; border-bottom: 1px solid var(--border-light); padding-bottom: 16px; margin-bottom: 16px; font-family: 'Google Sans'; }
-        
-        .chart-container { height: 250px; width: 100%; }
-        
-        /* RECENT FEED */
-        .recent-feed { display: flex; flex-direction: column; gap: 0; }
-        .feed-item { display: flex; align-items: center; gap: 16px; padding: 12px 0; border-bottom: 1px solid var(--border-light); }
-        .feed-item:last-child { border-bottom: none; }
-        .feed-icon { width: 32px; height: 32px; border-radius: 4px; background: var(--primary-bg-active); color: var(--primary); display: flex; align-items: center; justify-content: center; }
-        .feed-content h4 { font-size: 0.9rem; color: var(--text-main); margin-bottom: 2px; }
-        .feed-content p { font-size: 0.8rem; color: var(--text-muted); }
+        .chart-container { height: 250px; width: 100%; margin-top: 16px;}
+        .console-card { border: 1px solid var(--border); border-radius: var(--border-radius-card); padding: 24px; }
 
-        /* FORMS (Stile Material Outlined compatto) */
-        .form-panel { background: var(--surface); border: 1px solid var(--border-light); border-radius: var(--border-radius-card); padding: 24px; margin-bottom: 24px;}
-        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-        .full-w { grid-column: span 2; }
+        /* LISTE DATI STILE CONSOLE */
+        .data-list { display: flex; flex-direction: column; border: 1px solid var(--border); border-radius: var(--border-radius-card); overflow: hidden; }
+        .list-header { display: flex; background: #fff; padding: 16px 24px; border-bottom: 1px solid var(--border); font-size: 0.85rem; font-weight: 500; color: var(--text-muted); }
+        .list-item { display: flex; padding: 16px 24px; border-bottom: 1px solid var(--border); align-items: center; gap: 20px; transition: 0.2s; background: #fff;}
+        .list-item:hover { background: #f8f9fa; }
+        .list-item:last-child { border-bottom: none; }
         
-        .input-group { display: flex; flex-direction: column; gap: 6px; }
-        .input-group label { font-size: 0.85rem; color: var(--text-muted); font-weight: 500; }
-        .input-group input, .input-group select, .input-group textarea { background: transparent; border: 1px solid var(--border); border-radius: 4px; padding: 10px 12px; color: var(--text-main); font-size: 0.95rem; outline: none; transition: 0.2s; }
-        .input-group input:focus, .input-group select:focus, .input-group textarea:focus { border-color: var(--primary); box-shadow: 0 0 0 1px var(--primary); }
-        
-        .tags-container { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
-        .tag { background: var(--primary-bg-active); color: var(--primary); padding: 4px 10px; border-radius: 16px; font-size: 0.8rem; font-weight: 500; display: inline-flex; align-items: center; gap: 6px; border: 1px solid rgba(138, 180, 248, 0.3); }
-        .tag i { cursor: pointer; }
-
-        /* DATA TABLE / LIST (Stile Console) */
-        .data-list { display: flex; flex-direction: column; gap: 16px; }
-        .list-item { background: var(--surface); border: 1px solid var(--border-light); border-radius: var(--border-radius-card); padding: 20px; display: flex; gap: 20px; transition: 0.2s;}
-        .list-item:hover { border-color: var(--border); background: var(--surface-hover); }
-        
-        .item-image { width: 64px; height: 64px; background: var(--bg-color); border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; color: var(--text-muted); border: 1px solid var(--border-light); overflow: hidden; flex-shrink: 0;}
-        .item-image img { width: 100%; height: 100%; object-fit: cover; }
-        
-        .item-details { flex: 1; display: flex; flex-direction: column; gap: 8px;}
-        .item-header { display: flex; justify-content: space-between; align-items: flex-start; }
-        .item-header h3 { font-size: 1.1rem; color: var(--primary); margin-bottom: 4px; }
-        .item-header p { font-size: 0.85rem; color: var(--text-muted); }
-        
-        .status-badge { padding: 4px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; border: 1px solid transparent; }
-        .badge-green { background: rgba(129, 201, 149, 0.1); color: var(--success); border-color: rgba(129, 201, 149, 0.2); }
-        .badge-orange { background: rgba(253, 214, 99, 0.1); color: var(--warning); border-color: rgba(253, 214, 99, 0.2); }
-        .badge-red { background: rgba(242, 139, 130, 0.1); color: var(--danger); border-color: rgba(242, 139, 130, 0.2); }
-        .badge-gray { background: rgba(255, 255, 255, 0.05); color: var(--text-muted); border-color: var(--border-light); }
-
-        .item-body { font-size: 0.9rem; color: var(--text-main); line-height: 1.5; }
-        .item-actions { display: flex; gap: 8px; margin-top: auto; padding-top: 12px; }
+        .status-badge { padding: 4px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: 500; border: 1px solid transparent; display: inline-flex; align-items: center; gap: 4px;}
+        .badge-green { background: #e6f4ea; color: #137333; border-color: #ceead6; }
+        .badge-orange { background: #fef7e0; color: #b06000; border-color: #feefc3; }
+        .badge-red { background: #fce8e6; color: #c5221f; border-color: #fad2cf; }
+        .badge-gray { background: #f1f3f4; color: #3c4043; border-color: #dadce0; }
 
         /* ACCOUNT DROPDOWN */
-        .account-panel { position: absolute; top: 60px; right: 24px; width: 300px; background: var(--surface); border: 1px solid var(--border-light); border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.5); z-index: 1000; padding: 8px 0; opacity: 0; transform: translateY(-10px); pointer-events: none; transition: 0.2s; }
+        .account-panel { position: absolute; top: 60px; right: 24px; width: 300px; background: #fff; border: 1px solid var(--border); border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); z-index: 1000; padding: 8px 0; opacity: 0; transform: translateY(-10px); pointer-events: none; transition: 0.2s; }
         .account-panel.active { opacity: 1; transform: translateY(0); pointer-events: auto; }
         .panel-user { display: flex; align-items: center; gap: 16px; padding: 16px 20px; }
-        .panel-user .large-av { width: 48px; height: 48px; font-size: 1.5rem; }
-        .panel-user-info h4 { font-size: 1rem; color: var(--text-main); }
-        .panel-user-info p { font-size: 0.8rem; color: var(--text-muted); }
-        .panel-divider { height: 1px; background: var(--border-light); margin: 8px 0; }
+        .panel-divider { height: 1px; background: var(--border); margin: 8px 0; }
         .panel-action { padding: 12px 20px; font-size: 0.9rem; color: var(--text-main); display: flex; align-items: center; gap: 12px; cursor: pointer; transition: 0.2s; }
         .panel-action:hover { background: var(--surface-hover); }
-        .panel-action.logout { color: var(--danger); }
 
-        /* MODALS */
-        .modal-wrap { position: fixed; top: 0; left: 0; width: 100%; height: 100vh; background: rgba(0,0,0,0.6); z-index: 10000; display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: 0.2s; }
+        /* MODALS E TOASTS */
+        .modal-wrap { position: fixed; top: 0; left: 0; width: 100%; height: 100vh; background: rgba(32, 33, 36, 0.6); z-index: 10000; display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: 0.2s; }
         .modal-wrap.active { opacity: 1; pointer-events: auto; }
-        .modal-box { background: var(--surface); border: 1px solid var(--border-light); border-radius: var(--border-radius-card); padding: 24px; max-width: 400px; width: 90%; box-shadow: 0 8px 24px rgba(0,0,0,0.5); transform: scale(0.95); transition: 0.2s; }
+        .modal-box { background: #fff; border-radius: 8px; padding: 24px; max-width: 400px; width: 90%; box-shadow: 0 8px 24px rgba(0,0,0,0.2); transform: scale(0.95); transition: 0.2s; }
         .modal-wrap.active .modal-box { transform: scale(1); }
-        .modal-box.large { max-width: 700px; }
+        .modal-box.large { max-width: 800px; }
         
-        /* TOASTS */
         .toast-container { position: fixed; bottom: 24px; left: 24px; z-index: 10001; display: flex; flex-direction: column; gap: 8px; pointer-events: none; }
-        .toast { background: var(--text-main); color: var(--bg-color); padding: 12px 16px; border-radius: 4px; display: flex; align-items: center; gap: 12px; font-size: 0.9rem; font-weight: 500; box-shadow: 0 2px 5px rgba(0,0,0,0.2); animation: slideUp 0.3s ease forwards; }
+        .toast { background: #323232; color: #fff; padding: 14px 24px; border-radius: 4px; display: flex; align-items: center; gap: 12px; font-size: 0.95rem; font-weight: 400; box-shadow: 0 2px 5px rgba(0,0,0,0.2); animation: slideUp 0.3s ease forwards; }
         @keyframes slideUp { from { transform: translateY(100%); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-        
-        .nessun-dato { padding: 32px; text-align: center; color: var(--text-muted); font-size: 0.95rem; border: 1px dashed var(--border-light); border-radius: var(--border-radius-card); }
     </style>
 </head>
 <body>
@@ -206,104 +173,89 @@
     
     <div id="loading-overlay" class="overlay">
         <div class="md-spinner"></div>
-        <h2>Inizializzazione Workspace</h2>
-        <p>Controllo sicurezza IPRP in corso...</p>
+        <h2>Inizializzazione IPRP Console</h2>
+        <p>Verifica ambiente e crittografia...</p>
     </div>
 
     <div id="delete-modal" class="modal-wrap">
         <div class="modal-box">
             <h3 style="margin-bottom: 12px; font-size: 1.25rem;">Conferma eliminazione</h3>
-            <p style="color: var(--text-muted); margin-bottom: 24px; font-size: 0.95rem; line-height: 1.5;">Sei sicuro di voler eliminare questo record in modo permanente? L'azione non può essere annullata e i log verranno aggiornati.</p>
+            <p style="color: var(--text-muted); margin-bottom: 24px; font-size: 0.95rem; line-height: 1.5;">Sei sicuro di voler eliminare questo record? L'azione non può essere annullata.</p>
             <div style="display: flex; justify-content: flex-end; gap: 12px;">
-                <button class="btn-secondary" onclick="document.getElementById('delete-modal').classList.remove('active')">Annulla</button>
-                <button class="btn-primary" style="background: var(--danger); color: #000;" id="btn-confirm-delete">Elimina</button>
+                <button class="btn-secondary" onclick="document.getElementById('delete-modal').classList.remove('active')">Cancel</button>
+                <button class="btn-primary" style="background: var(--danger);" id="btn-confirm-delete">Delete</button>
             </div>
         </div>
     </div>
 
     <div id="detail-modal" class="modal-wrap">
         <div class="modal-box large">
-            <div style="display: flex; justify-content: space-between; margin-bottom: 20px; padding-bottom: 16px; border-bottom: 1px solid var(--border-light);">
-                <h3 id="detail-title" style="font-size: 1.25rem;">Dettaglio</h3>
+            <div style="display: flex; justify-content: space-between; margin-bottom: 20px; padding-bottom: 16px; border-bottom: 1px solid var(--border);">
+                <h3 id="detail-title" style="font-size: 1.25rem; font-weight: 500;">Dettaglio</h3>
                 <i class="fas fa-times" style="cursor:pointer; color:var(--text-muted);" onclick="document.getElementById('detail-modal').classList.remove('active')"></i>
             </div>
             <div id="detail-info" style="font-size: 0.95rem; line-height: 1.6; color: var(--text-main);"></div>
         </div>
     </div>
 
-    <div id="settings-modal" class="modal-wrap">
-        <div class="modal-box large">
-            <div style="display: flex; justify-content: space-between; margin-bottom: 20px; padding-bottom: 16px; border-bottom: 1px solid var(--border-light);">
-                <h3 style="font-size: 1.25rem;">Impostazioni Account</h3>
-                <i class="fas fa-times" style="cursor:pointer; color:var(--text-muted);" onclick="document.getElementById('settings-modal').classList.remove('active')"></i>
-            </div>
-            <div class="form-grid">
-                <div class="input-group"><label>Nome Operatore</label><input type="text" id="set-nome" disabled></div>
-                <div class="input-group"><label>Ruolo/Grado</label><input type="text" id="set-grado" disabled></div>
-                <div class="input-group full-w"><label>Matricola IPRP</label><input type="text" id="set-matr" disabled></div>
-            </div>
-            <h4 style="margin: 24px 0 16px; font-size: 1rem; border-bottom: 1px solid var(--border-light); padding-bottom: 8px;">Preferenze</h4>
-            <div style="display: flex; justify-content: space-between; align-items: center; padding: 12px; border: 1px solid var(--border-light); border-radius: 4px;">
-                <div>
-                    <strong style="display: block; margin-bottom: 4px;">Tema Console</strong>
-                    <span style="font-size: 0.85rem; color: var(--text-muted);">Sincronizzato su Dark Mode (GCP)</span>
-                </div>
-                <button class="btn-secondary" disabled style="opacity:0.5;">Fisso</button>
-            </div>
-        </div>
-    </div>
-
-    <div id="dashboard-section" class="hidden">
+    <div id="app-container" class="hidden">
         
         <header class="top-app-bar">
             <div class="app-bar-left">
                 <img src="https://i.imgur.com/gRzOXM3.png" alt="Logo">
-                <h2>SQ. MOBILE</h2>
-            </div>
-            <div class="header-search">
-                <i class="fas fa-search"></i>
-                <input type="text" id="global-search" placeholder="Cerca risorse, fascicoli o soggetti...">
+                <h2>IPRP Console</h2>
             </div>
             <div class="app-bar-right">
-                <div class="icon-action"><i class="fas fa-bell"></i></div>
-                <div class="icon-action" id="btn-open-settings-top"><i class="fas fa-cog"></i></div>
+                <div class="header-pill"><i class="far fa-bell"></i> Notifiche</div>
+                <div class="header-pill"><i class="fab fa-android" style="color:var(--text-muted)"></i> Terminale Centrale</div>
                 <div class="user-avatar" id="btn-user-profile">A</div>
             </div>
 
             <div id="account-panel" class="account-panel">
                 <div class="panel-user">
-                    <div class="user-avatar large-av" id="panel-avatar">A</div>
-                    <div class="panel-user-info">
-                        <h4 id="panel-nome">Nome Cognome</h4>
-                        <p id="panel-matricola">---</p>
+                    <div class="user-avatar" id="panel-avatar" style="width:48px; height:48px; font-size:1.5rem; margin-left:0;">A</div>
+                    <div>
+                        <h4 id="panel-nome" style="font-size:1rem; margin-bottom:2px; font-weight:500;">Nome Cognome</h4>
+                        <p id="panel-matricola" style="font-size:0.8rem; color:var(--text-muted);">---</p>
                     </div>
                 </div>
                 <div class="panel-divider"></div>
-                <div class="panel-action" id="btn-open-settings"><i class="fas fa-user-shield"></i> Gestisci Account</div>
+                <div class="panel-action"><i class="fas fa-cog" style="color:var(--text-muted);"></i> Account settings</div>
                 <div class="panel-divider"></div>
-                <div class="panel-action logout" id="btn-logout-panel"><i class="fas fa-sign-out-alt"></i> Esci da Workspace</div>
+                <div class="panel-action" id="btn-logout-panel" style="color:var(--danger);"><i class="fas fa-sign-out-alt"></i> Sign out</div>
             </div>
         </header>
 
         <div class="workspace-container">
             <aside class="sidebar">
+                <div class="sidebar-back-link">
+                    <i class="fas fa-arrow-left" style="color:var(--text-muted);"></i> Tutti i reparti
+                </div>
+                
                 <ul class="sidebar-menu">
                     <li class="nav-item active" data-target="view-dashboard">
-                        <i class="fas fa-home"></i> Home
+                        <i class="fas fa-th-large"></i> Dashboard
+                    </li>
+                    <li class="nav-item" data-target="view-annunci" id="nav-btn-comunicazioni">
+                        <i class="fas fa-bullhorn"></i> Comunicazioni
                     </li>
                     
-                    <div class="nav-group-header"><span>Indagini e Direttive</span></div>
-                    <div class="nav-group-content">
-                        <li class="nav-item" data-target="view-annunci" id="nav-btn-comunicazioni"><i class="fas fa-bullhorn"></i> Comunicazioni</li>
-                        <li class="nav-item" data-target="view-attenzionati"><i class="fas fa-crosshairs"></i> Identificazioni</li>
-                        <li class="nav-item" data-target="view-fascicoli"><i class="fas fa-folder"></i> Fascicoli</li>
+                    <div class="panel-divider" style="margin: 8px 0;"></div>
+
+                    <div class="nav-group-highlight">
+                        <i class="fas fa-search"></i> Monitor and improve
                     </div>
 
-                    <div class="nav-group-header"><span>Amministrazione</span></div>
-                    <div class="nav-group-content">
-                        <li class="nav-item locked" onclick="showToast('Errore Autorizzazione', 'Privilegi insufficienti per i log di sicurezza.', 'error')">
-                            <i class="fas fa-shield-alt"></i> Audit Logs <i class="fas fa-lock lock-icon"></i>
-                        </li>
+                    <div class="nav-group open">
+                        <div class="nav-accordion-header" onclick="this.parentElement.classList.toggle('open')">
+                            Policy and programs
+                            <i class="fas fa-chevron-up chevron"></i>
+                        </div>
+                        <div class="nav-group-content">
+                            <li class="nav-sub-item active" data-target="view-attenzionati">Identificazioni</li>
+                            <li class="nav-sub-item" data-target="view-fascicoli">Fascicoli d'Indagine</li>
+                            <li class="nav-sub-item locked" onclick="showToast('Area protetta in manutenzione')">Log Sicurezza <i class="fas fa-lock" style="margin-left:auto; font-size:0.8rem;"></i></li>
+                        </div>
                     </div>
                 </ul>
             </aside>
@@ -311,140 +263,172 @@
             <main class="main-content">
                 
                 <div id="view-dashboard" class="view-section">
-                    
-                    <div class="hero-card">
-                        <div class="hero-text-section">
-                            <h2 id="saluto-nome">Bentornato, Operatore</h2>
-                            <p>Questo è il terminale operativo centrale della Squadra Mobile. Tutte le azioni eseguite su questa console sono crittografate, tracciate nel registro di sicurezza IPRP e sincronizzate in tempo reale con il server centrale.</p>
-                            <div style="display: flex; gap: 12px; align-items: center; margin-top: auto;">
-                                <button class="btn-primary" onclick="document.querySelector('[data-target=\'view-fascicoli\']').click()"><i class="fas fa-folder-plus"></i> Nuovo Fascicolo</button>
-                                <span style="font-family: monospace; color: var(--primary); background: var(--primary-bg-active); padding: 6px 12px; border-radius: 4px; border: 1px solid rgba(138, 180, 248, 0.3);"><i class="fas fa-clock"></i> <span id="live-clock">--:--:--</span></span>
-                            </div>
-                        </div>
-                        <div class="hero-image-section">
-                            <img src="https://i.imgur.com/RlzMnRQ.png" alt="Operazione SM">
-                        </div>
+                    <div class="page-breadcrumb"><i class="fas fa-arrow-left"></i> Dashboard</div>
+                    <div class="page-title">
+                        Dashboard Operativa
+                        <span style="font-size:1rem; color:var(--text-muted);"><i class="far fa-clock"></i> <span id="live-clock">--:--:--</span></span>
                     </div>
+                    <hr class="page-divider">
+                    <p class="page-description">Benvenuto nel terminale operativo centrale. Controlla lo stato dei fascicoli attivi, le comunicazioni recenti e la conformità delle direttive per assicurarti che le tue informazioni siano aggiornate. <a href="#" style="color:var(--primary);">Learn more</a></p>
 
                     <div class="kpi-grid">
-                        <div class="kpi-card"><div class="kpi-title"><i class="fas fa-folder-open" style="color:var(--primary)"></i> Fascicoli Attivi</div><div class="kpi-value" id="kpi-indagini">0</div></div>
-                        <div class="kpi-card"><div class="kpi-title"><i class="fas fa-user-secret" style="color:var(--warning)"></i> Soggetti Registrati</div><div class="kpi-value" id="kpi-soggetti">0</div></div>
-                        <div class="kpi-card"><div class="kpi-title"><i class="fas fa-bullhorn" style="color:var(--success)"></i> Direttive</div><div class="kpi-value" id="kpi-comunicazioni">0</div></div>
+                        <div class="kpi-card"><div class="kpi-title"><i class="far fa-folder" style="color:var(--primary)"></i> Fascicoli Attivi</div><div class="kpi-value" id="kpi-indagini">0</div></div>
+                        <div class="kpi-card"><div class="kpi-title"><i class="far fa-user" style="color:var(--warning)"></i> Soggetti</div><div class="kpi-value" id="kpi-soggetti">0</div></div>
+                        <div class="kpi-card"><div class="kpi-title"><i class="far fa-bell" style="color:var(--success)"></i> Direttive</div><div class="kpi-value" id="kpi-comunicazioni">0</div></div>
                         <div class="kpi-card"><div class="kpi-title"><i class="fas fa-exclamation-triangle" style="color:var(--danger)"></i> Scadenze</div><div class="kpi-value" id="kpi-rischio">0</div></div>
                     </div>
 
                     <div class="dashboard-grid">
-                        <div style="display: flex; flex-direction: column; gap: 24px;">
-                            <div class="console-card">
-                                <h3>Trend Durata Applicazioni</h3>
-                                <div class="chart-container"><canvas id="chartRischio"></canvas></div>
-                            </div>
-                            <div class="console-card">
-                                <h3>Stato Globale Indagini</h3>
-                                <div class="chart-container"><canvas id="chartIndagini"></canvas></div>
-                            </div>
+                        <div class="console-card">
+                            <h3 style="font-size: 1.1rem; margin-bottom: 16px; font-weight: 500;">Trend Indagini</h3>
+                            <div class="chart-container"><canvas id="chartRischio"></canvas></div>
                         </div>
-                        <div style="display: flex; flex-direction: column; gap: 24px;">
-                            <div class="console-card" style="padding: 16px;">
-                                <h3 style="margin-bottom: 8px; border:none; font-size: 1rem;">Risorse Esterne</h3>
-                                <a href="#" target="_blank" style="display:flex; align-items:center; gap:12px; padding:12px; border-radius:4px; color:var(--text-main); border: 1px solid var(--border-light); margin-bottom:8px; transition:0.2s;" onmouseover="this.style.background='var(--surface-hover)'" onmouseout="this.style.background='transparent'"><i class="fab fa-google-drive" style="color:var(--primary); font-size:1.2rem;"></i> Drive Operativo</a>
-                                <a href="#" target="_blank" style="display:flex; align-items:center; gap:12px; padding:12px; border-radius:4px; color:var(--text-main); border: 1px solid var(--border-light); transition:0.2s;" onmouseover="this.style.background='var(--surface-hover)'" onmouseout="this.style.background='transparent'"><i class="fas fa-table" style="color:var(--primary); font-size:1.2rem;"></i> Registro Presenze</a>
-                            </div>
-                            <div class="console-card" style="flex: 1;">
-                                <h3 style="font-size: 1rem;">Ultimi Aggiornamenti</h3>
-                                <div class="recent-feed" id="feed-recenti"><div class="nessun-dato">Nessun dato recente.</div></div>
-                            </div>
+                        <div class="console-card">
+                            <h3 style="font-size: 1.1rem; margin-bottom: 16px; font-weight: 500;">Stato Indagini</h3>
+                            <div class="chart-container"><canvas id="chartIndagini"></canvas></div>
                         </div>
                     </div>
                 </div>
 
                 <div id="view-annunci" class="view-section hidden">
-                    <div class="view-header">
-                        <h2>Direttive Ufficiali</h2>
-                        <button id="btn-toggle-form-ann" class="btn-primary hidden"><i class="fas fa-plus"></i> Crea Direttiva</button>
+                    <div class="page-breadcrumb" onclick="document.querySelector('[data-target=\'view-dashboard\']').click()"><i class="fas fa-arrow-left"></i> Dashboard</div>
+                    <div class="page-title">
+                        Comunicazioni
+                        <button id="btn-toggle-form-ann" class="btn-primary hidden">Crea Direttiva</button>
                     </div>
+                    <hr class="page-divider">
+                    <p class="page-description">Let us know whether your department has new directives. Make sure this information is accurate and is kept up to date.</p>
 
-                    <div id="form-container-ann" class="form-panel hidden">
-                        <h3 style="margin-bottom: 16px; font-family: 'Google Sans';">Nuova Comunicazione</h3>
+                    <div id="form-container-ann" class="hidden" style="margin-bottom: 40px;">
                         <form id="form-annuncio">
-                            <div class="form-grid">
-                                <div class="input-group full-w"><label>Oggetto</label><input type="text" id="ann-titolo" required></div>
-                                <div class="input-group full-w"><label>Priorità</label><select id="ann-priorita"><option value="normale">Normale</option><option value="alta">Alta</option><option value="urgente">Urgente</option></select></div>
-                                <div class="input-group full-w"><label>Corpo del Messaggio</label><textarea id="ann-testo" rows="4" required></textarea></div>
-                            </div>
-                            <div style="display: flex; justify-content: flex-end; gap: 12px; margin-top: 24px;">
-                                <button type="button" class="btn-secondary btn-annulla-form">Annulla</button>
-                                <button type="submit" class="btn-primary">Pubblica</button>
+                            <div class="form-row">
+                                <div class="form-label">Dettagli Messaggio</div>
+                                <div class="form-input-area">
+                                    <div class="input-group"><label>Oggetto</label><input type="text" id="ann-titolo" required></div>
+                                    <div class="input-group"><label>Priorità</label><select id="ann-priorita"><option value="normale">Normale</option><option value="alta">Alta</option><option value="urgente">Urgente</option></select></div>
+                                    <div class="input-group"><label>Testo Comunicazione</label><textarea id="ann-testo" rows="5" required></textarea></div>
+                                    <div style="display: flex; gap: 12px; margin-top: 16px;">
+                                        <button type="submit" class="btn-primary">Salva</button>
+                                        <button type="button" class="btn-secondary btn-annulla-form">Annulla</button>
+                                    </div>
+                                </div>
                             </div>
                         </form>
+                        <hr class="page-divider">
                     </div>
-                    <div id="grid-annunci" class="data-list"></div>
+
+                    <div class="data-list" id="grid-annunci">
+                        <div class="list-header">
+                            <div style="flex: 2;">Comunicazione</div>
+                            <div style="flex: 1;">Data e Autore</div>
+                        </div>
+                    </div>
                 </div>
 
                 <div id="view-attenzionati" class="view-section hidden">
-                    <div class="view-header">
-                        <h2>Foglio Investigativo</h2>
-                        <button id="btn-toggle-form-att" class="btn-primary"><i class="fas fa-plus"></i> Registra Soggetto</button>
+                    <div class="page-breadcrumb" onclick="document.querySelector('[data-target=\'view-dashboard\']').click()"><i class="fas fa-arrow-left"></i> Dashboard</div>
+                    <div class="page-title">
+                        Identificazioni
+                        <button id="btn-toggle-form-att" class="btn-primary">Aggiungi Soggetto</button>
                     </div>
+                    <hr class="page-divider">
+                    <p class="page-description">Check the Policy to make sure your records are compliant. Registering individuals requires accurate dates and motivations.</p>
 
-                    <div id="form-container-att" class="form-panel hidden">
-                        <h3 id="form-titolo-att" style="margin-bottom: 16px; font-family: 'Google Sans';">Nuova Registrazione</h3>
+                    <div id="form-container-att" class="hidden" style="margin-bottom: 40px;">
                         <form id="form-attenzionato">
                             <input type="hidden" id="att-id" value="">
                             <input type="hidden" id="att-discord-id" value="">
-                            <input type="hidden" id="att-motivazione-nascosta" required>
                             
-                            <div class="form-grid">
-                                <div class="input-group"><label>Nome e Cognome</label><input type="text" id="att-nome" required style="text-transform: uppercase;"></div>
-                                <div class="input-group"><label>Data Nascita (DD/MM/YYYY)</label><input type="text" id="att-nascita" required></div>
-                                <div class="input-group"><label>Data Inizio</label><input type="date" id="att-applicazione" required></div>
-                                <div class="input-group"><label>Durata</label><select id="att-durata"><option value="PERMANENTE">PERMANENTE</option><option value="60 GIORNI">60 GIORNI</option><option value="30 GIORNI">30 GIORNI</option><option value="15 GIORNI">15 GIORNI</option><option value="10 GIORNI">10 GIORNI</option><option value="5 GIORNI">5 GIORNI</option><option value="24 ORE">24 ORE</option><option value="12 ORE">12 ORE</option><option value="SCADUTO">SCADUTO</option></select></div>
-                                
-                                <div class="input-group full-w" style="background: rgba(255,255,255,0.02); padding: 16px; border: 1px dashed var(--border-light); border-radius: 4px;">
-                                    <label>Motivazione (Aggiungi tags)</label>
-                                    <select id="att-motivazione-seleziona">
-                                        <option value="">-- Seleziona motivazione --</option>
-                                        <option value="SPARATORIA">SPARATORIA</option><option value="ARMI IN VISTA">ARMI IN VISTA</option><option value="MISURA CAUTELARE">MISURA CAUTELARE</option><option value="DETERRENTE ALLA PUBBLICA SICUREZZA">DETERRENTE ALLA PUBBLICA SICUREZZA</option><option value="ASSOCIAZIONE A DELINQUERE">ASSOCIAZIONE A DELINQUERE</option><option value="POSSIBILIE ASSOCIAZIONE">POSSIBILIE ASSOCIAZIONE</option><option value="VENDITA DI ARMI">VENDITA DI ARMI</option><option value="FASCICOLO IN CORSO">FASCICOLO IN CORSO</option>
-                                    </select>
-                                    <div id="motivazioni-container" class="tags-container"></div>
+                            <div class="form-row">
+                                <div class="form-label" id="form-titolo-att">Dati Soggetto</div>
+                                <div class="form-input-area">
+                                    <div class="input-group"><label>Nome e Cognome</label><input type="text" id="att-nome" required style="text-transform: uppercase;"></div>
+                                    <div style="display:flex; gap:16px;">
+                                        <div class="input-group" style="flex:1;"><label>Data Nascita</label><input type="text" id="att-nascita" required></div>
+                                        <div class="input-group" style="flex:1;"><label>Data Inizio</label><input type="date" id="att-applicazione" required></div>
+                                    </div>
+                                    <div class="input-group"><label>Durata</label><select id="att-durata"><option value="PERMANENTE">PERMANENTE</option><option value="60 GIORNI">60 GIORNI</option><option value="30 GIORNI">30 GIORNI</option><option value="15 GIORNI">15 GIORNI</option><option value="SCADUTO">SCADUTO</option></select></div>
                                 </div>
-
-                                <div class="input-group full-w"><label>URL Foto</label><input type="url" id="att-foto"></div>
-                                <div class="input-group full-w"><label>Annotazioni e Commenti</label><textarea id="att-commenti" rows="2"></textarea></div>
                             </div>
-                            <div style="display: flex; justify-content: flex-end; gap: 12px; margin-top: 24px;">
-                                <button type="button" class="btn-secondary btn-annulla-form">Annulla</button>
-                                <button type="submit" class="btn-primary" id="btn-submit-att">Salva Record</button>
+
+                            <hr class="page-divider">
+
+                            <div class="form-row">
+                                <div class="form-label">Motivazione e Dettagli</div>
+                                <div class="form-input-area">
+                                    <div class="input-group">
+                                        <label>Seleziona Motivazione (Tags)</label>
+                                        <select id="att-motivazione-seleziona">
+                                            <option value="">-- Seleziona motivazione --</option>
+                                            <option value="SPARATORIA">SPARATORIA</option><option value="MISURA CAUTELARE">MISURA CAUTELARE</option><option value="ASSOCIAZIONE">ASSOCIAZIONE A DELINQUERE</option>
+                                        </select>
+                                        <input type="hidden" id="att-motivazione-nascosta" required>
+                                        <div id="motivazioni-container" style="display:flex; gap:8px; margin-top:8px;"></div>
+                                    </div>
+                                    <div class="input-group"><label>URL Foto (Opzionale)</label><input type="url" id="att-foto"></div>
+                                    <div class="input-group"><label>Annotazioni e Commenti</label><textarea id="att-commenti" rows="3"></textarea></div>
+                                    
+                                    <div style="display: flex; gap: 12px; margin-top: 16px;">
+                                        <button type="submit" class="btn-primary" id="btn-submit-att">Salva</button>
+                                        <button type="button" class="btn-secondary btn-annulla-form">Annulla</button>
+                                    </div>
+                                </div>
                             </div>
                         </form>
+                        <hr class="page-divider">
                     </div>
-                    <div id="grid-attenzionati" class="data-list"></div>
+
+                    <div class="data-list">
+                        <div class="list-header">
+                            <div style="flex: 2;">Soggetto</div>
+                            <div style="flex: 1;">Stato</div>
+                            <div style="width: 100px; text-align: right;">Azioni</div>
+                        </div>
+                        <div id="grid-attenzionati"></div>
+                    </div>
                 </div>
 
                 <div id="view-fascicoli" class="view-section hidden">
-                    <div class="view-header">
-                        <h2>Fascicoli D'Indagine</h2>
-                        <button id="btn-toggle-form-fas" class="btn-primary"><i class="fas fa-folder-plus"></i> Apri Fascicolo</button>
+                    <div class="page-breadcrumb" onclick="document.querySelector('[data-target=\'view-dashboard\']').click()"><i class="fas fa-arrow-left"></i> Dashboard</div>
+                    <div class="page-title">
+                        Fascicoli D'Indagine
+                        <button id="btn-toggle-form-fas" class="btn-primary">Nuovo Fascicolo</button>
                     </div>
-                    <div id="form-container-fas" class="form-panel hidden">
-                        <h3 id="form-titolo-fas" style="margin-bottom: 16px; font-family: 'Google Sans';">Nuovo Fascicolo</h3>
+                    <hr class="page-divider">
+                    <p class="page-description">Review and update investigation files. Ensure all case states reflect their current operational status.</p>
+
+                    <div id="form-container-fas" class="hidden" style="margin-bottom: 40px;">
                         <form id="form-fascicolo">
                             <input type="hidden" id="fas-id" value="">
-                            <div class="form-grid">
-                                <div class="input-group full-w"><label>Nome Operazione</label><input type="text" id="fas-titolo" required></div>
-                                <div class="input-group"><label>Reati Contestati</label><input type="text" id="fas-reati" required></div>
-                                <div class="input-group"><label>Stato Attuale</label><select id="fas-stato"><option value="aperto">Aperta</option><option value="attesa">In Attesa</option><option value="chiuso">Chiusa</option></select></div>
-                                <div class="input-group full-w"><label>Soggetti Coinvolti</label><input type="text" id="fas-soggetti"></div>
-                                <div class="input-group full-w"><label>URL Copertina</label><input type="url" id="fas-foto"></div>
-                                <div class="input-group full-w"><label>Dettagli Investigativi</label><textarea id="fas-dettagli" rows="4" required></textarea></div>
-                            </div>
-                            <div style="display: flex; justify-content: flex-end; gap: 12px; margin-top: 24px;">
-                                <button type="button" class="btn-secondary btn-annulla-form">Annulla</button>
-                                <button type="submit" class="btn-primary" id="btn-submit-fas">Salva Fascicolo</button>
+                            
+                            <div class="form-row">
+                                <div class="form-label" id="form-titolo-fas">Dettagli Caso</div>
+                                <div class="form-input-area">
+                                    <div class="input-group"><label>Titolo Operazione</label><input type="text" id="fas-titolo" required></div>
+                                    <div class="input-group"><label>Reati Ipotizzati</label><input type="text" id="fas-reati" required></div>
+                                    <div class="input-group"><label>Stato Attuale</label><select id="fas-stato"><option value="aperto">Aperta</option><option value="attesa">In Attesa</option><option value="chiuso">Chiusa</option></select></div>
+                                    <div class="input-group"><label>Soggetti Coinvolti</label><input type="text" id="fas-soggetti"></div>
+                                    <div class="input-group"><label>URL Copertina</label><input type="url" id="fas-foto"></div>
+                                    <div class="input-group"><label>Dettagli Investigativi</label><textarea id="fas-dettagli" rows="5" required></textarea></div>
+                                    
+                                    <div style="display: flex; gap: 12px; margin-top: 16px;">
+                                        <button type="submit" class="btn-primary" id="btn-submit-fas">Salva</button>
+                                        <button type="button" class="btn-secondary btn-annulla-form">Annulla</button>
+                                    </div>
+                                </div>
                             </div>
                         </form>
+                        <hr class="page-divider">
                     </div>
-                    <div id="grid-fascicoli" class="data-list"></div>
+                    
+                    <div class="data-list">
+                        <div class="list-header">
+                            <div style="flex: 2;">Fascicolo</div>
+                            <div style="flex: 1;">Stato</div>
+                            <div style="width: 100px; text-align: right;">Azioni</div>
+                        </div>
+                        <div id="grid-fascicoli"></div>
+                    </div>
                 </div>
 
             </main>
@@ -470,9 +454,9 @@
 
         setInterval(() => { document.getElementById('live-clock').textContent = new Date().toLocaleTimeString('it-IT', { hour12: false }); }, 1000);
 
-        function showToast(title, message, type = 'info') {
-            const container = document.getElementById('toast-container'); const toast = document.createElement('div'); toast.className = `toast ${type}`;
-            toast.innerHTML = `<i class="fas fa-info-circle"></i> ${title}: ${message}`;
+        function showToast(message) {
+            const container = document.getElementById('toast-container'); const toast = document.createElement('div'); toast.className = `toast`;
+            toast.innerText = message;
             container.appendChild(toast); setTimeout(() => { toast.remove(); }, 4000);
         }
         window.showToast = showToast;
@@ -483,15 +467,11 @@
         // ACCOUNT PANEL LOGIC
         const btnProfile = document.getElementById('btn-user-profile');
         const accountPanel = document.getElementById('account-panel');
-        
         btnProfile.addEventListener('click', (e) => { e.stopPropagation(); accountPanel.classList.toggle('active'); });
         document.addEventListener('click', (e) => { if (!accountPanel.contains(e.target) && !btnProfile.contains(e.target)) accountPanel.classList.remove('active'); });
-
-        document.getElementById('btn-open-settings').addEventListener('click', () => { accountPanel.classList.remove('active'); document.getElementById('settings-modal').classList.add('active'); });
-        document.getElementById('btn-open-settings-top').addEventListener('click', () => { document.getElementById('settings-modal').classList.add('active'); });
         document.getElementById('btn-logout-panel').addEventListener('click', () => { sessionStorage.removeItem('sessioneAttiva'); window.location.href = 'index.html'; });
 
-        // VERIFICA SESSIONE
+        // VERIFICA SESSIONE E CARICAMENTO
         async function verificaSessione() {
             const sessionData = sessionStorage.getItem('sessioneAttiva');
             if (!sessionData) { window.location.href = 'index.html'; return; }
@@ -508,25 +488,19 @@
                 const initial = utenteCorrente.nome.charAt(0).toUpperCase();
                 document.getElementById('btn-user-profile').innerText = initial;
                 document.getElementById('panel-avatar').innerText = initial;
-                document.getElementById('saluto-nome').innerText = `Benvenuto, ${utenteCorrente.nome}`;
                 
                 document.getElementById('panel-nome').innerText = utenteCorrente.nome;
                 document.getElementById('panel-matricola').innerText = `ID: ${matricolaPura}`;
-                document.getElementById('set-nome').value = utenteCorrente.nome;
-                document.getElementById('set-matr').value = matricolaPura;
 
                 if (utenteCorrente.admin && utenteCorrente.admin.toLowerCase().startsWith('s')) {
                     isAdmin = true; 
                     document.getElementById('btn-toggle-form-ann').classList.remove('hidden');
-                    document.getElementById('set-grado').value = "Super Admin / Root";
-                } else {
-                    document.getElementById('set-grado').value = "Operatore SM";
                 }
 
                 document.getElementById('loading-overlay').classList.add('fade-out');
                 setTimeout(() => {
                     document.getElementById('loading-overlay').style.display = 'none';
-                    document.getElementById('dashboard-section').classList.remove('hidden');
+                    document.getElementById('app-container').classList.remove('hidden');
                     inizializzaGrafici(); initDatabaseListeners();
                 }, 300);
             } catch(e) { window.location.href = 'index.html'; }
@@ -534,18 +508,9 @@
         verificaSessione();
 
         function inizializzaGrafici() {
-            Chart.defaults.color = '#9aa0a6'; Chart.defaults.font.family = 'Roboto';
-            chartIndaginiInst = new Chart(document.getElementById('chartIndagini').getContext('2d'), { type: 'doughnut', data: { labels: ['Aperti', 'In Attesa', 'Chiusi'], datasets: [{ data: [0, 0, 0], backgroundColor: ['#8ab4f8', '#fdd663', '#5f6368'], borderWidth: 0 }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'right' } }, cutout: '75%' } });
-            chartRischioInst = new Chart(document.getElementById('chartRischio').getContext('2d'), { type: 'bar', data: { labels: ['15 G', '30 G', '60 G'], datasets: [{ label: 'Soggetti', data: [0, 0, 0], backgroundColor: '#8ab4f8', borderRadius: 4 }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { grid: { color: 'rgba(255,255,255,0.05)' } }, x: { grid: { display: false } } } } });
-        }
-
-        function updateRecentFeed() {
-            const feed = document.getElementById('feed-recenti'); feed.innerHTML = '';
-            const recent = recentItemsData.sort((a,b) => b.id - a.id).slice(0,4);
-            if(recent.length === 0) { feed.innerHTML = '<div class="nessun-dato">Nessun dato recente.</div>'; return; }
-            recent.forEach(item => {
-                feed.innerHTML += `<div class="feed-item"><div class="feed-icon"><i class="fas ${item.tipo === 'fascicolo' ? 'fa-folder' : 'fa-user-secret'}"></i></div><div class="feed-content"><h4>${item.titolo}</h4><p>${item.data} - Op: ${item.autore}</p></div></div>`;
-            });
+            Chart.defaults.color = '#5f6368'; Chart.defaults.font.family = 'Lexend';
+            chartIndaginiInst = new Chart(document.getElementById('chartIndagini').getContext('2d'), { type: 'doughnut', data: { labels: ['Aperti', 'In Attesa', 'Chiusi'], datasets: [{ data: [0, 0, 0], backgroundColor: ['#1a73e8', '#f9ab00', '#dadce0'], borderWidth: 0 }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'right' } }, cutout: '75%' } });
+            chartRischioInst = new Chart(document.getElementById('chartRischio').getContext('2d'), { type: 'bar', data: { labels: ['15 G', '30 G', '60 G'], datasets: [{ label: 'Soggetti', data: [0, 0, 0], backgroundColor: '#1a73e8', borderRadius: 4 }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { grid: { color: 'rgba(0,0,0,0.05)' } }, x: { grid: { display: false } } } } });
         }
 
         async function registraLog(azione, dettaglio) { try { await addDoc(collection(db, "logs"), { azione: azione, dettaglio: dettaglio, autore: `${utenteCorrente.nome} - ${matricolaPura}`, timestamp: new Date().getTime(), dataOra: new Date().toLocaleString('it-IT') }); } catch(e) {} }
@@ -554,14 +519,12 @@
             onSnapshot(collection(db, "attenzionati"), (snapshot) => {
                 const gridAtt = document.getElementById('grid-attenzionati'); gridAtt.innerHTML = '';
                 let countTot = 0; let d15 = 0; let d30 = 0; let d60 = 0;
-                recentItemsData = recentItemsData.filter(i => i.tipo !== 'attenzionato');
 
-                if(snapshot.empty) { gridAtt.innerHTML = `<div class="nessun-dato">Nessun Soggetto Registrato.</div>`; }
+                if(snapshot.empty) { gridAtt.innerHTML = `<div style="padding: 24px; text-align: center; color: var(--text-muted);">Nessun Soggetto Registrato.</div>`; }
                 else {
                     snapshot.forEach((docSnap) => {
                         const data = docSnap.data(); const id = docSnap.id; countTot++; 
                         if(data.durata === '15 GIORNI') d15++; else if(data.durata === '30 GIORNI') d30++; else if(data.durata === '60 GIORNI') d60++;
-                        recentItemsData.push({ id: id, tipo: 'attenzionato', titolo: data.nome, autore: data.firmaNome, data: data.dataInserimento });
 
                         let durataClass = data.durata === 'SCADUTO' ? 'badge-gray' : (data.durata === 'PERMANENTE' ? 'badge-red' : 'badge-orange');
                         let uiDurataText = data.durata;
@@ -571,15 +534,14 @@
                             let matchG = data.durata.match(/(\d+) GIORNI/); let matchO = data.durata.match(/(\d+) ORE/);
                             if (matchG) dataAppDate.setDate(dataAppDate.getDate() + parseInt(matchG[1]));
                             if (matchO) dataAppDate.setHours(dataAppDate.getHours() + parseInt(matchO[1]));
-                            if(new Date() > dataAppDate) { uiDurataText = "SCADUTO ⛔"; durataClass = "badge-gray"; }
+                            if(new Date() > dataAppDate) { uiDurataText = "SCADUTO"; durataClass = "badge-gray"; }
                         }
 
                         const isAuth = (isAdmin || utenteCorrente.matricola === data.firmaMatricolaCompleta);
-                        let fotoHtml = data.fotoUrl ? `<img src="${data.fotoUrl}">` : `<i class="fas fa-user-secret"></i>`;
-                        let btnDelEdit = isAuth ? `<button class="btn-secondary" style="padding:0 12px;" onclick="modificaAttenzionato('${id}')"><i class="fas fa-pen"></i></button><button class="btn-secondary" style="padding:0 12px; color:var(--danger); border-color:var(--border);" onclick="richiediEliminazione('${id}', 'attenzionati')"><i class="fas fa-trash"></i></button>` : '';
+                        let btnDelEdit = isAuth ? `<button class="btn-secondary" style="padding:0 8px;" onclick="modificaAttenzionato('${id}')"><i class="fas fa-pen"></i></button><button class="btn-secondary" style="padding:0 8px; color:var(--danger);" onclick="richiediEliminazione('${id}', 'attenzionati')"><i class="fas fa-trash"></i></button>` : '';
                         
                         const item = document.createElement('div'); item.className = 'list-item';
-                        item.innerHTML = `<div class="item-image">${fotoHtml}</div><div class="item-details"><div class="item-header"><div><h3>${data.nome}</h3><p>Nato il: ${data.dataNascita} | Inserito il: ${data.dataInserimento}</p></div><span class="status-badge ${durataClass}">${uiDurataText}</span></div><div class="item-body"><p><strong>Motivazione:</strong> ${data.motivazione}</p><p style="color:var(--text-muted); margin-top:4px;">${data.commenti.substring(0,80)}...</p></div><div class="item-actions"><button class="btn-primary" onclick="apriDettaglio('${id}', 'attenzionati')"><i class="fas fa-eye"></i> Dettagli</button>${btnDelEdit}<span style="margin-left:auto; font-size:0.8rem; color:var(--text-muted); display:flex; align-items:center;">Op. ${data.firmaMatricola}</span></div></div>`;
+                        item.innerHTML = `<div style="flex:2;"> <div style="color:var(--text-main); font-weight:500; font-size:1rem;">${data.nome}</div> <div style="color:var(--text-muted); font-size:0.85rem;">Nato il: ${data.dataNascita} | Note: ${data.commenti.substring(0,40)}...</div> </div> <div style="flex:1;"> <span class="status-badge ${durataClass}">${uiDurataText}</span> </div> <div style="width:100px; text-align:right; display:flex; gap:8px; justify-content:flex-end;"> <button class="btn-secondary" style="padding:0 8px;" onclick="apriDettaglio('${id}', 'attenzionati')"><i class="fas fa-arrow-right"></i></button>${btnDelEdit} </div>`;
                         gridAtt.appendChild(item);
                     });
                 }
@@ -587,65 +549,53 @@
                 document.getElementById('kpi-soggetti').innerText = countTot;
                 document.getElementById('kpi-rischio').innerText = d15 + d30 + d60;
                 if(chartRischioInst) { chartRischioInst.data.datasets[0].data = [d15, d30, d60]; chartRischioInst.update(); }
-                updateRecentFeed();
             });
 
             onSnapshot(collection(db, "fascicoli"), (snapshot) => {
                 const gridFas = document.getElementById('grid-fascicoli'); gridFas.innerHTML = '';
                 let fAperti = 0; let fAtt = 0; let fCh = 0;
-                recentItemsData = recentItemsData.filter(i => i.tipo !== 'fascicolo');
 
-                if(snapshot.empty) { gridFas.innerHTML = `<div class="nessun-dato">Nessun Fascicolo in database.</div>`; }
+                if(snapshot.empty) { gridFas.innerHTML = `<div style="padding: 24px; text-align: center; color: var(--text-muted);">Nessun Fascicolo.</div>`; }
                 else {
                     snapshot.forEach((docSnap) => {
                         const data = docSnap.data(); const id = docSnap.id;
                         if(data.stato === 'aperto') {fAperti++;} else if(data.stato==='attesa') {fAtt++;} else {fCh++;}
-                        recentItemsData.push({ id: id, tipo: 'fascicolo', titolo: data.titolo, autore: data.firmaNome, data: data.dataInserimento });
 
                         const isAuth = (isAdmin || utenteCorrente.matricola === data.firmaMatricolaCompleta);
-                        let fotoHtml = data.fotoUrl ? `<img src="${data.fotoUrl}">` : `<i class="fas fa-folder"></i>`;
-                        let btnDelEdit = isAuth ? `<button class="btn-secondary" style="padding:0 12px;" onclick="modificaFascicolo('${id}')"><i class="fas fa-pen"></i></button><button class="btn-secondary" style="padding:0 12px; color:var(--danger); border-color:var(--border);" onclick="richiediEliminazione('${id}', 'fascicoli')"><i class="fas fa-trash"></i></button>` : '';
+                        let btnDelEdit = isAuth ? `<button class="btn-secondary" style="padding:0 8px;" onclick="modificaFascicolo('${id}')"><i class="fas fa-pen"></i></button><button class="btn-secondary" style="padding:0 8px; color:var(--danger);" onclick="richiediEliminazione('${id}', 'fascicoli')"><i class="fas fa-trash"></i></button>` : '';
                         
                         const item = document.createElement('div'); item.className = 'list-item';
-                        item.innerHTML = `<div class="item-image">${fotoHtml}</div><div class="item-details"><div class="item-header"><div><h3>${data.titolo}</h3><p>Reati: ${data.reati}</p></div><span class="status-badge ${data.stato==='aperto'?'badge-green':'badge-gray'}">${data.stato}</span></div><div class="item-body"><p>${data.dettagli.substring(0, 100)}...</p></div><div class="item-actions"><button class="btn-primary" onclick="apriDettaglio('${id}', 'fascicoli')"><i class="fas fa-eye"></i> Apri Fascicolo</button>${btnDelEdit}<span style="margin-left:auto; font-size:0.8rem; color:var(--text-muted); display:flex; align-items:center;">Op. ${data.firmaMatricola}</span></div></div>`;
+                        item.innerHTML = `<div style="flex:2;"> <div style="color:var(--text-main); font-weight:500; font-size:1rem;">${data.titolo}</div> <div style="color:var(--text-muted); font-size:0.85rem;">Reati: ${data.reati}</div> </div> <div style="flex:1;"> <span class="status-badge ${data.stato==='aperto'?'badge-green':'badge-gray'}">${data.stato}</span> </div> <div style="width:100px; text-align:right; display:flex; gap:8px; justify-content:flex-end;"> <button class="btn-secondary" style="padding:0 8px;" onclick="apriDettaglio('${id}', 'fascicoli')"><i class="fas fa-arrow-right"></i></button>${btnDelEdit} </div>`;
                         gridFas.appendChild(item);
                     });
                 }
                 
                 document.getElementById('kpi-indagini').innerText = fAperti;
                 if(chartIndaginiInst) { chartIndaginiInst.data.datasets[0].data = [fAperti, fAtt, fCh]; chartIndaginiInst.update(); }
-                updateRecentFeed();
             });
 
             onSnapshot(collection(db, "annunci"), (snapshot) => {
-                const grid = document.getElementById('grid-annunci'); grid.innerHTML = '';
+                const grid = document.getElementById('grid-annunci'); grid.innerHTML = '<div class="list-header"><div style="flex: 2;">Comunicazione</div><div style="flex: 1;">Data e Autore</div></div>';
                 let c=0;
                 snapshot.forEach(docSnap => {
                     const data=docSnap.data(); c++;
                     const item = document.createElement('div'); item.className = 'list-item';
-                    item.innerHTML = `<div style="flex:1;"><div class="item-header"><h3 style="color:${data.priorita==='urgente'?'var(--danger)':'var(--text-main)'}">${data.titolo}</h3><span class="status-badge badge-gray">${data.priorita}</span></div><div class="item-body" style="margin-top:8px; white-space:pre-wrap;">${data.testo}</div><div style="margin-top:12px; font-size:0.8rem; color:var(--text-muted);">${data.dataOra} - ${data.autore}</div></div>`;
+                    item.innerHTML = `<div style="flex:2;"><div style="color:var(--text-main); font-weight:500;">${data.titolo} <span class="status-badge badge-gray" style="margin-left:8px;">${data.priorita}</span></div><div style="color:var(--text-muted); font-size:0.9rem; margin-top:4px;">${data.testo.substring(0, 100)}...</div></div><div style="flex:1; font-size:0.85rem; color:var(--text-muted);">${data.dataOra}<br>Op. ${data.autore}</div>`;
                     grid.appendChild(item);
                 });
                 document.getElementById('kpi-comunicazioni').innerText = c;
             });
         }
 
-        /* --- NAVIGAZIONE E SEARCH --- */
-        const searchInput = document.getElementById('global-search');
-        searchInput.addEventListener('input', function(e) {
-            const term = this.value.toLowerCase();
-            document.querySelectorAll('.list-item').forEach(card => { card.style.display = card.innerText.toLowerCase().includes(term) ? 'flex' : 'none'; });
-        });
-
-        const navItems = document.querySelectorAll('.sidebar-menu .nav-item[data-target]'); 
+        /* --- NAVIGAZIONE --- */
+        const navItems = document.querySelectorAll('.sidebar-menu li[data-target]'); 
         navItems.forEach(item => {
             item.addEventListener('click', () => {
                 if(item.classList.contains('locked')) return; 
-                document.querySelectorAll('.sidebar-menu .nav-item').forEach(n => n.classList.remove('active')); 
+                document.querySelectorAll('.sidebar-menu .nav-item, .sidebar-menu .nav-sub-item').forEach(n => n.classList.remove('active')); 
                 item.classList.add('active');
                 document.querySelectorAll('.view-section').forEach(v => v.classList.add('hidden')); 
                 document.getElementById(item.getAttribute('data-target')).classList.remove('hidden');
-                searchInput.value = ''; document.querySelectorAll('.list-item').forEach(card => card.style.display = 'flex');
             });
         });
 
@@ -654,14 +604,13 @@
             const docSnap = await getDoc(doc(db, collectionName, id));
             if(docSnap.exists()) {
                 const data = docSnap.data(); 
-                document.getElementById('detail-title').innerText = collectionName === 'attenzionati' ? `Dettaglio Soggetto: ${data.nome}` : `Fascicolo: ${data.titolo}`;
-                let img = data.fotoUrl ? `<img src="${data.fotoUrl}" style="width:100%; max-width:250px; border-radius:4px; border:1px solid var(--border-light);">` : ``;
+                document.getElementById('detail-title').innerText = collectionName === 'attenzionati' ? `Soggetto: ${data.nome}` : `Fascicolo: ${data.titolo}`;
                 
                 let textHtml = ``;
                 if(collectionName === 'attenzionati') { 
-                    textHtml = `<div style="display:flex; gap:24px;"><div style="width:250px;">${img}</div><div style="flex:1;"><p><strong>Data Nascita:</strong> ${data.dataNascita}</p><p><strong>Applicazione:</strong> ${data.dataApplicazione}</p><p><strong>Scadenza:</strong> ${data.durata}</p><p><strong>Motivazione:</strong> <span style="color:var(--primary)">${data.motivazione}</span></p><hr style="border-top:1px solid var(--border-light); margin:16px 0;"><p><strong>Annotazioni:</strong><br>${data.commenti}</p><p style="margin-top:16px; font-size:0.85rem; color:var(--text-muted);">Redatto da: ${data.firmaNome} (${data.firmaMatricola})</p></div></div>`; 
+                    textHtml = `<p style="margin-bottom:8px;"><strong>Data Nascita:</strong> ${data.dataNascita}</p><p style="margin-bottom:8px;"><strong>Applicazione:</strong> ${data.dataApplicazione}</p><p style="margin-bottom:8px;"><strong>Scadenza:</strong> ${data.durata}</p><p style="margin-bottom:8px;"><strong>Motivazione:</strong> <span style="color:var(--primary)">${data.motivazione}</span></p><hr style="border-top:1px solid var(--border); margin:16px 0;"><p><strong>Annotazioni:</strong><br>${data.commenti}</p>`; 
                 } else { 
-                    textHtml = `<div style="display:flex; gap:24px;"><div style="width:250px;">${img}</div><div style="flex:1;"><p><strong>Reati:</strong> ${data.reati}</p><p><strong>Stato:</strong> ${data.stato}</p><p><strong>Soggetti Coinvolti:</strong> ${data.soggetti}</p><hr style="border-top:1px solid var(--border-light); margin:16px 0;"><p><strong>Dettagli:</strong><br>${data.dettagli}</p><p style="margin-top:16px; font-size:0.85rem; color:var(--text-muted);">Aperto da: ${data.firmaNome} (${data.firmaMatricola})</p></div></div>`; 
+                    textHtml = `<p style="margin-bottom:8px;"><strong>Reati:</strong> ${data.reati}</p><p style="margin-bottom:8px;"><strong>Stato:</strong> ${data.stato}</p><p style="margin-bottom:8px;"><strong>Soggetti Coinvolti:</strong> ${data.soggetti}</p><hr style="border-top:1px solid var(--border); margin:16px 0;"><p><strong>Dettagli:</strong><br>${data.dettagli}</p>`; 
                 }
                 document.getElementById('detail-info').innerHTML = textHtml;
                 document.getElementById('detail-modal').classList.add('active');
@@ -679,14 +628,14 @@
                 if(docSnap.exists()){
                     let discordMsgId = docSnap.data().discordMsgId;
                     await deleteDoc(docRef);
-                    registraLog("Eliminazione", `Record rimosso`); 
+                    registraLog("Eliminazione", `Record rimosso`); showToast("Azione completata.");
                     if (deleteInfo.col === 'attenzionati' && discordMsgId) { fetch(`${WEBHOOK_URL}/messages/${discordMsgId}`, { method: 'DELETE' }).catch(e=>{}); }
                 }
                 document.getElementById('delete-modal').classList.remove('active');
             }
         });
 
-        document.querySelectorAll('.btn-annulla-form').forEach(btn => { btn.addEventListener('click', (e) => { e.target.closest('.form-panel').classList.add('hidden'); e.target.closest('form').reset(); motivazioniSelezionate = []; renderMotivazioni(); }); });
+        document.querySelectorAll('.btn-annulla-form').forEach(btn => { btn.addEventListener('click', (e) => { e.target.closest('.form-panel') ? e.target.closest('.form-panel').classList.add('hidden') : e.target.closest('.console-card').classList.add('hidden'); e.target.closest('form').reset(); motivazioniSelezionate = []; renderMotivazioni(); }); });
 
         /* --- FOGLIO INVESTIGATIVO & DISCORD --- */
         const formAtt = document.getElementById('form-attenzionato');
@@ -699,7 +648,7 @@
         window.rimuoviMotivazione = function(val) { motivazioniSelezionate = motivazioniSelezionate.filter(m => m !== val); renderMotivazioni(); };
         function renderMotivazioni() {
             const c = document.getElementById('motivazioni-container'); c.innerHTML = '';
-            motivazioniSelezionate.forEach(m => { c.innerHTML += `<div class="tag">${m} <i class="fas fa-times" onclick="rimuoviMotivazione('${m}')"></i></div>`; });
+            motivazioniSelezionate.forEach(m => { c.innerHTML += `<div style="background:var(--surface-hover); padding:4px 8px; border-radius:4px; font-size:0.8rem; display:flex; align-items:center; gap:4px; border:1px solid var(--border);">${m} <i class="fas fa-times" style="cursor:pointer;" onclick="rimuoviMotivazione('${m}')"></i></div>`; });
             document.getElementById('att-motivazione-nascosta').value = motivazioniSelezionate.join(', ');
         }
 
@@ -749,7 +698,7 @@
 
             try {
                 if(idEdit) { 
-                    await updateDoc(doc(db, "attenzionati", idEdit), payload); registraLog("Modifica", `Identificazione: ${payload.nome}`); 
+                    await updateDoc(doc(db, "attenzionati", idEdit), payload); registraLog("Modifica", `Identificazione: ${payload.nome}`); showToast("Modifiche salvate."); 
                     if (discordMsgId) { fetch(`${WEBHOOK_URL}/messages/${discordMsgId}`, { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(discordPayload) }).catch(e=>{}); }
                 } else { 
                     let newDiscordMsgId = "";
@@ -758,10 +707,10 @@
                         if (res.ok) { const resData = await res.json(); newDiscordMsgId = resData.id; }
                     } catch(e) {}
                     payload.discordMsgId = newDiscordMsgId; await addDoc(collection(db, "attenzionati"), payload); 
-                    registraLog("Creazione", `Identificazione: ${payload.nome}`);
+                    registraLog("Creazione", `Identificazione: ${payload.nome}`); showToast("Salvato."); 
                 }
                 formAtt.reset(); motivazioniSelezionate = []; renderMotivazioni(); document.getElementById('att-discord-id').value = ""; document.getElementById('form-container-att').classList.add('hidden');
-            } catch(err) { alert("Errore"); } finally { btn.disabled = false; }
+            } catch(err) { showToast("Errore"); } finally { btn.disabled = false; }
         });
 
         window.modificaAttenzionato = async function(id) {
@@ -769,7 +718,7 @@
             if (docSnap.exists()) { 
                 const data = docSnap.data(); document.getElementById('att-id').value = id; document.getElementById('att-discord-id').value = data.discordMsgId || ''; document.getElementById('att-nome').value = data.nome; document.getElementById('att-nascita').value = data.dataNascita; document.getElementById('att-applicazione').value = data.dataApplicazione || ''; document.getElementById('att-durata').value = data.durata; document.getElementById('att-foto').value = data.fotoUrl || ''; document.getElementById('att-commenti').value = data.commenti === '//' ? '' : data.commenti; 
                 motivazioniSelezionate = data.motivazione ? data.motivazione.split(', ') : []; renderMotivazioni();
-                document.getElementById('form-titolo-att').innerHTML = 'Modifica Identificazione'; document.getElementById('form-container-att').classList.remove('hidden'); document.querySelector('.main-content').scrollTo({ top: 0, behavior: 'smooth' }); 
+                document.getElementById('form-titolo-att').innerHTML = 'Modifica Record'; document.getElementById('form-container-att').classList.remove('hidden'); document.querySelector('.main-content').scrollTo({ top: 0, behavior: 'smooth' }); 
             }
         };
 
@@ -778,8 +727,8 @@
         document.getElementById('form-fascicolo').addEventListener('submit', async (e) => {
             e.preventDefault(); const p = { titolo: document.getElementById('fas-titolo').value.trim(), reati: document.getElementById('fas-reati').value.trim(), stato: document.getElementById('fas-stato').value, soggetti: document.getElementById('fas-soggetti').value.trim() || 'Nessuno', fotoUrl: document.getElementById('fas-foto').value.trim(), dettagli: document.getElementById('fas-dettagli').value.trim(), dataInserimento: new Date().toLocaleDateString('it-IT'), firmaNome: utenteCorrente.nome, firmaMatricola: matricolaPura, firmaMatricolaCompleta: utenteCorrente.matricola };
             try {
-                if(document.getElementById('fas-id').value) { await updateDoc(doc(db, "fascicoli", document.getElementById('fas-id').value), p); } 
-                else { await addDoc(collection(db, "fascicoli"), p); }
+                if(document.getElementById('fas-id').value) { await updateDoc(doc(db, "fascicoli", document.getElementById('fas-id').value), p); showToast("Modifiche salvate."); } 
+                else { await addDoc(collection(db, "fascicoli"), p); showToast("Fascicolo aperto."); }
                 document.getElementById('form-fascicolo').reset(); document.getElementById('form-container-fas').classList.add('hidden');
             } catch(err) {}
         });
@@ -790,7 +739,14 @@
 
         const formAnn = document.getElementById('form-annuncio'); 
         document.getElementById('btn-toggle-form-ann').addEventListener('click', () => { document.getElementById('form-container-ann').classList.remove('hidden'); });
-        formAnn.addEventListener('submit', async (e) => { e.preventDefault(); const payload = { titolo: document.getElementById('ann-titolo').value.trim(), priorita: document.getElementById('ann-priorita').value, testo: document.getElementById('ann-testo').value.trim(), autore: `${utenteCorrente.nome} - ${utenteCorrente.grado || 'Admin'}`, timestamp: new Date().getTime(), dataOra: new Date().toLocaleString('it-IT') }; try { await addDoc(collection(db, "annunci"), payload); document.getElementById('form-annuncio').reset(); document.getElementById('form-container-ann').classList.add('hidden'); } catch(e) {} });
+        formAnn.addEventListener('submit', async (e) => { 
+            e.preventDefault(); 
+            // Gestione dei radio buttons per la priorità (Stile Google Play)
+            const prioRadio = document.querySelector('input[name="priorita"]:checked');
+            const prioValue = prioRadio ? prioRadio.value : (document.getElementById('ann-priorita') ? document.getElementById('ann-priorita').value : 'normale');
+            const payload = { titolo: document.getElementById('ann-titolo').value.trim(), priorita: prioValue, testo: document.getElementById('ann-testo').value.trim(), autore: `${utenteCorrente.nome} - ${utenteCorrente.grado || 'Admin'}`, timestamp: new Date().getTime(), dataOra: new Date().toLocaleString('it-IT') }; 
+            try { await addDoc(collection(db, "annunci"), payload); showToast("Avviso pubblicato."); document.getElementById('form-annuncio').reset(); document.getElementById('form-container-ann').classList.add('hidden'); } catch(e) {} 
+        });
     </script>
 </body>
 </html>
