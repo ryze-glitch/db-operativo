@@ -9,16 +9,16 @@
     <style>
         :root {
             /* Material Design 3 - Dark Theme Tokens */
-            --md-sys-color-background: #131314;
-            --md-sys-color-surface: #1E1F22;
-            --md-sys-color-surface-variant: #44474E;
+            --md-sys-color-background: #0e0e0e; /* Più scuro, stile Google Cloud */
+            --md-sys-color-surface: #1e1e1e;
+            --md-sys-color-surface-variant: #282a2c;
             --md-sys-color-on-surface: #E3E3E3;
             --md-sys-color-on-surface-variant: #C4C7C5;
             --md-sys-color-primary: #A8C7FA;
             --md-sys-color-on-primary: #062E6F;
             --md-sys-color-secondary-container: #004A77;
             --md-sys-color-error: #FFB4AB;
-            --md-sys-color-outline: #8E918F;
+            --md-sys-color-outline: #5f6368;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Lexend', sans-serif; }
@@ -26,12 +26,10 @@
         strong, b, h1, h2, h3, h4 { font-weight: 600; }
         .hidden { display: none !important; }
 
-        /* Effetto Ripple Google M3 */
         .ripple-surface { position: relative; overflow: hidden; }
         .ripple { position: absolute; border-radius: 50%; transform: scale(0); animation: ripple-anim 0.6s linear; background-color: rgba(255, 255, 255, 0.15); pointer-events: none; }
         @keyframes ripple-anim { to { transform: scale(4); opacity: 0; } }
 
-        /* Google Top Bar */
         .top-bar { position: fixed; top: 0; left: 0; width: 100%; height: 48px; background-color: var(--md-sys-color-background); display: flex; justify-content: space-between; align-items: center; padding: 0 20px; border-bottom: 1px solid rgba(255,255,255,0.1); z-index: 1000;}
         .top-bar-left { display: flex; align-items: center; gap: 10px; font-weight: 500; font-size: 0.9rem; color: var(--md-sys-color-on-surface-variant); }
         .top-bar-center { display: flex; align-items: center; gap: 8px; font-size: 0.85rem; color: #81C995; font-weight: 500;}
@@ -39,72 +37,70 @@
         .top-bar-right { font-family: monospace; color: var(--md-sys-color-primary); font-weight: 500; }
         @keyframes pulse { 0% { transform: scale(0.95); opacity: 1; } 100% { transform: scale(1.5); opacity: 0; } }
 
-        /* Layout con Sfondo */
         .split-layout { display: flex; height: 100vh; width: 100%; padding-top: 48px; }
         .split-left { flex: 1; position: relative; background-image: url('https://i.imgur.com/CIzBAnL.jpeg'); background-size: cover; background-position: center; display: flex; align-items: center; justify-content: center; padding: 40px; }
-        .split-left::after { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, rgba(19, 19, 20, 0.95) 0%, rgba(37, 99, 235, 0.3) 100%); }
+        .split-left::after { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, rgba(14, 14, 14, 0.95) 0%, rgba(37, 99, 235, 0.2) 100%); }
         .left-content { position: relative; z-index: 2; max-width: 550px; }
-        .left-content .big-logo { width: 100px; margin-bottom: 30px; filter: drop-shadow(0 0 20px rgba(168, 199, 250, 0.4)); }
-        .left-content h1 { font-size: 3.5rem; line-height: 1.1; margin-bottom: 20px; letter-spacing: -1px; }
+        
+        /* LOGO RIMPICCIOLITO */
+        .left-content .big-logo { width: 65px; margin-bottom: 25px; filter: drop-shadow(0 0 15px rgba(168, 199, 250, 0.4)); }
+        .left-content h1 { font-size: 3rem; line-height: 1.1; margin-bottom: 20px; letter-spacing: -1px; }
         .left-content h1 span { color: var(--md-sys-color-primary); }
         .left-content p { font-size: 1.1rem; color: var(--md-sys-color-on-surface-variant); line-height: 1.6; }
 
-        .split-right { flex: 0 0 550px; background: var(--md-sys-color-background); display: flex; align-items: center; justify-content: center; padding: 40px; z-index: 5; }
+        .split-right { flex: 0 0 500px; background: var(--md-sys-color-background); display: flex; align-items: center; justify-content: center; padding: 40px; z-index: 5; border-left: 1px solid rgba(255,255,255,0.05);}
 
-        /* Centro Google Account Style */
-        .google-card { background: var(--md-sys-color-surface); border-radius: 28px; width: 100%; max-width: 450px; padding: 40px; box-shadow: 0 8px 32px rgba(0,0,0,0.4); text-align: center; border: 1px solid rgba(255,255,255,0.05); }
-        .google-card .logo { width: 60px; margin-bottom: 20px; }
-        .google-card h1 { font-size: 1.8rem; margin-bottom: 10px; color: var(--md-sys-color-on-surface); }
-        .google-card p { color: var(--md-sys-color-on-surface-variant); margin-bottom: 30px; font-size: 0.95rem; }
+        .google-login-box { background: var(--md-sys-color-surface); border-radius: 24px; width: 100%; max-width: 420px; padding: 40px 35px; border: 1px solid rgba(255,255,255,0.08); text-align: center; position: relative; }
+        
+        /* LOGO LOGIN RIMPICCIOLITO */
+        .google-login-box .logo { width: 35px; margin-bottom: 15px; }
+        
+        .google-login-box h1 { font-size: 1.5rem; margin-bottom: 8px; color: var(--md-sys-color-on-surface); }
+        .google-login-box p { color: var(--md-sys-color-on-surface-variant); margin-bottom: 30px; font-size: 0.9rem; }
 
-        /* Liste Reparti */
         .dept-list { display: flex; flex-direction: column; gap: 12px; text-align: left; }
-        .dept-item { display: flex; align-items: center; gap: 15px; padding: 15px 20px; border: 1px solid var(--md-sys-color-outline); border-radius: 16px; cursor: pointer; transition: 0.2s; background: transparent; }
-        .dept-item:hover:not(.locked) { background: rgba(255,255,255,0.05); border-color: var(--md-sys-color-on-surface); }
-        .dept-item img { width: 36px; height: 36px; object-fit: contain; }
+        .dept-item { display: flex; align-items: center; gap: 15px; padding: 12px 18px; border: 1px solid var(--md-sys-color-outline); border-radius: 12px; cursor: pointer; transition: 0.2s; background: transparent; position: relative;}
+        .dept-item:not(.locked):hover { background: rgba(255,255,255,0.05); border-color: var(--md-sys-color-on-surface); }
+        .dept-item img { width: 28px; height: 28px; object-fit: contain; }
         .dept-item div { flex: 1; }
-        .dept-item h3 { font-size: 1.05rem; font-weight: 600; color: var(--md-sys-color-on-surface); }
-        .dept-item span { font-size: 0.85rem; color: var(--md-sys-color-on-surface-variant); }
-        .dept-item i.fa-chevron-right { color: var(--md-sys-color-outline); transition: 0.2s; }
-        .dept-item:hover:not(.locked) i.fa-chevron-right { color: var(--md-sys-color-on-surface); transform: translateX(3px); }
+        .dept-item h3 { font-size: 1rem; font-weight: 500; color: var(--md-sys-color-on-surface); margin-bottom: 2px;}
+        .dept-item span { font-size: 0.8rem; color: var(--md-sys-color-on-surface-variant); }
+        .dept-item i.fa-chevron-right { color: var(--md-sys-color-outline); transition: 0.2s; font-size: 0.9rem;}
+        .dept-item:not(.locked):hover i.fa-chevron-right { color: var(--md-sys-color-on-surface); transform: translateX(3px); }
 
-        /* Sezioni Bloccate */
-        .dept-item.locked { opacity: 0.5; cursor: not-allowed; background: rgba(0,0,0,0.2); }
-        .dept-item.locked span { color: var(--md-sys-color-warning); font-weight: 500; }
+        /* BLOCCO TOTALE REPARTI IN SVILUPPO */
+        .dept-item.locked { 
+            opacity: 0.4; 
+            background: rgba(0,0,0,0.3); 
+            border-color: rgba(255,255,255,0.05);
+            pointer-events: none; /* IMPEDISCE IL CLICK FISICAMENTE */
+        }
+        .locked-badge { position: absolute; right: 15px; font-size: 0.7rem; background: var(--md-sys-color-error); color: #690005; padding: 3px 8px; border-radius: 4px; font-weight: 700; letter-spacing: 0.5px;}
 
-        /* Input Material 3 "Pill" */
         .selected-dept { display: inline-flex; align-items: center; gap: 8px; border: 1px solid var(--md-sys-color-outline); border-radius: 100px; padding: 6px 16px; font-size: 0.85rem; font-weight: 500; cursor: pointer; margin-bottom: 30px; transition: 0.2s; color: var(--md-sys-color-on-surface-variant); }
         .selected-dept:hover { background: rgba(255,255,255,0.05); color: var(--md-sys-color-on-surface); }
         
         .m3-input { position: relative; margin-bottom: 20px; text-align: left; }
-        .m3-input input { width: 100%; padding: 18px 24px; border: 1px solid var(--md-sys-color-outline); border-radius: 100px; background: transparent; color: var(--md-sys-color-on-surface); font-size: 1rem; outline: none; transition: 0.2s ease all; }
-        .m3-input input:focus { border-color: transparent; outline: 2px solid var(--md-sys-color-primary); outline-offset: -1px; background: rgba(168, 199, 250, 0.05); }
-        .m3-input label { position: absolute; left: 24px; top: 18px; background: var(--md-sys-color-surface); padding: 0 4px; color: var(--md-sys-color-on-surface-variant); font-size: 1rem; transition: 0.2s ease all; pointer-events: none; }
-        .m3-input input:focus ~ label, .m3-input input:not(:placeholder-shown) ~ label { top: -10px; left: 20px; font-size: 0.75rem; color: var(--md-sys-color-primary); font-weight: 600; }
+        .m3-input input { width: 100%; padding: 16px 20px; border: 1px solid var(--md-sys-color-outline); border-radius: 8px; background: transparent; color: var(--md-sys-color-on-surface); font-size: 1rem; outline: none; transition: 0.2s ease all; }
+        .m3-input input:focus { border-color: transparent; outline: 2px solid var(--md-sys-color-primary); outline-offset: -1px; background: rgba(168, 199, 250, 0.03); }
+        .m3-input label { position: absolute; left: 16px; top: 16px; background: var(--md-sys-color-surface); padding: 0 6px; color: var(--md-sys-color-on-surface-variant); font-size: 0.95rem; transition: 0.2s ease all; pointer-events: none; }
+        .m3-input input:focus ~ label, .m3-input input:not(:placeholder-shown) ~ label { top: -10px; left: 12px; font-size: 0.75rem; color: var(--md-sys-color-primary); font-weight: 500; }
 
-        .actions-row { display: flex; justify-content: space-between; align-items: center; margin-top: 40px; }
-        .btn-text { background: transparent; border: none; color: var(--md-sys-color-primary); font-size: 0.9rem; font-weight: 500; cursor: pointer; padding: 10px 16px; border-radius: 100px; transition: 0.2s;}
+        .actions-row { display: flex; justify-content: space-between; align-items: center; margin-top: 35px; }
+        .btn-text { background: transparent; border: none; color: var(--md-sys-color-primary); font-size: 0.85rem; font-weight: 500; cursor: pointer; padding: 8px 12px; border-radius: 100px; transition: 0.2s; font-family: 'Lexend', sans-serif;}
         .btn-text:hover { background: rgba(168, 199, 250, 0.08); }
         
-        .btn-filled { background: var(--md-sys-color-primary); color: var(--md-sys-color-on-primary); border: none; border-radius: 100px; padding: 12px 28px; font-size: 0.95rem; font-weight: 600; cursor: pointer; transition: 0.2s; display: flex; gap: 8px; align-items: center;}
-        .btn-filled:hover { background: #b4cffa; box-shadow: 0 2px 6px rgba(0,0,0,0.3); }
+        .btn-filled { background: var(--md-sys-color-primary); color: var(--md-sys-color-on-primary); border: none; border-radius: 100px; padding: 10px 24px; font-size: 0.9rem; font-weight: 600; cursor: pointer; transition: 0.2s; font-family: 'Lexend', sans-serif; display: flex; gap: 8px; align-items: center;}
+        .btn-filled:hover { background: #b4cffa; box-shadow: 0 1px 3px rgba(0,0,0,0.3); }
         .btn-filled:disabled { opacity: 0.6; cursor: not-allowed; }
 
         #messaggio-errore { color: var(--md-sys-color-error); font-size: 0.85rem; margin-top: 15px; font-weight: 500; display: flex; align-items: center; justify-content: center; gap: 5px; }
 
         @keyframes fadeInScale { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
         .animate-in { animation: fadeInScale 0.3s ease-out forwards; }
-
-        /* Toasts */
-        .toast-container { position: fixed; top: 70px; right: 30px; z-index: 10001; display: flex; flex-direction: column; gap: 10px; pointer-events: none; }
-        .toast { background: var(--md-sys-color-surface-variant); color: white; padding: 16px 24px; border-radius: 12px; display: flex; align-items: center; gap: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.5); animation: slideInToast 0.3s ease forwards; font-size: 0.95rem; font-weight: 500; }
-        .toast.warning i { color: var(--md-sys-color-warning); }
-        @keyframes slideInToast { from { transform: translateX(120%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
     </style>
 </head>
 <body>
-
-    <div id="toast-container" class="toast-container"></div>
 
     <div class="top-bar">
         <div class="top-bar-left"><i class="fas fa-shield-alt" style="color:var(--md-sys-color-primary)"></i> IPRP Central Auth</div>
@@ -133,19 +129,21 @@
                         <div><h3>Squadra Mobile</h3><span>Sezione Investigativa</span></div>
                         <i class="fas fa-chevron-right"></i>
                     </div>
-                    <div class="dept-item locked" onclick="showToast('Accesso Negato', 'Reparto D.I.G.O.S. attualmente in fase di sviluppo.', 'warning')">
+                    <div class="dept-item locked">
                         <img src="https://i.imgur.com/rgGjsgX.png" alt="DIGOS">
-                        <div><h3>D.I.G.O.S.</h3><span>In sviluppo <i class="fas fa-lock"></i></span></div>
+                        <div><h3>D.I.G.O.S.</h3><span>Divisione Generale</span></div>
+                        <div class="locked-badge"><i class="fas fa-lock"></i> LOCKED</div>
                     </div>
-                    <div class="dept-item locked" onclick="showToast('Accesso Negato', 'Reparto N.O.S. attualmente in fase di sviluppo.', 'warning')">
+                    <div class="dept-item locked">
                         <img src="https://i.imgur.com/gy3HsSH.png" alt="NOS">
-                        <div><h3>N.O.S.</h3><span>In sviluppo <i class="fas fa-lock"></i></span></div>
+                        <div><h3>N.O.S.</h3><span>Nucleo Operativo Speciale</span></div>
+                        <div class="locked-badge"><i class="fas fa-lock"></i> LOCKED</div>
                     </div>
                 </div>
             </div>
 
             <div class="google-login-box hidden" id="card-login">
-                <img src="https://i.imgur.com/gRzOXM3.png" alt="Logo" class="logo" style="width: 50px; margin-bottom: 15px;">
+                <img src="https://i.imgur.com/gRzOXM3.png" alt="Logo" class="logo">
                 <h1>Verifica Identità</h1>
                 
                 <div class="selected-dept ripple-surface" onclick="window.showSelector()">
@@ -180,15 +178,6 @@
         import { getFirestore, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-firestore.js";
 
         setInterval(() => { document.getElementById('live-clock').textContent = new Date().toLocaleTimeString('it-IT', { hour12: false }); }, 1000);
-
-        function showToast(title, message, type = 'info') {
-            const container = document.getElementById('toast-container'); const toast = document.createElement('div'); toast.className = `toast ${type}`;
-            let iconClass = type === 'success' ? 'fa-check-circle' : (type === 'error' ? 'fa-exclamation-triangle' : 'fa-info-circle');
-            if(type === 'warning') iconClass = 'fa-exclamation-triangle';
-            toast.innerHTML = `<i class="fas ${iconClass}"></i> <div><div style="font-weight:600; font-size:0.95rem;">${title}</div><div style="font-size:0.85rem; opacity:0.9;">${message}</div></div>`;
-            container.appendChild(toast); setTimeout(() => { toast.style.animation = 'slideInToast 0.3s ease forwards reverse'; setTimeout(() => toast.remove(), 300); }, 4500);
-        }
-        window.showToast = showToast;
 
         // Effetto Ripple Globale
         document.addEventListener('click', function(e) {
