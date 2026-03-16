@@ -140,46 +140,101 @@
         .view-header p { color: var(--md-sys-color-text-muted); font-size: 1rem;}
 
         /* ==========================================
-           HERO BANNER (M3 PANORAMIC)
+           HERO BANNER (M3 PANORAMIC) - REDESIGN
            ========================================== */
         .hero-banner { 
             display: flex; 
-            background: var(--md-sys-color-surface-container-high); 
+            align-items: center;
+            justify-content: space-between;
+            background: linear-gradient(135deg, var(--md-sys-color-primary-container) 0%, var(--md-sys-color-surface-container-high) 100%);
             border-radius: 28px; 
-            overflow: hidden; 
+            padding: 40px;
             margin-bottom: 32px; 
             border: 1px solid var(--border-color);
             min-height: 220px;
             position: relative;
+            overflow: hidden;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.2);
         }
+
+        /* Glow decorativo sullo sfondo */
+        .hero-banner::after {
+            content: '';
+            position: absolute;
+            top: -50%; right: -10%;
+            width: 400px; height: 400px;
+            background: radial-gradient(circle, var(--md-sys-color-primary) 0%, transparent 70%);
+            opacity: 0.15;
+            filter: blur(40px);
+            z-index: 1;
+        }
+
         .hero-content { 
             flex: 1; 
-            padding: 40px; 
             display: flex; 
             flex-direction: column; 
             justify-content: center; 
             z-index: 2;
             max-width: 60%;
         }
-        .hero-content h2 { font-size: 2.4rem; color: var(--md-sys-color-primary); margin-bottom: 10px; line-height: 1.1;}
-        .hero-content p { color: var(--md-sys-color-text); opacity: 0.8; font-size: 1.05rem; line-height: 1.5; margin-bottom: 20px;}
-        .hero-clock { display: inline-flex; align-items: center; gap: 10px; background: rgba(0,0,0,0.3); padding: 8px 16px; border-radius: 12px; font-family: monospace; font-size: 1.2rem; color: var(--md-sys-color-primary); border: 1px solid var(--border-color); width: fit-content;}
-        
-        .hero-image { 
-            position: absolute;
-            right: 0;
-            top: 0;
-            width: 55%; 
-            height: 100%; 
-            background: url('https://i.imgur.com/RlzMnRQ.png') no-repeat center right;
-            background-size: cover;
-            z-index: 1;
+
+        .hero-content h2 { 
+            font-size: 2.5rem; 
+            color: var(--md-sys-color-on-primary-container); 
+            margin-bottom: 12px; 
+            line-height: 1.1;
         }
-        .hero-image::before {
-            content: '';
-            position: absolute;
-            top: 0; left: -1px; width: 100%; height: 100%;
-            background: linear-gradient(to right, var(--md-sys-color-surface-container-high) 0%, rgba(40,42,44,0.8) 30%, transparent 100%);
+
+        .hero-content p { 
+            color: var(--md-sys-color-on-primary-container); 
+            opacity: 0.85; 
+            font-size: 1.05rem; 
+            line-height: 1.5; 
+            margin-bottom: 25px;
+        }
+
+        .hero-actions {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .hero-clock { 
+            display: inline-flex; 
+            align-items: center; 
+            gap: 10px; 
+            background: rgba(0,0,0,0.25); 
+            padding: 12px 20px; 
+            border-radius: 16px; 
+            font-family: monospace; 
+            font-size: 1.1rem; 
+            color: var(--md-sys-color-primary); 
+            border: 1px solid rgba(255,255,255,0.05); 
+            backdrop-filter: blur(5px);
+        }
+
+        /* Contenitore immagine con effetto 3D */
+        .hero-image-container { 
+            flex: 0 0 35%;
+            display: flex;
+            justify-content: flex-end;
+            z-index: 2;
+            perspective: 1000px;
+        }
+
+        .hero-image-container img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 20px;
+            border: 1px solid rgba(255,255,255,0.1);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.4);
+            transform: rotateY(-10deg) rotateX(5deg); /* Inclinazione verso chi guarda */
+            transition: transform 0.4s ease, box-shadow 0.4s ease;
+        }
+
+        .hero-image-container img:hover {
+            transform: rotateY(0deg) rotateX(0deg) scale(1.02);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.6);
         }
 
         /* ==========================================
@@ -433,13 +488,22 @@
                 <div id="view-dashboard" class="view-section">
                     
                     <div class="hero-banner">
-                        <div class="hero-image"></div>
                         <div class="hero-content">
                             <h2 id="saluto-nome">Bentornato, Operatore</h2>
                             <p>Terminale Centrale connesso e operativo. L'accesso ai fascicoli e alle direttive è crittografato end-to-end con standard IPRP.</p>
-                            <div class="hero-clock">
-                                <i class="fas fa-clock"></i> <span id="live-clock">--:--:--</span>
+                            
+                            <div class="hero-actions">
+                                <button class="btn-fab ripple-surface" onclick="document.getElementById('btn-toggle-form-fas').click()">
+                                    <i class="fas fa-folder-plus"></i> Nuovo Fascicolo
+                                </button>
+                                <div class="hero-clock">
+                                    <i class="fas fa-clock"></i> <span id="live-clock">--:--:--</span>
+                                </div>
                             </div>
+                        </div>
+                        
+                        <div class="hero-image-container">
+                            <img src="https://i.imgur.com/RlzMnRQ.png" alt="Squadra Mobile">
                         </div>
                     </div>
                     
