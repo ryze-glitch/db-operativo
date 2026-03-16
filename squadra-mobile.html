@@ -70,10 +70,8 @@
         .sidebar-menu li i { font-size: 1.2rem; width: 24px; text-align: center; }
         .sidebar-menu li:hover:not(.locked):not(.active) { background: rgba(255,255,255,0.05); color: var(--md-sys-color-text); }
         .sidebar-menu li.active { background: var(--md-sys-color-surface-variant); color: var(--md-sys-color-primary); }
-        .sidebar-menu li.logout { margin-top: auto; color: var(--md-sys-color-error); }
-        .sidebar-menu li.logout:hover { background: rgba(255, 180, 171, 0.1); }
 
-        .sidebar-menu li.locked { opacity: 0.4; cursor: not-allowed; pointer-events: none; }
+        .sidebar-menu li.locked { opacity: 0.4; cursor: not-allowed; pointer-events: none; margin-top: auto;}
         .sidebar-menu li.locked .lock-icon { margin-left: auto; font-size: 0.85rem; color: var(--md-sys-color-outline); }
 
         /* ==========================================
@@ -81,7 +79,7 @@
            ========================================== */
         .main-content { flex: 1; display: flex; flex-direction: column; background: var(--md-sys-color-surface); border-radius: 28px; overflow: hidden; position: relative; margin: 12px 12px 12px 0; border: 1px solid var(--border-color);}
         
-        .header { height: 75px; display: flex; justify-content: space-between; align-items: center; padding: 0 25px; background: transparent; }
+        .header { height: 75px; display: flex; justify-content: space-between; align-items: center; padding: 0 25px; background: transparent; position: relative; z-index: 100;}
         .header-search { flex: 1; max-width: 650px; margin: 0 20px; position: relative; display: flex; align-items: center; }
         .header-search i.fa-search { position: absolute; left: 24px; color: var(--md-sys-color-text-muted); font-size: 1.1rem; z-index: 2;}
         .header-search i.fa-sliders-h { position: absolute; right: 24px; color: var(--md-sys-color-text-muted); font-size: 1.1rem; z-index: 2; cursor: pointer;}
@@ -94,6 +92,47 @@
         .user-profile { display: flex; align-items: center; gap: 12px; margin-left: 10px; cursor: pointer; padding: 6px; border-radius: 50px; transition: 0.2s;}
         .user-profile:hover { background: rgba(255,255,255,0.05); }
         .user-avatar { width: 38px; height: 38px; background: var(--md-sys-color-primary-container); color: var(--md-sys-color-on-primary-container); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 1.1rem;}
+
+        /* ==========================================
+           PANNELLO ACCOUNT M3
+           ========================================== */
+        .account-panel {
+            position: absolute;
+            top: 70px;
+            right: 25px;
+            width: 320px;
+            background: var(--md-sys-color-surface-container-high);
+            border-radius: 24px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 10px 40px rgba(0,0,0,0.6);
+            z-index: 1000;
+            padding: 16px 0;
+            opacity: 0;
+            transform: translateY(-10px) scale(0.95);
+            pointer-events: none;
+            transition: all 0.2s cubic-bezier(0.2, 0, 0, 1);
+            transform-origin: top right;
+        }
+        .account-panel.active {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+            pointer-events: auto;
+        }
+        .panel-header { display: flex; align-items: center; gap: 16px; padding: 8px 24px 16px; }
+        .user-avatar.large { width: 50px; height: 50px; font-size: 1.5rem; }
+        .user-info h4 { font-size: 1.1rem; color: var(--md-sys-color-text); margin-bottom: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 180px;}
+        .user-info p { font-size: 0.85rem; color: var(--md-sys-color-text-muted); font-family: monospace;}
+        .panel-divider { border: none; border-top: 1px solid var(--border-color); margin: 8px 0; }
+        .panel-menu { list-style: none; display: flex; flex-direction: column; gap: 4px; padding: 0 12px;}
+        .panel-menu li {
+            display: flex; align-items: center; gap: 16px; padding: 12px 16px; border-radius: 12px;
+            color: var(--md-sys-color-text); font-size: 0.95rem; font-weight: 500; cursor: pointer; transition: 0.2s;
+        }
+        .panel-menu li i { font-size: 1.1rem; color: var(--md-sys-color-text-muted); width: 24px; text-align: center; }
+        .panel-menu li:hover { background: rgba(255,255,255,0.05); }
+        .panel-menu li.logout-item { color: var(--md-sys-color-error); margin-top: 4px;}
+        .panel-menu li.logout-item i { color: var(--md-sys-color-error); }
+        .panel-menu li.logout-item:hover { background: rgba(255, 180, 171, 0.1); }
 
         .view-body { flex: 1; padding: 20px 40px; overflow-y: auto; }
         .view-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 30px; }
@@ -136,7 +175,6 @@
             background-size: cover;
             z-index: 1;
         }
-        /* Gradiente per sfumare dolcemente l'immagine nel background */
         .hero-image::before {
             content: '';
             position: absolute;
@@ -190,6 +228,7 @@
         
         .m3-input { position: relative; text-align: left;}
         .m3-input input, .m3-input select, .m3-input textarea { width: 100%; padding: 18px 20px; border: 1px solid var(--md-sys-color-outline); border-radius: 8px; background: transparent; color: var(--md-sys-color-text); font-size: 1rem; outline: none; transition: 0.2s ease all;}
+        .m3-input input:disabled { border-style: dashed; opacity: 0.7; }
         .m3-input select { appearance: none; cursor: pointer;}
         .m3-input input:focus, .m3-input select:focus, .m3-input textarea:focus { border-color: var(--md-sys-color-primary); border-width: 2px; padding: 17px 19px; background: rgba(168, 199, 250, 0.03); }
         .m3-input label { position: absolute; left: 16px; top: 18px; background: var(--md-sys-color-background); padding: 0 4px; color: var(--md-sys-color-text-muted); font-size: 1rem; transition: 0.2s ease all; pointer-events: none; }
@@ -297,6 +336,41 @@
         </div>
     </div>
 
+    <div id="settings-modal" class="modal-wrap">
+        <div class="modal-box large" style="max-width: 600px;">
+            <div class="modal-head-l">
+                <h3><i class="fas fa-user-cog" style="color:var(--md-sys-color-primary); margin-right:8px;"></i> Impostazioni Profilo</h3>
+                <button class="icon-btn ripple-surface" onclick="document.getElementById('settings-modal').classList.remove('active')"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body-l" style="padding: 30px;">
+                <div class="form-grid">
+                    <div class="m3-input full-w" style="margin-bottom:0;"><input type="text" id="set-nome" disabled placeholder=" "><label style="background:var(--md-sys-color-surface);">Nome Operatore</label></div>
+                    <div class="m3-input" style="margin-bottom:0;"><input type="text" id="set-grado" disabled placeholder=" "><label style="background:var(--md-sys-color-surface);">Ruolo/Grado</label></div>
+                    <div class="m3-input" style="margin-bottom:0;"><input type="text" id="set-matr" disabled placeholder=" "><label style="background:var(--md-sys-color-surface);">Matricola IPRP</label></div>
+                </div>
+                
+                <hr style="border:none; border-top:1px solid var(--border-color); margin: 5px 0 10px;">
+                <h4 style="margin-bottom: 15px;">Preferenze di Sistema</h4>
+                
+                <div style="display: flex; align-items: center; justify-content: space-between; padding: 15px 20px; background: rgba(255,255,255,0.02); border-radius: 16px; border: 1px solid var(--border-color); margin-bottom: 15px;">
+                    <div>
+                        <strong style="display:block; margin-bottom:3px;">Notifiche Desktop</strong>
+                        <span style="font-size: 0.85rem; color: var(--md-sys-color-text-muted);">Ricevi avvisi per comunicazioni urgenti.</span>
+                    </div>
+                    <button class="btn-tonal ripple-surface" onclick="showToast('Notifiche', 'Impostazione notifiche aggiornata.', 'success')">Consenti</button>
+                </div>
+                
+                <div style="display: flex; align-items: center; justify-content: space-between; padding: 15px 20px; background: rgba(255,255,255,0.02); border-radius: 16px; border: 1px solid var(--border-color);">
+                    <div>
+                        <strong style="display:block; margin-bottom:3px;">Tema Interfaccia</strong>
+                        <span style="font-size: 0.85rem; color: var(--md-sys-color-text-muted);">Sincronizza Material Cloud (Sviluppo)</span>
+                    </div>
+                    <button class="btn-tonal ripple-surface" disabled style="opacity:0.5; cursor:not-allowed;">Scuro Fisso</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div id="dashboard-section" class="hidden">
         
         <div class="sidebar">
@@ -317,8 +391,6 @@
                 <li class="locked" id="nav-logs" onclick="showToast('Accesso Negato', 'Sezione Log di Sicurezza protetta e in manutenzione.', 'warning')">
                     <i class="fas fa-shield-alt"></i> Log di Sicurezza <i class="fas fa-lock lock-icon"></i>
                 </li>
-
-                <li class="logout ripple-surface" id="btn-logout"><i class="fas fa-sign-out-alt"></i> Disconnetti</li>
             </ul>
         </div>
         
@@ -331,12 +403,29 @@
                 </div>
                 <div class="header-actions">
                     <i class="fas fa-question-circle"></i>
-                    <i class="fas fa-cog"></i>
+                    <i class="fas fa-bell"></i>
                     <i class="fas fa-th" style="margin-right:10px;"></i>
-                    <div class="user-profile">
+                    <div class="user-profile ripple-surface" id="btn-user-profile">
                         <div class="user-avatar" id="avatar-letter">A</div>
                     </div>
                 </div>
+
+                <div id="account-panel" class="account-panel">
+                    <div class="panel-header">
+                        <div class="user-avatar large" id="panel-avatar">A</div>
+                        <div class="user-info">
+                            <h4 id="panel-nome">Nome Cognome</h4>
+                            <p id="panel-matricola">Matricola: ---</p>
+                        </div>
+                    </div>
+                    <hr class="panel-divider">
+                    <ul class="panel-menu">
+                        <li class="ripple-surface" id="btn-open-settings"><i class="fas fa-cog"></i> Impostazioni Profilo</li>
+                        <hr class="panel-divider" style="margin: 4px 0;">
+                        <li class="ripple-surface logout-item" id="btn-logout-panel"><i class="fas fa-sign-out-alt"></i> Disconnetti da Google</li>
+                    </ul>
+                </div>
+
             </header>
             
             <div class="view-body">
@@ -524,7 +613,7 @@
             }
         });
 
-        // TIMEOUT INATTIVITÀ
+        // TIMEOUT INATTIVITÀ E CLOCK
         let inactivityTime = function () {
             let time;
             window.onload = resetTimer; document.onmousemove = resetTimer; document.onkeydown = resetTimer; document.onclick = resetTimer; document.onscroll = resetTimer;
@@ -547,6 +636,32 @@
         let utenteCorrente = null; let matricolaPura = "---"; let isAdmin = false;
         let chartIndaginiInst = null; let chartRischioInst = null; let recentItemsData = [];
 
+        // ACCOUNT PANEL LOGIC
+        const btnProfile = document.getElementById('btn-user-profile');
+        const accountPanel = document.getElementById('account-panel');
+        
+        btnProfile.addEventListener('click', (e) => {
+            e.stopPropagation();
+            accountPanel.classList.toggle('active');
+        });
+        
+        document.addEventListener('click', (e) => {
+            if (!accountPanel.contains(e.target) && !btnProfile.contains(e.target)) {
+                accountPanel.classList.remove('active');
+            }
+        });
+
+        document.getElementById('btn-open-settings').addEventListener('click', () => {
+            accountPanel.classList.remove('active');
+            document.getElementById('settings-modal').classList.add('active');
+        });
+
+        document.getElementById('btn-logout-panel').addEventListener('click', () => { 
+            sessionStorage.removeItem('sessioneAttiva'); 
+            window.location.href = 'index.html'; 
+        });
+
+
         // VERIFICA SESSIONE
         async function verificaSessione() {
             const sessionData = sessionStorage.getItem('sessioneAttiva');
@@ -561,12 +676,23 @@
                 utenteCorrente = snap.docs[0].data();
                 matricolaPura = sessionParsed.matricola.includes('-') ? sessionParsed.matricola.split('-').pop() : sessionParsed.matricola;
                 
-                document.getElementById('avatar-letter').innerText = utenteCorrente.nome.charAt(0).toUpperCase();
+                const initial = utenteCorrente.nome.charAt(0).toUpperCase();
+                document.getElementById('avatar-letter').innerText = initial;
+                document.getElementById('panel-avatar').innerText = initial;
                 document.getElementById('saluto-nome').innerText = `Bentornato, ${utenteCorrente.nome}`;
+                
+                // Popola dati Account Panel & Settings
+                document.getElementById('panel-nome').innerText = utenteCorrente.nome;
+                document.getElementById('panel-matricola').innerText = `Matricola: ${matricolaPura}`;
+                document.getElementById('set-nome').value = utenteCorrente.nome;
+                document.getElementById('set-matr').value = matricolaPura;
 
                 if (utenteCorrente.admin && utenteCorrente.admin.toLowerCase().startsWith('s')) {
                     isAdmin = true; 
                     document.getElementById('btn-toggle-form-ann').classList.remove('hidden');
+                    document.getElementById('set-grado').value = "Super Admin";
+                } else {
+                    document.getElementById('set-grado').value = "Operatore P.D.S.";
                 }
 
                 document.getElementById('loading-overlay').classList.add('fade-out');
@@ -579,8 +705,6 @@
             } catch(e) { window.location.href = 'index.html'; }
         }
         verificaSessione();
-
-        document.getElementById('btn-logout').addEventListener('click', () => { sessionStorage.removeItem('sessioneAttiva'); window.location.href = 'index.html'; });
 
         function inizializzaGrafici() {
             Chart.defaults.color = '#c4c7c5'; Chart.defaults.font.family = 'Lexend';
