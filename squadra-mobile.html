@@ -9,19 +9,19 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         :root { 
-            --md-sys-color-background: #131314;
-            --md-sys-color-surface: #1E1F22;
-            --md-sys-color-surface-variant: #2B2D31;
+            --md-sys-color-background: #0e0e0e;
+            --md-sys-color-surface: #1e1e1e;
+            --md-sys-color-surface-variant: #282a2c;
             --md-sys-color-primary: #A8C7FA;
             --md-sys-color-on-primary: #062E6F;
             --md-sys-color-secondary-container: #373A40;
             --md-sys-color-text: #E3E3E3;
-            --md-sys-color-text-muted: #C4C7C5;
+            --md-sys-color-text-muted: #9aa0a6;
             --md-sys-color-error: #FFB4AB;
             --md-sys-color-warning: #FFB951;
             --md-sys-color-success: #81C995;
-            --md-sys-color-outline: #8E918F;
-            --border-color: rgba(255,255,255,0.08);
+            --md-sys-color-outline: #5f6368;
+            --border-color: rgba(255,255,255,0.05);
         }
         
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Lexend', sans-serif; }
@@ -42,32 +42,30 @@
         .overlay p { color: var(--md-sys-color-text-muted); font-size: 1rem; }
         .fade-out { opacity: 0; pointer-events: none; }
 
-        /* Layout */
+        /* Layout Stile Google Drive */
         #dashboard-section { display: flex; height: 100vh; width: 100%; }
         
-        /* Navigation Drawer (Sidebar M3) */
-        .sidebar { width: 280px; background: var(--md-sys-color-background); display: flex; flex-direction: column; padding: 15px 10px; }
+        .sidebar { width: 280px; background: transparent; display: flex; flex-direction: column; padding: 15px 10px; }
         .sidebar-logo { display: flex; align-items: center; gap: 15px; padding: 10px 15px 25px; }
-        .sidebar-logo img { width: 36px; border-radius: 8px; }
-        .sidebar-logo h2 { font-size: 1.3rem; letter-spacing: 0.5px; }
+        .sidebar-logo img { width: 32px; }
+        .sidebar-logo h2 { font-size: 1.2rem; letter-spacing: 0.5px; font-weight: 600;}
         
         .sidebar-menu { list-style: none; display: flex; flex-direction: column; gap: 5px; flex: 1; overflow-y: auto; padding: 0 5px;}
-        .sidebar-menu li { display: flex; align-items: center; gap: 15px; padding: 16px 20px; border-radius: 100px; cursor: pointer; color: var(--md-sys-color-text-muted); font-weight: 500; font-size: 0.95rem; transition: background 0.2s, color 0.2s; }
-        .sidebar-menu li i { font-size: 1.2rem; width: 24px; text-align: center; }
+        .sidebar-menu li { display: flex; align-items: center; gap: 15px; padding: 14px 20px; border-radius: 100px; cursor: pointer; color: var(--md-sys-color-text-muted); font-weight: 500; font-size: 0.95rem; transition: background 0.2s, color 0.2s; }
+        .sidebar-menu li i { font-size: 1.1rem; width: 24px; text-align: center; }
         .sidebar-menu li:hover { background: rgba(255,255,255,0.05); color: var(--md-sys-color-text); }
-        .sidebar-menu li.active { background: var(--md-sys-color-secondary-container); color: var(--md-sys-color-text); }
+        .sidebar-menu li.active { background: var(--md-sys-color-surface-variant); color: var(--md-sys-color-text); }
         .sidebar-menu li.logout { margin-top: auto; color: var(--md-sys-color-error); }
         .sidebar-menu li.logout:hover { background: rgba(255, 180, 171, 0.1); }
 
-        /* Main Content */
-        .main-content { flex: 1; display: flex; flex-direction: column; background: var(--md-sys-color-background); border-radius: 28px 0 0 28px; overflow: hidden; position: relative; border-left: 1px solid var(--border-color);}
+        /* Main Content Container */
+        .main-content { flex: 1; display: flex; flex-direction: column; background: var(--md-sys-color-surface); border-radius: 24px; overflow: hidden; position: relative; margin: 15px 15px 15px 0;}
         
-        /* Header Google Drive Style */
-        .header { height: 75px; display: flex; justify-content: space-between; align-items: center; padding: 0 30px; background: var(--md-sys-color-background); }
+        .header { height: 75px; display: flex; justify-content: space-between; align-items: center; padding: 0 30px; background: transparent; }
         .header-search { flex: 1; max-width: 650px; margin: 0 20px; position: relative; display: flex; align-items: center; }
         .header-search i { position: absolute; left: 24px; color: var(--md-sys-color-text-muted); font-size: 1.1rem; z-index: 2;}
-        .header-search input { width: 100%; height: 52px; background: var(--md-sys-color-surface-variant); border: none; outline: 2px solid transparent; border-radius: 100px; padding: 0 20px 0 55px; color: var(--md-sys-color-text); font-size: 1rem; transition: 0.2s; font-family: 'Lexend', sans-serif;}
-        .header-search input:focus { outline-color: var(--md-sys-color-primary); background: rgba(168, 199, 250, 0.05); }
+        .header-search input { width: 100%; height: 52px; background: var(--md-sys-color-surface-variant); border: none; outline: 2px solid transparent; border-radius: 100px; padding: 0 20px 0 55px; color: var(--md-sys-color-text); font-size: 1rem; transition: 0.2s;}
+        .header-search input:focus { outline-color: var(--md-sys-color-primary); background: var(--md-sys-color-background); }
         
         .header-actions { display: flex; align-items: center; gap: 20px; }
         .bell-btn { position: relative; width: 44px; height: 44px; border-radius: 50%; display: flex; justify-content: center; align-items: center; cursor: pointer; color: var(--md-sys-color-text-muted); transition: 0.2s; }
@@ -79,92 +77,91 @@
         .user-info strong { font-size: 0.85rem; font-weight: 600; }
         .user-info span { font-size: 0.7rem; color: var(--md-sys-color-text-muted); font-family: monospace; }
 
-        /* Views */
         .view-body { flex: 1; padding: 20px 40px; overflow-y: auto; }
         .view-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 30px; }
-        .view-header h2 { font-size: 2.2rem; margin-bottom: 5px; color: var(--md-sys-color-text); }
+        .view-header h2 { font-size: 2rem; margin-bottom: 5px; color: var(--md-sys-color-text); }
         .view-header p { color: var(--md-sys-color-text-muted); font-size: 1rem;}
 
-        /* Bottoni FAB e Tonal (Google M3) */
-        .btn-fab { background: var(--md-sys-color-primary); color: var(--md-sys-color-on-primary); border: none; border-radius: 16px; padding: 16px 24px; font-size: 0.95rem; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 10px; transition: 0.2s box-shadow; font-family: 'Lexend', sans-serif;}
+        /* Bottoni */
+        .btn-fab { background: var(--md-sys-color-primary); color: var(--md-sys-color-on-primary); border: none; border-radius: 16px; padding: 14px 24px; font-size: 0.95rem; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 10px; transition: 0.2s box-shadow;}
         .btn-fab:hover { box-shadow: 0 4px 10px rgba(168, 199, 250, 0.25); }
-        .btn-tonal { background: var(--md-sys-color-surface-variant); color: var(--md-sys-color-text); border: none; border-radius: 100px; padding: 10px 24px; font-size: 0.9rem; cursor: pointer; font-weight: 600; font-family: 'Lexend', sans-serif; transition: 0.2s;}
-        .btn-tonal:hover { background: #44474E; }
+        .btn-tonal { background: var(--md-sys-color-surface-variant); color: var(--md-sys-color-text); border: none; border-radius: 100px; padding: 10px 24px; font-size: 0.9rem; cursor: pointer; font-weight: 600; transition: 0.2s;}
+        .btn-tonal:hover { background: #373A40; }
 
-        /* Dashboard Cards M3 */
-        .kpi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-bottom: 20px; }
-        .kpi-card { background: var(--md-sys-color-surface); border-radius: 24px; padding: 25px; display: flex; flex-direction: column; gap: 15px; border: 1px solid var(--border-color); }
-        .kpi-card i { font-size: 1.5rem; color: var(--md-sys-color-primary); }
-        .kpi-card h3 { font-size: 2.2rem; line-height: 1; }
-        .kpi-card span { font-size: 0.85rem; color: var(--md-sys-color-text-muted); font-weight: 500; }
+        /* Dashboard Cards */
+        .kpi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-bottom: 25px; }
+        .kpi-card { background: var(--md-sys-color-background); border-radius: 20px; padding: 20px; display: flex; align-items: center; gap: 20px; border: 1px solid var(--border-color); }
+        .kpi-icon { width: 55px; height: 55px; border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 1.6rem; }
+        .kpi-icon.blue { background: rgba(168, 199, 250, 0.1); color: var(--md-sys-color-primary); }
+        .kpi-icon.orange { background: rgba(255, 185, 81, 0.1); color: var(--warning); }
+        .kpi-icon.red { background: rgba(255, 180, 171, 0.1); color: var(--danger); }
+        .kpi-icon.green { background: rgba(129, 201, 149, 0.1); color: var(--success); }
+        .kpi-info h3 { font-size: 1.8rem; margin-bottom: 2px; }
+        .kpi-info span { font-size: 0.8rem; color: var(--md-sys-color-text-muted); text-transform: uppercase; font-weight: 500; }
 
         .dashboard-main-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 20px; }
-        .surface-box { background: var(--md-sys-color-surface); border-radius: 24px; padding: 25px; border: 1px solid var(--border-color);}
-        .surface-box h4 { font-size: 1.1rem; margin-bottom: 20px; color: var(--md-sys-color-text); display: flex; align-items: center; gap: 10px; }
-        .chart-wrapper { height: 250px; width: 100%; display: flex; justify-content: center; }
+        .surface-box { background: var(--md-sys-color-background); border-radius: 20px; padding: 25px; border: 1px solid var(--border-color);}
+        .surface-box h4 { font-size: 1.05rem; font-weight: 600; margin-bottom: 20px; color: var(--md-sys-color-text); display: flex; align-items: center; gap: 10px; }
+        .chart-wrapper { height: 230px; width: 100%; display: flex; justify-content: center; }
 
-        .tool-card { background: var(--md-sys-color-surface-variant); border-radius: 24px; padding: 25px 20px; display: flex; flex-direction: column; align-items: center; text-align: center; transition: 0.3s; text-decoration: none; margin-bottom: 20px;}
-        .tool-card:hover { background: #373A40; box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
-        .tool-card i { font-size: 2.5rem; color: var(--md-sys-color-primary); margin-bottom: 15px; }
-        .tool-card h4 { color: white; font-size: 1.1rem; margin-bottom: 8px; }
+        .tools-section { display: flex; flex-direction: column; gap: 20px; }
+        .tool-card { background: var(--md-sys-color-surface-variant); border-radius: 20px; padding: 25px 20px; display: flex; flex-direction: column; align-items: center; text-align: center; text-decoration: none;}
+        .tool-card i { font-size: 2.2rem; color: var(--md-sys-color-primary); margin-bottom: 12px; }
+        .tool-card h4 { color: white; font-size: 1.05rem; margin-bottom: 6px; }
         .tool-card p { color: var(--md-sys-color-text-muted); font-size: 0.85rem; line-height: 1.4; }
 
-        .recent-list { display: flex; flex-direction: column; gap: 10px; overflow-y: auto; max-height: 250px;}
-        .recent-item { display: flex; align-items: center; gap: 15px; padding: 12px; background: rgba(255,255,255,0.02); border-radius: 12px; }
-        .recent-item i { color: var(--md-sys-color-primary); font-size: 1.2rem; background: rgba(168, 199, 250, 0.15); padding: 10px; border-radius: 50%; }
-        .recent-info strong { display: block; color: white; font-size: 0.95rem; margin-bottom: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 200px; }
+        .recent-box { background: var(--md-sys-color-background); border-radius: 20px; padding: 20px; flex: 1; display: flex; flex-direction: column; border: 1px solid var(--border-color);}
+        .recent-box h4 { color: white; font-size: 1.05rem; margin-bottom: 15px; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid var(--border-color); padding-bottom: 10px;}
+        .recent-list { display: flex; flex-direction: column; gap: 8px; overflow-y: auto; max-height: 250px;}
+        .recent-item { display: flex; align-items: center; gap: 12px; padding: 10px; background: rgba(255,255,255,0.03); border-radius: 12px; }
+        .recent-item i { color: var(--md-sys-color-primary); font-size: 1.1rem; background: rgba(168, 199, 250, 0.1); padding: 10px; border-radius: 50%; }
+        .recent-info strong { display: block; color: white; font-size: 0.9rem; margin-bottom: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 180px; }
         .recent-info span { color: var(--md-sys-color-text-muted); font-size: 0.75rem; font-family: monospace;}
 
-        /* Forms Pill (Google Outlined/Filled M3) - No Bouncing */
-        .form-panel { background: var(--md-sys-color-surface); border-radius: 24px; padding: 35px; margin-bottom: 30px; border: 1px solid var(--border-color);}
-        .form-panel h3 { margin-bottom: 25px; color: var(--md-sys-color-text); border-bottom: 1px solid var(--border-color); padding-bottom: 15px; font-size: 1.3rem;}
+        /* Forms Material 3 (Rounded) */
+        .form-panel { background: var(--md-sys-color-background); border-radius: 24px; padding: 35px; margin-bottom: 30px; border: 1px solid var(--border-color);}
+        .form-panel h3 { margin-bottom: 25px; color: var(--md-sys-color-text); border-bottom: 1px solid var(--border-color); padding-bottom: 15px; font-size: 1.2rem;}
         .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
         .full-w { grid-column: span 2; }
         
-        .m3-input { position: relative; text-align: left; }
-        /* Box Sizing e Bordi identici evitano il bouncing */
-        .m3-input input, .m3-input select, .m3-input textarea { width: 100%; padding: 18px 24px; border: 1px solid var(--md-sys-color-outline); border-radius: 100px; background: transparent; color: var(--md-sys-color-text); font-size: 1rem; outline: none; transition: 0.2s ease all; font-family: 'Lexend', sans-serif;}
-        .m3-input textarea { border-radius: 24px; resize: vertical; }
+        .m3-input { position: relative; text-align: left; margin-bottom: 5px;}
+        .m3-input input, .m3-input select, .m3-input textarea { width: 100%; padding: 16px 20px; border: 1px solid var(--md-sys-color-outline); border-radius: 8px; background: transparent; color: var(--md-sys-color-text); font-size: 0.95rem; outline: none; transition: 0.2s ease all;}
         .m3-input select { appearance: none; color: var(--md-sys-color-text); }
-        .m3-input input:focus, .m3-input select:focus, .m3-input textarea:focus { border-color: transparent; outline: 2px solid var(--md-sys-color-primary); outline-offset: -1px; background: rgba(168, 199, 250, 0.05); }
-        .m3-input label { position: absolute; left: 24px; top: 18px; background: var(--md-sys-color-surface); padding: 0 6px; color: var(--md-sys-color-text-muted); font-size: 1rem; transition: 0.2s ease all; pointer-events: none; }
-        .m3-input input:focus ~ label, .m3-input input:not(:placeholder-shown) ~ label, .m3-input select:focus ~ label, .m3-input select:not([value=""]) ~ label, .m3-input textarea:focus ~ label, .m3-input textarea:not(:placeholder-shown) ~ label { top: -10px; left: 20px; font-size: 0.75rem; color: var(--md-sys-color-primary); font-weight: 500; }
+        .m3-input input:focus, .m3-input select:focus, .m3-input textarea:focus { border-color: transparent; outline: 2px solid var(--md-sys-color-primary); outline-offset: -1px; background: rgba(168, 199, 250, 0.03); }
+        .m3-input label { position: absolute; left: 16px; top: 16px; background: var(--md-sys-color-background); padding: 0 4px; color: var(--md-sys-color-text-muted); font-size: 0.95rem; transition: 0.2s ease all; pointer-events: none; }
+        .m3-input input:focus ~ label, .m3-input input:not(:placeholder-shown) ~ label, .m3-input select:focus ~ label, .m3-input select:not([value=""]) ~ label, .m3-input textarea:focus ~ label, .m3-input textarea:not(:placeholder-shown) ~ label { top: -10px; left: 12px; font-size: 0.75rem; color: var(--md-sys-color-primary); font-weight: 500; }
 
-        .tags-container { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; padding: 0 10px; }
+        .tags-container { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
         .tag { background: rgba(168, 199, 250, 0.15); color: var(--md-sys-color-primary); padding: 6px 12px; border-radius: 8px; font-size: 0.85rem; font-weight: 500; display: flex; align-items: center; gap: 8px; }
         .tag i { cursor: pointer; color: var(--md-sys-color-error); }
 
         .form-actions { display: flex; justify-content: flex-end; gap: 15px; margin-top: 25px; }
 
-        /* Data Grid (Cards) - No Bouncing Hover */
+        /* Data Grid (Cards) - No Bouncing */
         .data-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 20px; }
-        .data-card { background: var(--md-sys-color-surface); border-radius: 20px; padding: 20px; display: flex; flex-direction: column; border: 1px solid var(--border-color); position: relative; transition: box-shadow 0.2s, border-color 0.2s; }
-        .data-card:hover { border-color: var(--md-sys-color-primary); box-shadow: 0 8px 20px rgba(0,0,0,0.3); } /* No Transform = No Bounce */
+        .data-card { background: var(--md-sys-color-background); border-radius: 20px; padding: 20px; display: flex; flex-direction: column; border: 1px solid var(--border-color); position: relative; }
         .card-top { display: flex; gap: 15px; align-items: center; margin-bottom: 15px; }
         .card-img { width: 50px; height: 50px; border-radius: 12px; object-fit: cover; background: var(--md-sys-color-surface-variant); display: flex; align-items: center; justify-content: center; font-size: 1.5rem; color: var(--md-sys-color-text-muted); }
         .card-title h3 { font-size: 1.1rem; margin-bottom: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 180px; }
-        .card-title p { font-size: 0.85rem; color: var(--md-sys-color-text-muted); }
+        .card-title p { font-size: 0.85rem; color: var(--md-sys-color-text-muted); font-weight: 400;}
         
-        .status-chip { position: absolute; top: 20px; right: 20px; padding: 4px 10px; border-radius: 6px; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.5px; }
+        .status-chip { position: absolute; top: 20px; right: 20px; padding: 4px 10px; border-radius: 6px; font-size: 0.7rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
         .chip-green { background: rgba(129, 201, 149, 0.15); color: var(--md-sys-color-success); }
-        .chip-orange { background: rgba(255, 185, 81, 0.15); color: var(--md-sys-color-warning); }
-        .chip-red { background: rgba(255, 180, 171, 0.15); color: var(--md-sys-color-error); }
+        .chip-orange { background: rgba(255, 185, 81, 0.15); color: var(--warning); }
+        .chip-red { background: rgba(255, 180, 171, 0.15); color: var(--danger); }
         .chip-gray { background: var(--md-sys-color-surface-variant); color: var(--md-sys-color-text-muted); }
 
         .card-body { flex: 1; font-size: 0.9rem; color: var(--md-sys-color-text-muted); margin-bottom: 20px; line-height: 1.5;}
         .card-body p { margin-bottom: 8px; }
-        .card-body strong { color: var(--md-sys-color-text); }
+        .card-body strong { color: var(--md-sys-color-text); font-weight: 500;}
         
         .card-footer { display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border-color); padding-top: 15px; }
         .card-author { font-size: 0.75rem; color: var(--md-sys-color-text-muted); font-family: monospace; }
         .card-btns { display: flex; gap: 8px; }
-        .icon-btn { width: 34px; height: 34px; border-radius: 50%; border: none; background: transparent; color: var(--md-sys-color-text-muted); cursor: pointer; transition: 0.2s; display: flex; align-items: center; justify-content: center; font-size: 0.9rem;}
-        .icon-btn:hover { background: var(--md-sys-color-surface-variant); color: white; }
-        .icon-btn.edit:hover { color: var(--md-sys-color-primary); }
-        .icon-btn.delete:hover { color: var(--md-sys-color-error); }
-
+        .icon-btn { width: 34px; height: 34px; border-radius: 50%; border: none; background: transparent; color: var(--md-sys-color-text-muted); cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 0.9rem;}
+        
         /* Annunci List */
-        .annuncio-item { background: var(--md-sys-color-surface); border-radius: 16px; padding: 25px; margin-bottom: 15px; border-left: 4px solid var(--md-sys-color-primary); border-top: 1px solid var(--border-color); border-right: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color);}
+        .annuncio-item { background: var(--md-sys-color-background); border-radius: 16px; padding: 25px; margin-bottom: 15px; border-left: 4px solid var(--md-sys-color-primary); border-top: 1px solid var(--border-color); border-right: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color);}
         .annuncio-item.urgente { border-left-color: var(--md-sys-color-error); }
         .ann-head { display: flex; justify-content: space-between; margin-bottom: 15px; border-bottom: 1px solid var(--border-color); padding-bottom: 10px;}
         .ann-head h3 { font-size: 1.2rem; display: flex; align-items: center; gap: 10px; }
@@ -173,7 +170,8 @@
         .badge-urgent { background: var(--md-sys-color-error); color: #690005; padding: 2px 8px; border-radius: 4px; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; }
 
         /* Logs List */
-        .log-item { background: var(--md-sys-color-surface-variant); border-radius: 12px; padding: 15px 20px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
+        .log-item { background: var(--md-sys-color-background); border: 1px solid var(--border-color); border-radius: 12px; padding: 15px 20px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
+        .log-item.eliminazione { border-left: 3px solid var(--danger); }
         .log-info h4 { font-size: 1rem; margin-bottom: 4px; }
         .log-info p { font-size: 0.85rem; color: var(--md-sys-color-text-muted); }
         .log-meta { text-align: right; font-size: 0.8rem; font-family: monospace; color: var(--md-sys-color-text-muted); }
@@ -201,7 +199,6 @@
         .prova-item small { color: var(--text-muted); font-family: monospace; font-size: 0.8rem; }
         .add-prova-box { display: flex; gap: 10px; }
         
-        /* Toasts */
         .toast-container { position: fixed; bottom: 30px; right: 30px; z-index: 10001; display: flex; flex-direction: column; gap: 10px; pointer-events: none; }
         .toast { background: var(--md-sys-color-surface-variant); color: white; padding: 16px 24px; border-radius: 12px; display: flex; align-items: center; gap: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.5); animation: slideInToast 0.3s ease forwards; font-size: 0.95rem; font-weight: 500; border: 1px solid var(--border-color);}
         .toast.success i { color: var(--md-sys-color-success); }
@@ -240,13 +237,13 @@
                 <button class="icon-btn ripple-surface" onclick="document.getElementById('detail-modal').classList.remove('active')"><i class="fas fa-times"></i></button>
             </div>
             <div class="modal-body-l">
-                <div id="detail-info" style="width: 100%;"></div>
+                <div id="detail-info" style="width: 100%; display: flex; gap:30px;"></div>
                 <div class="prove-section">
                     <h4><i class="fas fa-paperclip"></i> Prove e Annotazioni</h4>
                     <div id="detail-prove-list" class="prove-list"></div>
                     <div class="add-prova-box">
                         <div class="m3-input" style="flex:1; margin-bottom:0;"><input type="text" id="input-nuova-prova" placeholder=" "><label>Scrivi nota o link a prova...</label></div>
-                        <button class="btn-fab ripple-surface" id="btn-add-prova" style="border-radius:100px;"><i class="fas fa-plus"></i> Allega</button>
+                        <button class="btn-fab ripple-surface" id="btn-add-prova" style="border-radius:12px;"><i class="fas fa-plus"></i> Allega</button>
                     </div>
                 </div>
             </div>
@@ -298,14 +295,14 @@
                             <h2 id="saluto-nome">Bentornato</h2>
                             <p>Terminale Centrale connesso e operativo.</p>
                         </div>
-                        <div id="live-clock" style="font-family: monospace; color: var(--md-sys-color-primary); font-size: 1.1rem;"></div>
+                        <div id="live-clock" style="font-family: monospace; color: var(--md-sys-color-primary); font-size: 1.1rem; font-weight: 500;"></div>
                     </div>
                     
                     <div class="kpi-grid">
-                        <div class="kpi-card ripple-surface"><i class="fas fa-folder-open" style="color:var(--md-sys-color-primary)"></i><h3 id="kpi-indagini">0</h3><span>Fascicoli Aperti</span></div>
-                        <div class="kpi-card ripple-surface"><i class="fas fa-user-secret" style="color:var(--md-sys-color-warning)"></i><h3 id="kpi-soggetti">0</h3><span>Soggetti Registrati</span></div>
-                        <div class="kpi-card ripple-surface"><i class="fas fa-bullhorn" style="color:var(--md-sys-color-success)"></i><h3 id="kpi-comunicazioni">0</h3><span>Direttive</span></div>
-                        <div class="kpi-card ripple-surface"><i class="fas fa-exclamation-triangle" style="color:var(--md-sys-color-error)"></i><h3 id="kpi-rischio">0</h3><span>Soggetti a Tempo</span></div>
+                        <div class="kpi-card ripple-surface"><i class="fas fa-folder-open" style="color:var(--md-sys-color-primary)"></i><div class="kpi-info"><h3 id="kpi-indagini">0</h3><span>Fascicoli Aperti</span></div></div>
+                        <div class="kpi-card ripple-surface"><i class="fas fa-user-secret" style="color:var(--warning)"></i><div class="kpi-info"><h3 id="kpi-soggetti">0</h3><span>Soggetti Registrati</span></div></div>
+                        <div class="kpi-card ripple-surface"><i class="fas fa-bullhorn" style="color:var(--success)"></i><div class="kpi-info"><h3 id="kpi-comunicazioni">0</h3><span>Direttive</span></div></div>
+                        <div class="kpi-card ripple-surface"><i class="fas fa-exclamation-triangle" style="color:var(--danger)"></i><div class="kpi-info"><h3 id="kpi-rischio">0</h3><span>Soggetti a Tempo</span></div></div>
                     </div>
 
                     <div class="dashboard-main-grid">
@@ -320,7 +317,7 @@
                             </div>
                         </div>
                         <div class="tools-section">
-                            <a href="#" target="_blank" class="tool-card ripple-surface"><i class="fab fa-google-drive"></i><h4>Drive Condiviso</h4><p>Accesso all'archivio cloud</p></a>
+                            <a href="#" target="_blank" class="tool-card ripple-surface"><i class="fab fa-google-drive"></i><h4>Drive Condiviso</h4><p>Accesso all'archivio cloud operativo</p></a>
                             <a href="#" target="_blank" class="tool-card ripple-surface"><i class="fas fa-table"></i><h4>Stato Verbali</h4><p>Consulta foglio presenze e rapporti</p></a>
                             <div class="recent-box">
                                 <h4><i class="fas fa-history"></i> Ultimi Inserimenti</h4>
@@ -332,7 +329,7 @@
 
                 <div id="view-annunci" class="view-section hidden">
                     <div class="view-header">
-                        <div><h2>Comunicazioni</h2><p>Bacheca ufficiale per gli avvisi del comando.</p></div>
+                        <div><h2>Comunicazioni e Direttive</h2><p>Bacheca ufficiale per gli avvisi del comando.</p></div>
                         <button id="btn-toggle-form-ann" class="btn-fab hidden ripple-surface"><i class="fas fa-plus"></i> Nuova</button>
                     </div>
 
@@ -374,7 +371,7 @@
                                 <div class="m3-input"><input type="text" id="att-nascita" placeholder=" " required><label>Data Nascita (Es. 01/01/1990)</label></div>
                                 <div class="m3-input"><input type="date" id="att-applicazione" required><label style="top:-10px; font-size:0.75rem; color:var(--md-sys-color-primary);">Data Applicazione</label></div>
                                 
-                                <div class="full-w" style="background: var(--md-sys-color-background); border-radius: 24px; padding: 20px; border: 1px solid var(--border-color);">
+                                <div class="full-w" style="background: var(--md-sys-color-background); border-radius: 12px; padding: 15px; border: 1px solid var(--border-color);">
                                     <div class="m3-input" style="margin-bottom:0;">
                                         <select id="att-motivazione-seleziona">
                                             <option value="">-- Seleziona per aggiungere motivazione --</option>
@@ -396,7 +393,7 @@
                             </div>
                             <div class="form-actions">
                                 <button type="button" class="btn-tonal btn-annulla-form ripple-surface">Annulla</button>
-                                <button type="submit" class="btn-fab ripple-surface" id="btn-submit-att"><i class="fas fa-cloud-upload-alt"></i> Salva e Invia</button>
+                                <button type="submit" class="btn-fab ripple-surface" id="btn-submit-att"><i class="fas fa-save"></i> Salva e Invia</button>
                             </div>
                         </form>
                     </div>
@@ -405,7 +402,7 @@
 
                 <div id="view-fascicoli" class="view-section hidden">
                     <div class="view-header">
-                        <div><h2>Fascicoli D'Indagine</h2><p>Registro dei casi in corso.</p></div>
+                        <div><h2>Fascicoli D'Indagine</h2><p>Registro dei casi operativi in corso.</p></div>
                         <button id="btn-toggle-form-fas" class="btn-fab ripple-surface"><i class="fas fa-plus"></i> Crea</button>
                     </div>
                     <div id="form-container-fas" class="form-panel hidden">
@@ -415,7 +412,7 @@
                             <div class="form-grid">
                                 <div class="m3-input full-w"><input type="text" id="fas-titolo" placeholder=" " required><label>Titolo Operazione</label></div>
                                 <div class="m3-input"><input type="text" id="fas-reati" placeholder=" " required><label>Reati Ipotizzati</label></div>
-                                <div class="m3-input"><select id="fas-stato"><option value="aperto">Aperta</option><option value="attesa">In Attesa</option><option value="chiuso">Chiusa</option></select><label style="top:-10px; font-size:0.75rem; color:var(--md-sys-color-primary);">Stato</label></div>
+                                <div class="m3-input"><select id="fas-stato"><option value="aperto">Aperta</option><option value="attesa">In Attesa</option><option value="chiuso">Chiusa</option></select><label style="top:-10px; font-size:0.75rem; color:var(--md-sys-color-primary);">Stato Indagine</label></div>
                                 <div class="m3-input full-w"><input type="text" id="fas-soggetti" placeholder=" "><label>Soggetti Coinvolti</label></div>
                                 <div class="m3-input full-w"><input type="url" id="fas-foto" placeholder=" "><label>URL Copertina</label></div>
                                 <div class="m3-input full-w"><textarea id="fas-dettagli" rows="3" placeholder=" " required></textarea><label>Dettagli Investigativi</label></div>
@@ -488,7 +485,7 @@
         let utenteCorrente = null; let matricolaPura = "---"; let isAdmin = false;
         let chartIndaginiInst = null; let chartRischioInst = null; let recentItemsData = [];
 
-        // VERIFICA SESSIONE
+        // VERIFICA SESSIONE SERVER-SIDE
         async function verificaSessione() {
             const sessionData = sessionStorage.getItem('sessioneAttiva');
             if (!sessionData) { window.location.href = 'index.html'; return; }
@@ -526,8 +523,8 @@
 
         function inizializzaGrafici() {
             Chart.defaults.color = '#c4c7c5'; Chart.defaults.font.family = 'Lexend';
-            chartIndaginiInst = new Chart(document.getElementById('chartIndagini').getContext('2d'), { type: 'doughnut', data: { labels: ['Aperti', 'In Attesa', 'Archiviati'], datasets: [{ data: [0, 0, 0], backgroundColor: ['#A8C7FA', '#FFB951', '#44474E'], borderWidth: 0 }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'right' } }, cutout: '75%' } });
-            chartRischioInst = new Chart(document.getElementById('chartRischio').getContext('2d'), { type: 'bar', data: { labels: ['15 G', '30 G', '60 G'], datasets: [{ label: 'Soggetti', data: [0, 0, 0], backgroundColor: '#A8C7FA', borderRadius: 6 }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { grid: { color: 'rgba(255,255,255,0.05)' } }, x: { grid: { display: false } } } } });
+            chartIndaginiInst = new Chart(document.getElementById('chartIndagini').getContext('2d'), { type: 'doughnut', data: { labels: ['Aperti', 'In Attesa', 'Archiviati'], datasets: [{ data: [0, 0, 0], backgroundColor: ['#A8C7FA', '#FFB951', '#44474E'], borderWidth: 0 }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'right', labels: { color: '#cbd5e1' } } }, cutout: '75%' } });
+            chartRischioInst = new Chart(document.getElementById('chartRischio').getContext('2d'), { type: 'bar', data: { labels: ['15 G', '30 G', '60 G'], datasets: [{ label: 'Soggetti', data: [0, 0, 0], backgroundColor: '#A8C7FA', borderRadius: 4 }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { grid: { color: 'rgba(255,255,255,0.05)' } }, x: { grid: { display: false } } } } });
         }
 
         function updateRecentFeed() {
@@ -539,14 +536,13 @@
 
         async function registraLog(azione, dettaglio) { try { await addDoc(collection(db, "logs"), { azione: azione, dettaglio: dettaglio, autore: `${utenteCorrente.nome} - ${matricolaPura}`, timestamp: new Date().getTime(), dataOra: new Date().toLocaleString('it-IT') }); } catch(e) {} }
 
-        // DOWNLOAD DATI M3
         function initDatabaseListeners() {
             onSnapshot(query(collection(db, "logs"), orderBy("timestamp", "desc")), (snapshot) => {
                 const container = document.getElementById('logs-container'); container.innerHTML = '';
                 if(snapshot.empty) { container.innerHTML = `<div class="nessun-dato">Nessun log.</div>`; return; }
                 snapshot.forEach(docSnap => {
                     const data = docSnap.data();
-                    container.innerHTML += `<div class="log-item ${data.azione.includes('Elimina') ? 'eliminazione' : ''}"><div class="log-info"><h4>${data.azione}</h4><p>${data.dettaglio}</p></div><div class="log-meta"><div>${data.autore}</div>${data.dataOra}</div></div>`;
+                    container.innerHTML += `<div class="log-item ${data.azione.includes('Elimina') ? 'eliminazione' : ''}"><div class="log-info"><h4><i class="fas fa-terminal"></i> ${data.azione}</h4><p>${data.dettaglio}</p></div><div class="log-meta"><div>${data.autore}</div>${data.dataOra}</div></div>`;
                 });
             });
 
@@ -634,20 +630,27 @@
             });
         });
 
-        /* --- MODAL DETTAGLI (OCCHIO) --- */
+        /* --- MODAL DETTAGLI --- */
         window.apriDettaglio = async function(id, collectionName) {
             const docSnap = await getDoc(doc(db, collectionName, id));
             if(docSnap.exists()) {
                 const data = docSnap.data(); 
                 document.getElementById('detail-title').innerText = collectionName === 'attenzionati' ? `Foglio: ${data.nome}` : `Fascicolo: ${data.titolo}`;
                 let img = data.fotoUrl ? `<img src="${data.fotoUrl}">` : `<i class="fas fa-image" style="font-size:4rem; color:var(--md-sys-color-text-muted)"></i>`;
-                let txt = collectionName === 'attenzionati' ? `<p><strong>Nascita:</strong> ${data.dataNascita}</p><p><strong>Motivazione:</strong> <span style="color:var(--md-sys-color-primary)">${data.motivazione}</span></p><p><strong>Durata:</strong> ${data.durata}</p><p><strong>Applicazione:</strong> ${data.dataApplicazione}</p><hr style="border-top:1px solid rgba(255,255,255,0.1); margin:15px 0;"><p>${data.commenti}</p>` : `<p><strong>Reati:</strong> ${data.reati}</p><p><strong>Stato:</strong> ${data.stato}</p><p><strong>Soggetti:</strong> ${data.soggetti}</p><hr style="border-top:1px solid rgba(255,255,255,0.1); margin:15px 0;"><p>${data.dettagli}</p>`;
-                document.getElementById('detail-info').innerHTML = `<div class="dettaglio-layout"><div class="img-col">${img}</div><div class="text-col">${txt}<br><small style="font-family:monospace; color:gray">Compilato da: ${data.firmaNome}</small></div></div>`;
+                
+                let textHtml = ``;
+                if(collectionName === 'attenzionati') { 
+                    textHtml = `<p><strong>Nascita:</strong> ${data.dataNascita}</p><p><strong>Motivazione:</strong> <span style="color:var(--md-sys-color-primary)">${data.motivazione}</span></p><p><strong>Durata:</strong> ${data.durata}</p><p><strong>Applicazione:</strong> ${data.dataApplicazione}</p><hr style="border-top:1px solid rgba(255,255,255,0.1); margin:15px 0;"><p>${data.commenti}</p>`; 
+                } else { 
+                    textHtml = `<p><strong>Reati:</strong> ${data.reati}</p><p><strong>Stato:</strong> ${data.stato}</p><p><strong>Soggetti:</strong> ${data.soggetti}</p><hr style="border-top:1px solid rgba(255,255,255,0.1); margin:15px 0;"><p>${data.dettagli}</p>`; 
+                }
+
+                document.getElementById('detail-info').innerHTML = `<div class="img-col">${img}</div><div class="text-col">${textHtml}<br><small style="font-family:monospace; color:gray">Compilato da: ${data.firmaNome}</small></div>`;
                 document.getElementById('detail-modal').classList.add('active');
             }
         };
 
-        /* --- ELIMINAZIONE GLOBALE E DISCORD DELETE --- */
+        /* --- ELIMINAZIONE GLOBALE & DISCORD --- */
         let deleteInfo = { id: null, col: null };
         window.richiediEliminazione = function(id, col) { deleteInfo = { id, col }; document.getElementById('delete-modal').classList.add('active'); };
         
@@ -667,7 +670,7 @@
 
         document.querySelectorAll('.btn-annulla-form').forEach(btn => { btn.addEventListener('click', (e) => { e.target.closest('.form-panel').classList.add('hidden'); e.target.closest('form').reset(); motivazioniSelezionate = []; renderMotivazioni(); }); });
 
-        /* --- FOGLIO INVESTIGATIVO (FORM E DISCORD WEBHOOK M3) --- */
+        /* --- FOGLIO INVESTIGATIVO & DISCORD --- */
         const formAtt = document.getElementById('form-attenzionato');
         let motivazioniSelezionate = [];
         
@@ -697,7 +700,6 @@
             const btn = document.getElementById('btn-submit-att'); btn.disabled = true;
             const idEdit = document.getElementById('att-id').value; const discordMsgId = document.getElementById('att-discord-id').value;
 
-            // DISCORD TIME NATIVO
             let discordDurataField = "";
             let dataAppDate = new Date(payload.dataApplicazione); if (isNaN(dataAppDate.getTime())) dataAppDate = new Date();
             let matchG = payload.durata.match(/(\d+) GIORNI/); let matchO = payload.durata.match(/(\d+) ORE/);
@@ -707,7 +709,6 @@
             else if (matchG) { dataAppDate.setDate(dataAppDate.getDate() + parseInt(matchG[1])); let ut = Math.floor(dataAppDate.getTime() / 1000); discordDurataField = `<t:${ut}:D> (<t:${ut}:R>)`; } 
             else if (matchO) { dataAppDate.setHours(dataAppDate.getHours() + parseInt(matchO[1])); let ut = Math.floor(dataAppDate.getTime() / 1000); discordDurataField = `<t:${ut}:R>`; }
 
-            // PAYLOAD DISCORD ESATTO TRAMITE EMBED CLASSICO (COME DA TUA RICHIESTA)
             const embedTitleText = idEdit ? `> **Aggiornamento Identificazione Registrata.**\n\n**Dettagli del Soggetto:**` : `> **Nuova Identificazione Registrata.**\n\n**Dettagli del Soggetto:**`;
             const discordPayload = {
                 embeds: [{
@@ -754,7 +755,7 @@
             }
         };
 
-        /* FASCICOLI & ANNUNCI (Omettiti logica identica per spazio) */
+        /* --- FASCICOLI --- */
         document.getElementById('btn-toggle-form-fas').addEventListener('click', () => { document.getElementById('form-fascicolo').reset(); document.getElementById('fas-id').value = ""; document.getElementById('form-container-fas').classList.remove('hidden'); });
         document.getElementById('form-fascicolo').addEventListener('submit', async (e) => {
             e.preventDefault(); const p = { titolo: document.getElementById('fas-titolo').value.trim(), reati: document.getElementById('fas-reati').value.trim(), stato: document.getElementById('fas-stato').value, soggetti: document.getElementById('fas-soggetti').value.trim() || 'Nessuno', fotoUrl: document.getElementById('fas-foto').value.trim(), dettagli: document.getElementById('fas-dettagli').value.trim(), dataInserimento: new Date().toLocaleDateString('it-IT'), firmaNome: utenteCorrente.nome, firmaMatricola: matricolaPura, firmaMatricolaCompleta: utenteCorrente.matricola };
@@ -769,6 +770,7 @@
             if (d.exists()) { const data = d.data(); document.getElementById('fas-id').value = id; document.getElementById('fas-titolo').value = data.titolo; document.getElementById('fas-reati').value = data.reati; document.getElementById('fas-stato').value = data.stato; document.getElementById('fas-soggetti').value = data.soggetti === 'Nessuno' ? '' : data.soggetti; document.getElementById('fas-foto').value = data.fotoUrl || ''; document.getElementById('fas-dettagli').value = data.dettagli; document.getElementById('form-container-fas').classList.remove('hidden'); document.querySelector('.view-body').scrollTo({ top: 0, behavior: 'smooth' }); }
         };
 
+        /* --- ANNUNCI --- */
         const formAnn = document.getElementById('form-annuncio'); let annunciLetti = JSON.parse(localStorage.getItem('annunciLetti')) || []; let currentAnnunciIds = [];
         document.getElementById('btn-toggle-form-ann').addEventListener('click', () => { document.getElementById('form-container-ann').classList.remove('hidden'); });
         function updateBadgeNotifiche() { let unreadCount = 0; currentAnnunciIds.forEach(id => { if(!annunciLetti.includes(id)) unreadCount++; }); const badge = document.getElementById('unread-count'); if(unreadCount > 0) { badge.innerText = unreadCount; badge.classList.remove('hidden'); } else { badge.classList.add('hidden'); } document.getElementById('kpi-comunicazioni').innerText = unreadCount; }
