@@ -3,13 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Accedi - IPRP Terminale</title>
+    <title>Accedi - IPRP Google Cloud</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600;700&family=Outfit:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
         :root {
-            /* Material Design 3 - Dark Theme Tokens */
-            --md-sys-color-background: #0e0e0e; /* Più scuro, stile Google Cloud */
+            --md-sys-color-background: #0e0e0e; 
             --md-sys-color-surface: #1e1e1e;
             --md-sys-color-surface-variant: #282a2c;
             --md-sys-color-on-surface: #E3E3E3;
@@ -30,33 +29,40 @@
         .ripple { position: absolute; border-radius: 50%; transform: scale(0); animation: ripple-anim 0.6s linear; background-color: rgba(255, 255, 255, 0.15); pointer-events: none; }
         @keyframes ripple-anim { to { transform: scale(4); opacity: 0; } }
 
-        .top-bar { position: fixed; top: 0; left: 0; width: 100%; height: 48px; background-color: var(--md-sys-color-background); display: flex; justify-content: space-between; align-items: center; padding: 0 20px; border-bottom: 1px solid rgba(255,255,255,0.1); z-index: 1000;}
-        .top-bar-left { display: flex; align-items: center; gap: 10px; font-weight: 500; font-size: 0.9rem; color: var(--md-sys-color-on-surface-variant); }
-        .top-bar-center { display: flex; align-items: center; gap: 8px; font-size: 0.85rem; color: #81C995; font-weight: 500;}
-        .status-dot { width: 8px; height: 8px; background-color: #81C995; border-radius: 50%; box-shadow: 0 0 8px #81C995; animation: pulse 2s infinite; }
-        .top-bar-right { font-family: monospace; color: var(--md-sys-color-primary); font-weight: 500; }
+        /* NUOVA NAVBAR GOOGLE CLOUD */
+        .top-bar { position: fixed; top: 0; left: 0; width: 100%; height: 56px; background-color: var(--md-sys-color-background); display: flex; justify-content: space-between; align-items: center; padding: 0 20px; border-bottom: 1px solid rgba(255,255,255,0.08); z-index: 1000;}
+        .top-bar-left { display: flex; align-items: center; gap: 15px; color: var(--md-sys-color-on-surface); }
+        .top-bar-left i.fa-bars { font-size: 1.2rem; cursor: pointer; padding: 10px; border-radius: 50%; transition: 0.2s; }
+        .top-bar-left i.fa-bars:hover { background: rgba(255,255,255,0.05); }
+        .top-bar-left span { font-family: 'Outfit', sans-serif; font-size: 1.2rem; font-weight: 500; }
+        .top-bar-center { display: flex; align-items: center; gap: 8px; font-size: 0.85rem; color: var(--md-sys-color-on-surface-variant); font-weight: 500;}
+        .status-dot { width: 8px; height: 8px; background-color: #81C995; border-radius: 50%; box-shadow: 0 0 8px rgba(129, 201, 149, 0.4); animation: pulse 2s infinite; }
+        .top-bar-right { font-family: monospace; color: var(--md-sys-color-primary); font-weight: 500; font-size: 0.9rem;}
         @keyframes pulse { 0% { transform: scale(0.95); opacity: 1; } 100% { transform: scale(1.5); opacity: 0; } }
 
-        .split-layout { display: flex; height: 100vh; width: 100%; padding-top: 48px; }
+        .split-layout { display: flex; height: 100vh; width: 100%; padding-top: 56px; }
         .split-left { flex: 1; position: relative; background-image: url('https://i.imgur.com/CIzBAnL.jpeg'); background-size: cover; background-position: center; display: flex; align-items: center; justify-content: center; padding: 40px; }
         .split-left::after { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, rgba(14, 14, 14, 0.95) 0%, rgba(37, 99, 235, 0.2) 100%); }
         .left-content { position: relative; z-index: 2; max-width: 550px; }
         
-        /* LOGO RIMPICCIOLITO */
         .left-content .big-logo { width: 65px; margin-bottom: 25px; filter: drop-shadow(0 0 15px rgba(168, 199, 250, 0.4)); }
-        .left-content h1 { font-size: 3rem; line-height: 1.1; margin-bottom: 20px; letter-spacing: -1px; }
+        .left-content h1 { font-family: 'Outfit', sans-serif; font-size: 3rem; line-height: 1.1; margin-bottom: 20px; letter-spacing: -0.5px; }
         .left-content h1 span { color: var(--md-sys-color-primary); }
-        .left-content p { font-size: 1.1rem; color: var(--md-sys-color-on-surface-variant); line-height: 1.6; }
+        .left-content p { font-size: 1.1rem; color: var(--md-sys-color-on-surface-variant); line-height: 1.6; font-weight: 300;}
 
         .split-right { flex: 0 0 500px; background: var(--md-sys-color-background); display: flex; align-items: center; justify-content: center; padding: 40px; z-index: 5; border-left: 1px solid rgba(255,255,255,0.05);}
 
-        .google-login-box { background: var(--md-sys-color-surface); border-radius: 24px; width: 100%; max-width: 420px; padding: 40px 35px; border: 1px solid rgba(255,255,255,0.08); text-align: center; position: relative; }
+        .google-login-box { background: var(--md-sys-color-surface); border-radius: 24px; width: 100%; max-width: 420px; padding: 40px 35px; border: 1px solid rgba(255,255,255,0.05); text-align: center; position: relative; overflow: hidden; }
         
-        /* LOGO LOGIN RIMPICCIOLITO */
+        /* GOOGLE LINEAR PROGRESS (Nascoso di default) */
+        .md-linear-progress { display: none; position: absolute; top: 0; left: 0; width: 100%; height: 4px; background: rgba(168, 199, 250, 0.2); overflow: hidden; }
+        .md-linear-progress.active { display: block; }
+        .md-linear-progress::before { content: ''; position: absolute; top: 0; left: 0; height: 100%; width: 50%; background: var(--md-sys-color-primary); animation: md-linear-anim 1.5s infinite ease-in-out; }
+        @keyframes md-linear-anim { 0% { left: -50%; width: 50%; } 50% { left: 25%; width: 80%; } 100% { left: 100%; width: 50%; } }
+
         .google-login-box .logo { width: 35px; margin-bottom: 15px; }
-        
-        .google-login-box h1 { font-size: 1.5rem; margin-bottom: 8px; color: var(--md-sys-color-on-surface); }
-        .google-login-box p { color: var(--md-sys-color-on-surface-variant); margin-bottom: 30px; font-size: 0.9rem; }
+        .google-login-box h1 { font-family: 'Outfit', sans-serif; font-size: 1.5rem; margin-bottom: 8px; color: var(--md-sys-color-on-surface); font-weight: 500;}
+        .google-login-box p { color: var(--md-sys-color-on-surface-variant); margin-bottom: 30px; font-size: 0.95rem; }
 
         .dept-list { display: flex; flex-direction: column; gap: 12px; text-align: left; }
         .dept-item { display: flex; align-items: center; gap: 15px; padding: 12px 18px; border: 1px solid var(--md-sys-color-outline); border-radius: 12px; cursor: pointer; transition: 0.2s; background: transparent; position: relative;}
@@ -68,13 +74,7 @@
         .dept-item i.fa-chevron-right { color: var(--md-sys-color-outline); transition: 0.2s; font-size: 0.9rem;}
         .dept-item:not(.locked):hover i.fa-chevron-right { color: var(--md-sys-color-on-surface); transform: translateX(3px); }
 
-        /* BLOCCO TOTALE REPARTI IN SVILUPPO */
-        .dept-item.locked { 
-            opacity: 0.4; 
-            background: rgba(0,0,0,0.3); 
-            border-color: rgba(255,255,255,0.05);
-            pointer-events: none; /* IMPEDISCE IL CLICK FISICAMENTE */
-        }
+        .dept-item.locked { opacity: 0.4; background: rgba(0,0,0,0.3); border-color: rgba(255,255,255,0.05); pointer-events: none; }
         .locked-badge { position: absolute; right: 15px; font-size: 0.7rem; background: var(--md-sys-color-error); color: #690005; padding: 3px 8px; border-radius: 4px; font-weight: 700; letter-spacing: 0.5px;}
 
         .selected-dept { display: inline-flex; align-items: center; gap: 8px; border: 1px solid var(--md-sys-color-outline); border-radius: 100px; padding: 6px 16px; font-size: 0.85rem; font-weight: 500; cursor: pointer; margin-bottom: 30px; transition: 0.2s; color: var(--md-sys-color-on-surface-variant); }
@@ -86,13 +86,15 @@
         .m3-input label { position: absolute; left: 16px; top: 16px; background: var(--md-sys-color-surface); padding: 0 6px; color: var(--md-sys-color-on-surface-variant); font-size: 0.95rem; transition: 0.2s ease all; pointer-events: none; }
         .m3-input input:focus ~ label, .m3-input input:not(:placeholder-shown) ~ label { top: -10px; left: 12px; font-size: 0.75rem; color: var(--md-sys-color-primary); font-weight: 500; }
 
-        .actions-row { display: flex; justify-content: space-between; align-items: center; margin-top: 35px; }
-        .btn-text { background: transparent; border: none; color: var(--md-sys-color-primary); font-size: 0.85rem; font-weight: 500; cursor: pointer; padding: 8px 12px; border-radius: 100px; transition: 0.2s; font-family: 'Lexend', sans-serif;}
+        .actions-row { display: flex; justify-content: space-between; align-items: center; margin-top: 45px; }
+        
+        /* PULSANTE INDIETRO GOOGLE STYLE */
+        .btn-text { background: transparent; border: none; color: var(--md-sys-color-primary); font-size: 0.9rem; font-weight: 500; cursor: pointer; padding: 10px 16px; border-radius: 100px; transition: 0.2s; font-family: 'Lexend', sans-serif; display: flex; align-items: center; gap: 8px;}
         .btn-text:hover { background: rgba(168, 199, 250, 0.08); }
         
         .btn-filled { background: var(--md-sys-color-primary); color: var(--md-sys-color-on-primary); border: none; border-radius: 100px; padding: 10px 24px; font-size: 0.9rem; font-weight: 600; cursor: pointer; transition: 0.2s; font-family: 'Lexend', sans-serif; display: flex; gap: 8px; align-items: center;}
-        .btn-filled:hover { background: #b4cffa; box-shadow: 0 1px 3px rgba(0,0,0,0.3); }
-        .btn-filled:disabled { opacity: 0.6; cursor: not-allowed; }
+        .btn-filled:hover:not(:disabled) { background: #b4cffa; box-shadow: 0 1px 3px rgba(0,0,0,0.3); }
+        .btn-filled:disabled { opacity: 0.5; cursor: not-allowed; }
 
         #messaggio-errore { color: var(--md-sys-color-error); font-size: 0.85rem; margin-top: 15px; font-weight: 500; display: flex; align-items: center; justify-content: center; gap: 5px; }
 
@@ -103,8 +105,12 @@
 <body>
 
     <div class="top-bar">
-        <div class="top-bar-left"><i class="fas fa-shield-alt" style="color:var(--md-sys-color-primary)"></i> IPRP Central Auth</div>
-        <div class="top-bar-center"><div class="status-dot"></div> Rete Sicura</div>
+        <div class="top-bar-left">
+            <i class="fas fa-bars ripple-surface"></i>
+            <img src="https://i.imgur.com/gRzOXM3.png" alt="Google Logo" style="height:24px; margin-right:5px;">
+            <span>Google Cloud | IPRP</span>
+        </div>
+        <div class="top-bar-center"><div class="status-dot"></div> Server Connesso</div>
         <div class="top-bar-right" id="live-clock">--:--:--</div>
     </div>
 
@@ -143,6 +149,8 @@
             </div>
 
             <div class="google-login-box hidden" id="card-login">
+                <div class="md-linear-progress" id="login-progress"></div>
+
                 <img src="https://i.imgur.com/gRzOXM3.png" alt="Logo" class="logo">
                 <h1>Verifica Identità</h1>
                 
@@ -163,9 +171,11 @@
                     <div id="messaggio-errore"></div>
 
                     <div class="actions-row">
-                        <button type="button" class="btn-text ripple-surface" id="btn-ricorda" onclick="toggleRicorda()">Ricorda: NO</button>
+                        <button type="button" class="btn-text ripple-surface" onclick="window.showSelector()">
+                            <i class="fas fa-arrow-left" style="font-size:0.85rem;"></i> Indietro
+                        </button>
                         <button type="submit" class="btn-filled ripple-surface" id="btn-submit">
-                            Avanti <i class="fas fa-arrow-right"></i>
+                            Avanti
                         </button>
                     </div>
                 </form>
@@ -179,7 +189,6 @@
 
         setInterval(() => { document.getElementById('live-clock').textContent = new Date().toLocaleTimeString('it-IT', { hour12: false }); }, 1000);
 
-        // Effetto Ripple Globale
         document.addEventListener('click', function(e) {
             const target = e.target.closest('.ripple-surface');
             if (target) {
@@ -202,25 +211,12 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-        let ricorda = false;
-        window.toggleRicorda = function() {
-            ricorda = !ricorda;
-            document.getElementById('btn-ricorda').innerText = ricorda ? "Ricorda: SÌ" : "Ricorda: NO";
-        };
-
         window.showLogin = function(deptName) {
             document.getElementById('card-selector').classList.add('hidden');
             document.getElementById('login-dept-name').textContent = deptName;
             document.getElementById('card-login').classList.remove('hidden');
             document.getElementById('card-login').classList.add('animate-in');
             document.getElementById('messaggio-errore').innerText = "";
-            
-            const matSaved = localStorage.getItem('savedMatricola');
-            if(matSaved) { 
-                document.getElementById('badge').value = matSaved; 
-                ricorda = true;
-                document.getElementById('btn-ricorda').innerText = "Ricorda: SÌ";
-            }
         };
 
         window.showSelector = function() {
@@ -237,12 +233,10 @@
             const password = document.getElementById('password').value;
             const btnSubmit = document.getElementById('btn-submit');
             const errBox = document.getElementById('messaggio-errore');
-            
-            if(ricorda) localStorage.setItem('savedMatricola', matricola);
-            else localStorage.removeItem('savedMatricola');
+            const loader = document.getElementById('login-progress');
 
-            const originalContent = btnSubmit.innerHTML;
-            btnSubmit.innerHTML = 'Verifica... <i class="fas fa-circle-notch fa-spin"></i>';
+            // Avvio Animazione Caricamento
+            loader.classList.add('active');
             btnSubmit.disabled = true; errBox.innerText = "";
 
             try {
@@ -252,15 +246,22 @@
                 if (!querySnapshot.empty) {
                     const sessionData = { matricola: matricola, reparto: document.getElementById('login-dept-name').textContent };
                     sessionStorage.setItem('sessioneAttiva', JSON.stringify(sessionData));
-                    window.location.href = 'squadra-mobile.html';
+                    
+                    // Simula un tempo di decriptazione finto per mostrare il caricamento "Google"
+                    setTimeout(() => {
+                        window.location.href = 'squadra-mobile.html';
+                    }, 800);
+                    
                 } else {
-                    errBox.innerHTML = '<i class="fas fa-exclamation-circle"></i> Credenziali errate o revocate.';
-                    btnSubmit.innerHTML = originalContent; btnSubmit.disabled = false;
+                    loader.classList.remove('active');
+                    errBox.innerHTML = '<i class="fas fa-exclamation-circle"></i> Impossibile trovare il tuo account o password errata.';
+                    btnSubmit.disabled = false;
                     document.getElementById('password').value = "";
                 }
             } catch (error) {
+                loader.classList.remove('active');
                 errBox.innerHTML = '<i class="fas fa-wifi"></i> Errore di rete con i server IPRP.';
-                btnSubmit.innerHTML = originalContent; btnSubmit.disabled = false;
+                btnSubmit.disabled = false;
             }
         });
     </script>
