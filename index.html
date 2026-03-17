@@ -35,10 +35,22 @@
         .top-bar-left i.fa-bars { font-size: 1.2rem; cursor: pointer; padding: 10px; border-radius: 50%; transition: 0.2s; }
         .top-bar-left i.fa-bars:hover { background: rgba(255,255,255,0.05); }
         .top-bar-left span { font-family: 'Outfit', sans-serif; font-size: 1.2rem; font-weight: 500; }
-        .top-bar-center { display: flex; align-items: center; gap: 8px; font-size: 0.85rem; color: var(--md-sys-color-on-surface-variant); font-weight: 500;}
-        .status-dot { width: 8px; height: 8px; background-color: #81C995; border-radius: 50%; box-shadow: 0 0 8px rgba(129, 201, 149, 0.4); animation: pulse 2s infinite; }
+        .top-bar-center { display: flex; align-items: center; gap: 8px; font-size: 0.85rem; color: var(--md-sys-color-on-surface-variant); font-weight: 500; position: relative;}
         .top-bar-right { font-family: monospace; color: var(--md-sys-color-primary); font-weight: 500; font-size: 0.9rem;}
-        @keyframes pulse { 0% { transform: scale(0.95); opacity: 1; } 100% { transform: scale(1.5); opacity: 0; } }
+
+        /* SISTEMA STATUS SERVER GOOGLE AI STUDIO STYLE */
+        .status-btn { display: flex; align-items: center; gap: 8px; padding: 6px 14px; border-radius: 50px; cursor: pointer; transition: 0.2s; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); }
+        .status-btn:hover { background: rgba(255,255,255,0.08); border-color: rgba(255,255,255,0.15); }
+        .status-btn img { width: 18px; height: 18px; object-fit: contain; }
+        .status-btn span { font-size: 0.85rem; font-weight: 500; color: var(--md-sys-color-on-surface); }
+        
+        .status-panel { position: absolute; top: 50px; left: 50%; transform: translateX(-50%) translateY(-10px) scale(0.95); width: 340px; background: var(--md-sys-color-surface-variant); border-radius: 16px; border: 1px solid rgba(255,255,255,0.08); box-shadow: 0 10px 40px rgba(0,0,0,0.6); z-index: 1000; padding: 20px; opacity: 0; pointer-events: none; transition: all 0.2s cubic-bezier(0.2, 0, 0, 1); }
+        .status-panel.active { opacity: 1; transform: translateX(-50%) translateY(0) scale(1); pointer-events: auto; }
+        .status-panel h3 { font-size: 1rem; margin-bottom: 15px; color: var(--md-sys-color-on-surface); border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 12px; font-weight: 600; display: flex; align-items: center; gap: 8px;}
+        .status-list { display: flex; flex-direction: column; gap: 14px; }
+        .status-item { display: flex; align-items: center; justify-content: space-between; font-size: 0.85rem; }
+        .status-item-left { color: var(--md-sys-color-on-surface-variant); font-weight: 500; }
+        .status-item-right { display: flex; align-items: center; gap: 8px; font-weight: 600; }
 
         .split-layout { display: flex; height: 100vh; width: 100%; padding-top: 56px; }
         .split-left { flex: 1; position: relative; background-image: url('https://i.imgur.com/CIzBAnL.jpeg'); background-size: cover; background-position: center; display: flex; align-items: center; justify-content: center; padding: 40px; }
@@ -60,7 +72,7 @@
         .md-linear-progress::before { content: ''; position: absolute; top: 0; left: 0; height: 100%; width: 50%; background: var(--md-sys-color-primary); animation: md-linear-anim 1.5s infinite ease-in-out; }
         @keyframes md-linear-anim { 0% { left: -50%; width: 50%; } 50% { left: 25%; width: 80%; } 100% { left: 100%; width: 50%; } }
 
-        /* ICONE BASE64 OTTIMIZZATE (Non sgranate) */
+        /* ICONE BASE64 OTTIMIZZATE */
         .custom-logo { height: 60px; object-fit: contain; margin-bottom: 15px; }
 
         .google-login-box h1 { font-family: 'Outfit', sans-serif; font-size: 1.5rem; margin-bottom: 8px; color: var(--md-sys-color-on-surface); font-weight: 500;}
@@ -116,7 +128,45 @@
             <img src="https://i.imgur.com/gRzOXM3.png" alt="Google Logo" style="height:24px; margin-right:5px;">
             <span>Google Cloud | IPRP</span>
         </div>
-        <div class="top-bar-center"><div class="status-dot"></div> Server Connesso</div>
+        
+        <div class="top-bar-center">
+            <div class="status-btn ripple-surface" id="btn-server-status">
+                <img src="data:image/png;base64,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" alt="WiFi">
+                <span>Stato Sistema</span>
+                <i class="fas fa-chevron-down" style="font-size: 0.7rem; margin-left: 4px; color: var(--md-sys-color-on-surface-variant);"></i>
+            </div>
+            
+            <div id="status-panel" class="status-panel">
+                <h3><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGAAAABgCAYAAADimHc4AAAACXBIWXMAAAsTAAALEwEAmpwYAAAJIklEQVR4nO1dfYxcVRW/CGjBD9SoJGqpmioy75zZklXEJogaMajVglKikS8/ISRIBbQxqCv+0xot7c69s3QVXD/Q0JVSvyXQRKp8mjUimb5z3xRZi6laWwOuWqwtjDn3vcHZ2Tez877mzRvuL3lJM/s+7j3n3nPPOfd3boWwsLCwsLCwsLCwsLCwsLCwsLCwsLCwsLCwsLDICV99sPzcCbcMyoN3Kw8/IQm/JDVKpXFSafie0jjNl9R4s/8bVoJ7Pl7R+C5+dnJm9Pi8+1EITM0uW1LR5bdLwmt9wUJdET6pNDaSXJLgiNSgJeFW6cLnqi6cOV5f/py8+zsQkG75dRWNn1Ua71AEB5MKu2elaPi30nC7JOcaVSstF88kVHT51TwSJeHv+iXwxS/4rRkIu05ZJoYRYw3xrIqH71AafyIJn8pf4Bh+sckjvFNqXDP2yzOPEcOwiCqCqyXho7kLV0c2U7NS49qNj55+nCii4CXhlVLjn/MWpEo8K+BvUuO6QnhTjYY4Srp4sdT4l9wFp9O+YK8i+DD3UQwixuvlUxXh3fkLCrOeEQ9UvJHTxKBgcmb0WBP8EBzJXTi6b7PhsCLcMFYrPTtX4atdIw67cPkLBHO5JOHvqxrKuQi/6pUvkoRPZNpJwifZG+FATRJUeTGUhJ9kW1x1nfeza8uXpPIHlHYuVASX+jEGTEiCHUrjnqzdXg7qpFf+YN8Ez/6xJLg+I4H/QxL+lCPUqnbemEbKwKQ4vJHTFOFnJOHPpMa5DGbCU2ySphtrjhZZgl0xRfDzdBsP+6TG8XEXT8+8A8EAqpKz0k/cwf50lQE/YoVn0vDx+vIXSIKdKTX0sMlius6qPCNOXkSVxtWK8LagTWkMqB0cB6UufHa/UmjgIU4bcz5IDBhUrbRcafym1PDfFEzp3apWel5qbibnRxKNCr9TlepuZ6kYcNxAI68K9hsSzQhebxLPbhPZaphKJny8hzdGRMFQ1VCWGu5LOBNuTNQIpeH8+B+HxyTBZZwJFQXFdGPN0ZLgCvbOEijhvNgNUAQfjTvqb/BGXiGGBNXdztK4s0ESfCTZCNDwg4gjX2UVok/OjB7LwpggHFUevqUZiPG/+bfxOr6S78ni29wnDgYjDsRtidcBswhruLUHwR/k6DitDk/+YfSEwEXcIAl+oQj+1EtU6wdFfC8/gxsqGs7ZNDvywrTaxX3sbfsUbk1tMASe0G1dND3HozBx53Y7S5XGT7MJS8svD8wAJwrv5c2hzbXSSYnbSc5KSfB4l29Opx7f+FlP+GFI5x6XLrw5iZmraDjHz/dkv10ZpA3ulB6cm0RIxgxqPLDQEuAtmQWXC5RA8Jjyym+K8y72jqTGNUqDl7XQu8zcP3JyL66pqHrOKWaj5v/K3Zp5ZG/Cd8KNinD7eL1UivOOquu8k7k6KifBL7zAYyJXnL5MePgajpWYz9SPXFYijNdXvDRgsw2A0DFsRmybeLj8MjGMMPRCjX/NW8hqMSUQ7OO2imEBpzMU4efToBmqfl2mrfCFgd2AjxjKfzt3geq4JgmmBt6udwJ7Az0FcHrgr+lCKkERfCObUYlzivBBqfEuJtj6JFvYGfz2z0TvJySzbUn4HUWwKdiH3pYon5MHuMEpCn2P1LiFA6fFoli22SafT3gep4JbffRQZRI+YYStcTV7aGJYwDyhZEKHw2bkuXBWkoWQg72qB+8J8kKtTsABqeGqiYfwRWIY4e8f428imxcyqYjpCcKT026T8korWBFsVjbWSi/unIsqn83VOIZFoXGtIryk4uEZnBwURQJnIKPsI0tCN0lOKcnOF9t7RfBI9/bBETOoCK4uTLDGo0YS3L/YqJcav5YZnaMDKp4zEptiQ3CQqTSdZtLgKaHTbhLBQeXih/rZHp9YhuvTSHczr4gZeqIQa4LJ8c9baP/FBXP9Nou++5qah+bPYML1Ax8130gnP18S/No0WuNclZy39fP77PFwrJCm8OcpQuOWgVdCk4nWb37QmJ9C70PtAoyJYcbmXStey6VPSsO3FMGvguh3hgm9HHhVtPOxzQ/Bie3PGS+nT0k83usQw4RGQxzFW5Y9xxVMaffg3ObzTPpNPxMLt1c1Xm5YEm3v5l22QtST9YKKhtfHWDQPtApg4eKfeJR/t9XWK8LrFqwHhNeKoqOi4QL2lCIvhgTXP/0OD89IeeTX20m3weZ8exv29zuuSRVS47q4Qmp1bc1akZLwmWDMRSPtbeV1p4OyzhdFhOI8TGwh4VyTlcA5fMPaSE0BuK69rZyS6FiSS3iLKBqmZpctUYT/SSCke7qZhtjvJdjRTjI2zHH2vjo/s08UETJBFQ4HQ0+/x8WLUxL+/jCisWFNL/JsmEs88Nhk0gVxmcj45eZ7OCjqeK+JiM36sKeH965ub6MkxJ4qRGOS1gYlbbEzugKca5rvMOSx8Flyc9OcsEcTlLN2Gv0T7W3jwzukhlpP7XHhLFFUTJqKzGilUXzmT/N5TnGH3tN2zAArwRB3FygKamEnpUShqDN1XhQZU7PLlvAmeQQTtL75rNTwxbB7qlR+b6jZazlAis1LWAW8JHxfFAJxmNtaOIz5ibTtPSlA403zA7lQ+78rbC+YXUpmRfj3wKfa/y7p1JdHrSue1KMvEcOASf9AkK09KGBm3o5X53vvDSsj5QobtvvtaWXD5O6yVoRfsFcME6YNy85QSLp1/FDzeINAaB1HLAu013RBcLBg5JyRGDY0DM8UVJcZsKU1YArOEu0yY+DHi9UGBAHdocgKCHFfh4nse928xbADmZYXwcXNFny/Uymt7yFBPbrwYW/uZwllDek6qzhgM5frrOp0nzmTdDElEHw9bDuRjy6IMfJ5Jq7NXABFgSTEXhgQHDe0PsdsjTjCZ09q6Ed/ZlRJwu3GfSX4SpxDO0zKmpyVkRs47Jj2U9OpnnMUbsrwyrz7OuCHyGJmzIjWKNyie35pe7qChyPMF+30TYvwI3iu8k9QT6gAgkckOW9t/4ZFD+BCDj+yjsUR/TsXHhbyXOlBw+Za6STzn0YQPNDt8FkufzLlS7zTltZxZBahG0Fv4HNI/TIr50JOQfORBFkdg2NhYWFhYWFhYWFhYWFhIZ5R+B8PiuMxAfnCPgAAAABJRU5ErkJggg==" style="width:20px; object-fit:contain;"> Stato Servizi IPRP</h3>
+                <div class="status-list">
+                    <div class="status-item">
+                        <div class="status-item-left">API e Database</div>
+                        <div class="status-item-right text-green">
+                            <div class="status-dot-sm green"></div> Operativo
+                        </div>
+                    </div>
+                    <div class="status-item">
+                        <div class="status-item-left">Squadra Mobile</div>
+                        <div class="status-item-right text-green">
+                            <div class="status-dot-sm green"></div> Operativo
+                        </div>
+                    </div>
+                    <div class="status-item">
+                        <div class="status-item-left">D.I.G.O.S.</div>
+                        <div class="status-item-right text-yellow">
+                            <div class="status-dot-sm yellow"></div> In Sviluppo
+                        </div>
+                    </div>
+                    <div class="status-item">
+                        <div class="status-item-left">N.O.S.</div>
+                        <div class="status-item-right text-red">
+                            <div class="status-dot-sm red"></div> Sviluppo Futuro
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <div class="top-bar-right" id="live-clock">--:--:--</div>
     </div>
 
@@ -234,6 +284,21 @@
             }
         });
 
+        // GESTIONE PANNELLO STATUS NAVBAR
+        const btnStatus = document.getElementById('btn-server-status');
+        const statusPanel = document.getElementById('status-panel');
+        
+        btnStatus.addEventListener('click', (e) => {
+            e.stopPropagation();
+            statusPanel.classList.toggle('active');
+        });
+        
+        document.addEventListener('click', (e) => {
+            if (!statusPanel.contains(e.target) && !btnStatus.contains(e.target)) {
+                statusPanel.classList.remove('active');
+            }
+        });
+
         const firebaseConfig = { apiKey: "AIzaSyDPyEfr0KbWtYDeM5-EFTl3s3VGVB_8Yi8", authDomain: "database-dta.firebaseapp.com", projectId: "database-dta", storageBucket: "database-dta.firebasestorage.app", messagingSenderId: "229305773627", appId: "1:229305773627:web:ec3d17f5fcb3c65fdb761e" };
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
@@ -246,7 +311,6 @@
             document.getElementById('card-login').classList.remove('hidden');
             document.getElementById('card-login').classList.add('animate-in');
             document.getElementById('messaggio-errore').classList.add('hidden');
-            // Salviamo temporaneamente in LOCAL STORAGE per sicurezza redirect
             localStorage.setItem('tempReparto', deptName);
         };
 
