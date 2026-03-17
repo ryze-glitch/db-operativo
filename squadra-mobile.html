@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Workspace - Squadra Mobile</title>
+    <title>DB Operativo - Squadra Mobile</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700&family=Outfit:wght@400;500;600&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -47,6 +47,7 @@
         .ripple { position: absolute; border-radius: 50%; transform: scale(0); animation: ripple-anim 0.6s linear; background-color: rgba(255, 255, 255, 0.12); pointer-events: none; }
         @keyframes ripple-anim { to { transform: scale(4); opacity: 0; } }
 
+        /* GOOGLE MATERIAL SPINNER */
         .md-spinner { width: 48px; height: 48px; border: 4px solid rgba(168, 199, 250, 0.2); border-top: 4px solid var(--md-sys-color-primary); border-radius: 50%; animation: md-spin 1s linear infinite; margin-bottom: 20px; }
         @keyframes md-spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
@@ -71,7 +72,8 @@
         .sidebar-menu li:hover:not(.locked):not(.active) { background: rgba(255,255,255,0.05); color: var(--md-sys-color-text); }
         .sidebar-menu li.active { background: var(--md-sys-color-surface-variant); color: var(--md-sys-color-primary); }
 
-        .sidebar-menu li.locked { opacity: 0.4; cursor: not-allowed; pointer-events: none; margin-top: auto;}
+        /* MENU BLOCCATI */
+        .sidebar-menu li.locked { opacity: 0.4; cursor: not-allowed; pointer-events: none; background: transparent !important;}
         .sidebar-menu li.locked .lock-icon { margin-left: auto; font-size: 0.85rem; color: var(--md-sys-color-outline); }
 
         /* ==========================================
@@ -97,37 +99,16 @@
            PANNELLO ACCOUNT M3
            ========================================== */
         .account-panel {
-            position: absolute;
-            top: 70px;
-            right: 25px;
-            width: 320px;
-            background: var(--md-sys-color-surface-container-high);
-            border-radius: 24px;
-            border: 1px solid var(--border-color);
-            box-shadow: 0 10px 40px rgba(0,0,0,0.6);
-            z-index: 1000;
-            padding: 16px 0;
-            opacity: 0;
-            transform: translateY(-10px) scale(0.95);
-            pointer-events: none;
-            transition: all 0.2s cubic-bezier(0.2, 0, 0, 1);
-            transform-origin: top right;
+            position: absolute; top: 70px; right: 25px; width: 320px; background: var(--md-sys-color-surface-container-high); border-radius: 24px; border: 1px solid var(--border-color); box-shadow: 0 10px 40px rgba(0,0,0,0.6); z-index: 1000; padding: 16px 0; opacity: 0; transform: translateY(-10px) scale(0.95); pointer-events: none; transition: all 0.2s cubic-bezier(0.2, 0, 0, 1); transform-origin: top right;
         }
-        .account-panel.active {
-            opacity: 1;
-            transform: translateY(0) scale(1);
-            pointer-events: auto;
-        }
+        .account-panel.active { opacity: 1; transform: translateY(0) scale(1); pointer-events: auto; }
         .panel-header { display: flex; align-items: center; gap: 16px; padding: 8px 24px 16px; }
         .user-avatar.large { width: 50px; height: 50px; font-size: 1.5rem; }
         .user-info h4 { font-size: 1.1rem; color: var(--md-sys-color-text); margin-bottom: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 180px;}
         .user-info p { font-size: 0.85rem; color: var(--md-sys-color-text-muted); font-family: monospace;}
         .panel-divider { border: none; border-top: 1px solid var(--border-color); margin: 8px 0; }
         .panel-menu { list-style: none; display: flex; flex-direction: column; gap: 4px; padding: 0 12px;}
-        .panel-menu li {
-            display: flex; align-items: center; gap: 16px; padding: 12px 16px; border-radius: 12px;
-            color: var(--md-sys-color-text); font-size: 0.95rem; font-weight: 500; cursor: pointer; transition: 0.2s;
-        }
+        .panel-menu li { display: flex; align-items: center; gap: 16px; padding: 12px 16px; border-radius: 12px; color: var(--md-sys-color-text); font-size: 0.95rem; font-weight: 500; cursor: pointer; transition: 0.2s; }
         .panel-menu li i { font-size: 1.1rem; color: var(--md-sys-color-text-muted); width: 24px; text-align: center; }
         .panel-menu li:hover { background: rgba(255,255,255,0.05); }
         .panel-menu li.logout-item { color: var(--md-sys-color-error); margin-top: 4px;}
@@ -140,104 +121,19 @@
         .view-header p { color: var(--md-sys-color-text-muted); font-size: 1rem;}
 
         /* ==========================================
-           HERO BANNER (M3 PANORAMIC)
+           HERO BANNER E CARDS
            ========================================== */
-        .hero-banner { 
-            display: flex; 
-            align-items: center;
-            justify-content: space-between;
-            background: linear-gradient(135deg, var(--md-sys-color-primary-container) 0%, var(--md-sys-color-surface-container-high) 100%);
-            border-radius: 28px; 
-            padding: 40px;
-            margin-bottom: 32px; 
-            border: 1px solid var(--border-color);
-            min-height: 220px;
-            position: relative;
-            overflow: hidden;
-            box-shadow: 0 8px 24px rgba(0,0,0,0.2);
-        }
+        .hero-banner { display: flex; align-items: center; justify-content: space-between; background: linear-gradient(135deg, var(--md-sys-color-primary-container) 0%, var(--md-sys-color-surface-container-high) 100%); border-radius: 28px; padding: 40px; margin-bottom: 32px; border: 1px solid var(--border-color); min-height: 220px; position: relative; overflow: hidden; box-shadow: 0 8px 24px rgba(0,0,0,0.2); }
+        .hero-banner::after { content: ''; position: absolute; top: -50%; right: -10%; width: 400px; height: 400px; background: radial-gradient(circle, var(--md-sys-color-primary) 0%, transparent 70%); opacity: 0.15; filter: blur(40px); z-index: 1; }
+        .hero-content { flex: 1; display: flex; flex-direction: column; justify-content: center; z-index: 2; max-width: 60%; }
+        .hero-content h2 { font-size: 2.5rem; color: var(--md-sys-color-on-primary-container); margin-bottom: 12px; line-height: 1.1; }
+        .hero-content p { color: var(--md-sys-color-on-primary-container); opacity: 0.85; font-size: 1.05rem; line-height: 1.5; margin-bottom: 25px; }
+        .hero-actions { display: flex; align-items: center; gap: 15px; }
+        .hero-clock { display: inline-flex; align-items: center; gap: 10px; background: rgba(0,0,0,0.25); padding: 12px 20px; border-radius: 16px; font-family: monospace; font-size: 1.1rem; color: var(--md-sys-color-primary); border: 1px solid rgba(255,255,255,0.05); backdrop-filter: blur(5px); }
+        .hero-image-container { flex: 0 0 35%; display: flex; justify-content: flex-end; z-index: 2; perspective: 1000px; }
+        .hero-image-container img { max-width: 100%; height: auto; border-radius: 20px; border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 15px 35px rgba(0,0,0,0.4); transform: rotateY(-10deg) rotateX(5deg); transition: transform 0.4s ease, box-shadow 0.4s ease; }
+        .hero-image-container img:hover { transform: rotateY(0deg) rotateX(0deg) scale(1.02); box-shadow: 0 20px 40px rgba(0,0,0,0.6); }
 
-        .hero-banner::after {
-            content: '';
-            position: absolute;
-            top: -50%; right: -10%;
-            width: 400px; height: 400px;
-            background: radial-gradient(circle, var(--md-sys-color-primary) 0%, transparent 70%);
-            opacity: 0.15;
-            filter: blur(40px);
-            z-index: 1;
-        }
-
-        .hero-content { 
-            flex: 1; 
-            display: flex; 
-            flex-direction: column; 
-            justify-content: center; 
-            z-index: 2;
-            max-width: 60%;
-        }
-
-        .hero-content h2 { 
-            font-size: 2.5rem; 
-            color: var(--md-sys-color-on-primary-container); 
-            margin-bottom: 12px; 
-            line-height: 1.1;
-        }
-
-        .hero-content p { 
-            color: var(--md-sys-color-on-primary-container); 
-            opacity: 0.85; 
-            font-size: 1.05rem; 
-            line-height: 1.5; 
-            margin-bottom: 25px;
-        }
-
-        .hero-actions {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-
-        .hero-clock { 
-            display: inline-flex; 
-            align-items: center; 
-            gap: 10px; 
-            background: rgba(0,0,0,0.25); 
-            padding: 12px 20px; 
-            border-radius: 16px; 
-            font-family: monospace; 
-            font-size: 1.1rem; 
-            color: var(--md-sys-color-primary); 
-            border: 1px solid rgba(255,255,255,0.05); 
-            backdrop-filter: blur(5px);
-        }
-
-        .hero-image-container { 
-            flex: 0 0 35%;
-            display: flex;
-            justify-content: flex-end;
-            z-index: 2;
-            perspective: 1000px;
-        }
-
-        .hero-image-container img {
-            max-width: 100%;
-            height: auto;
-            border-radius: 20px;
-            border: 1px solid rgba(255,255,255,0.1);
-            box-shadow: 0 15px 35px rgba(0,0,0,0.4);
-            transform: rotateY(-10deg) rotateX(5deg);
-            transition: transform 0.4s ease, box-shadow 0.4s ease;
-        }
-
-        .hero-image-container img:hover {
-            transform: rotateY(0deg) rotateX(0deg) scale(1.02);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.6);
-        }
-
-        /* ==========================================
-           M3 COMPONENTS (KPI, BUTTONS, FORMS)
-           ========================================== */
         .btn-fab { background: var(--md-sys-color-primary-container); color: var(--md-sys-color-on-primary-container); border: none; border-radius: 16px; padding: 14px 24px; font-size: 0.95rem; font-weight: 500; cursor: pointer; display: inline-flex; align-items: center; gap: 10px; transition: 0.2s; box-shadow: 0 4px 8px rgba(0,0,0,0.2);}
         .btn-fab:hover { background: #005a91; box-shadow: 0 6px 12px rgba(0,0,0,0.3); }
         .btn-tonal { background: var(--md-sys-color-surface-variant); color: var(--md-sys-color-text); border: none; border-radius: 100px; padding: 10px 24px; font-size: 0.9rem; cursor: pointer; font-weight: 500; transition: 0.2s;}
@@ -280,7 +176,7 @@
         .full-w { grid-column: span 2; }
         
         .m3-input { position: relative; text-align: left;}
-        .m3-input input, .m3-input select, .m3-input textarea { width: 100%; padding: 18px 20px; border: 1px solid var(--md-sys-color-outline); border-radius: 8px; background: transparent; color: var(--md-sys-color-text); font-size: 1rem; outline: none; transition: 0.2s ease all;}
+        .m3-input input, .m3-input select, .m3-input textarea { width: 100%; padding: 18px 20px; border: 1px solid var(--md-sys-color-outline); border-radius: 100px; background: transparent; color: var(--md-sys-color-text); font-size: 1rem; outline: none; transition: 0.2s ease all;}
         .m3-input input:disabled { border-style: dashed; opacity: 0.7; }
         .m3-input select { appearance: none; cursor: pointer;}
         .m3-input input:focus, .m3-input select:focus, .m3-input textarea:focus { border-color: var(--md-sys-color-primary); border-width: 2px; padding: 17px 19px; background: rgba(168, 199, 250, 0.03); }
@@ -310,7 +206,7 @@
 
         .card-body { flex: 1; font-size: 0.95rem; color: var(--md-sys-color-text-muted); margin-bottom: 20px; line-height: 1.5;}
         .card-body p { margin-bottom: 8px; }
-        .card-body strong { color: var(--md-sys-color-text); font-weight: 500; }
+        .card-body strong { color: var(--md-sys-color-text); font-weight: 500;}
         
         .card-footer { display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border-color); padding-top: 15px; }
         .card-author { font-size: 0.75rem; color: var(--md-sys-color-text-muted); font-family: monospace; }
@@ -327,6 +223,7 @@
         .ann-head h3 { font-size: 1.2rem; display: flex; align-items: center; gap: 10px; }
         .ann-body { color: var(--md-sys-color-text-muted); line-height: 1.6; margin-bottom: 15px; white-space: pre-wrap; font-size: 0.95rem;}
         .ann-foot { display: flex; justify-content: space-between; align-items: center; font-size: 0.8rem; color: var(--md-sys-color-text-muted); }
+        .badge-urgent { background: var(--md-sys-color-error); color: #690005; padding: 2px 8px; border-radius: 4px; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; }
 
         /* Logs List */
         .log-item { background: var(--md-sys-color-background); border: 1px solid var(--border-color); border-radius: 12px; padding: 15px 20px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
@@ -421,25 +318,6 @@
                     <div class="m3-input full-w" style="margin-bottom:0;"><input type="text" id="set-nome" disabled placeholder=" "><label style="background:var(--md-sys-color-surface);">Nome Operatore</label></div>
                     <div class="m3-input" style="margin-bottom:0;"><input type="text" id="set-grado" disabled placeholder=" "><label style="background:var(--md-sys-color-surface);">Ruolo/Grado</label></div>
                     <div class="m3-input" style="margin-bottom:0;"><input type="text" id="set-matr" disabled placeholder=" "><label style="background:var(--md-sys-color-surface);">Matricola IPRP</label></div>
-                </div>
-                
-                <hr style="border:none; border-top:1px solid var(--border-color); margin: 5px 0 10px;">
-                <h4 style="margin-bottom: 15px;">Preferenze di Sistema</h4>
-                
-                <div style="display: flex; align-items: center; justify-content: space-between; padding: 15px 20px; background: rgba(255,255,255,0.02); border-radius: 16px; border: 1px solid var(--border-color); margin-bottom: 15px;">
-                    <div>
-                        <strong style="display:block; margin-bottom:3px;">Notifiche Desktop</strong>
-                        <span style="font-size: 0.85rem; color: var(--md-sys-color-text-muted);">Ricevi avvisi per comunicazioni urgenti.</span>
-                    </div>
-                    <button class="btn-tonal ripple-surface" onclick="showToast('Notifiche', 'Impostazione notifiche aggiornata.', 'success')">Consenti</button>
-                </div>
-                
-                <div style="display: flex; align-items: center; justify-content: space-between; padding: 15px 20px; background: rgba(255,255,255,0.02); border-radius: 16px; border: 1px solid var(--border-color);">
-                    <div>
-                        <strong style="display:block; margin-bottom:3px;">Tema Interfaccia</strong>
-                        <span style="font-size: 0.85rem; color: var(--md-sys-color-text-muted);">Sincronizza Material Cloud (Sviluppo)</span>
-                    </div>
-                    <button class="btn-tonal ripple-surface" disabled style="opacity:0.5; cursor:not-allowed;">Scuro Fisso</button>
                 </div>
             </div>
         </div>
@@ -756,13 +634,11 @@
                 window.location.href = 'index.html'; 
             });
         });
-        // Non c'è più il bottone btn-logout normale perchè le card sono bloccate, ma lo tengo se serve
 
         // SOSTITUITO "verificaSessione" MANUALE CON IL CONTROLLO UFFICIALE DI FIREBASE AUTH
         onAuthStateChanged(auth, async (user) => {
             if (user) {
-                // L'utente è loggato con Firebase Auth
-                // Recuperiamo la vera email da Google
+                // L'utente è loggato con Firebase Auth Google
                 const userEmail = user.email;
 
                 try {
@@ -915,10 +791,11 @@
             document.querySelectorAll('.data-card, .annuncio-item').forEach(card => { card.style.display = card.innerText.toLowerCase().includes(term) ? 'flex' : 'none'; });
         });
 
-        // NOTA: I list item locked (.locked) sono bloccati tramite pointer-events nel css.
         const navItems = document.querySelectorAll('.sidebar-menu li[data-target]'); 
         navItems.forEach(item => {
             item.addEventListener('click', () => {
+                if(item.classList.contains('locked')) return; 
+
                 document.querySelectorAll('.sidebar-menu li').forEach(n => n.classList.remove('active')); item.classList.add('active');
                 document.querySelectorAll('.view-section').forEach(v => v.classList.add('hidden')); 
                 document.getElementById(item.getAttribute('data-target')).classList.remove('hidden');
