@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DB Operativo - IPRP X</title>
+    <title>Accedi - IPRP Google Cloud</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600;700&family=Outfit:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
@@ -29,6 +29,7 @@
         .ripple { position: absolute; border-radius: 50%; transform: scale(0); animation: ripple-anim 0.6s linear; background-color: rgba(255, 255, 255, 0.15); pointer-events: none; }
         @keyframes ripple-anim { to { transform: scale(4); opacity: 0; } }
 
+        /* NUOVA NAVBAR GOOGLE CLOUD */
         .top-bar { position: fixed; top: 0; left: 0; width: 100%; height: 56px; background-color: var(--md-sys-color-background); display: flex; justify-content: space-between; align-items: center; padding: 0 20px; border-bottom: 1px solid rgba(255,255,255,0.08); z-index: 1000;}
         .top-bar-left { display: flex; align-items: center; gap: 15px; color: var(--md-sys-color-on-surface); }
         .top-bar-left i.fa-bars { font-size: 1.2rem; cursor: pointer; padding: 10px; border-radius: 50%; transition: 0.2s; }
@@ -53,7 +54,7 @@
 
         .google-login-box { background: var(--md-sys-color-surface); border-radius: 24px; width: 100%; max-width: 420px; padding: 40px 35px; border: 1px solid rgba(255,255,255,0.05); text-align: center; position: relative; overflow: hidden; }
         
-        /* BARRA CARICAMENTO LINEARE GOOGLE */
+        /* GOOGLE LINEAR PROGRESS */
         .md-linear-progress { display: none; position: absolute; top: 0; left: 0; width: 100%; height: 4px; background: rgba(168, 199, 250, 0.2); overflow: hidden; }
         .md-linear-progress.active { display: block; }
         .md-linear-progress::before { content: ''; position: absolute; top: 0; left: 0; height: 100%; width: 50%; background: var(--md-sys-color-primary); animation: md-linear-anim 1.5s infinite ease-in-out; }
@@ -76,21 +77,20 @@
         .dept-item.locked { opacity: 0.4; background: rgba(0,0,0,0.3); border-color: rgba(255,255,255,0.05); pointer-events: none; }
         .locked-badge { position: absolute; right: 15px; font-size: 0.7rem; background: var(--md-sys-color-error); color: #690005; padding: 3px 8px; border-radius: 4px; font-weight: 700; letter-spacing: 0.5px;}
 
-        .selected-dept { display: inline-flex; align-items: center; gap: 8px; border: 1px solid var(--md-sys-color-outline); border-radius: 100px; padding: 6px 16px; font-size: 0.85rem; font-weight: 500; cursor: pointer; margin-bottom: 25px; transition: 0.2s; color: var(--md-sys-color-on-surface-variant); }
+        .selected-dept { display: inline-flex; align-items: center; gap: 8px; border: 1px solid var(--md-sys-color-outline); border-radius: 100px; padding: 6px 16px; font-size: 0.85rem; font-weight: 500; cursor: pointer; margin-bottom: 30px; transition: 0.2s; color: var(--md-sys-color-on-surface-variant); }
         .selected-dept:hover { background: rgba(255,255,255,0.05); color: var(--md-sys-color-on-surface); }
         
         /* BOTTONE ACCEDI CON GOOGLE */
-        .btn-google { background: white; color: #3c4043; border: 1px solid #dadce0; border-radius: 100px; padding: 12px 24px; font-size: 0.95rem; font-weight: 500; cursor: pointer; transition: 0.2s; font-family: 'Lexend', sans-serif; display: flex; gap: 12px; align-items: center; justify-content: center; width: 100%; margin-bottom: 20px; margin-top: 10px;}
+        .btn-google { background: white; color: #3c4043; border: 1px solid #dadce0; border-radius: 100px; padding: 12px 24px; font-size: 0.95rem; font-weight: 600; cursor: pointer; transition: 0.2s; font-family: 'Lexend', sans-serif; display: flex; gap: 12px; align-items: center; justify-content: center; width: 100%; margin-bottom: 20px; margin-top: 10px;}
         .btn-google:hover:not(:disabled) { background: #f8f9fa; box-shadow: 0 1px 3px rgba(0,0,0,0.2); }
         .btn-google:disabled { opacity: 0.5; cursor: not-allowed; }
-        .btn-google img { width: 20px; }
+        .btn-google img { width: 18px; }
 
-        .actions-row { display: flex; justify-content: center; align-items: center; margin-top: 20px; }
-        
+        .actions-row { display: flex; justify-content: center; align-items: center; margin-top: 15px; }
         .btn-text { background: transparent; border: none; color: var(--md-sys-color-primary); font-size: 0.9rem; font-weight: 500; cursor: pointer; padding: 10px 16px; border-radius: 100px; transition: 0.2s; font-family: 'Lexend', sans-serif; display: flex; align-items: center; gap: 8px;}
         .btn-text:hover { background: rgba(168, 199, 250, 0.08); }
-
-        #messaggio-errore { color: var(--md-sys-color-error); font-size: 0.85rem; margin-top: 15px; font-weight: 500; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; line-height: 1.4; padding: 12px; border-radius: 12px; background: rgba(255, 180, 171, 0.1);}
+        
+        #messaggio-errore { color: var(--md-sys-color-error); font-size: 0.9rem; margin-top: 15px; font-weight: 500; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; line-height: 1.4; padding: 10px; border-radius: 8px; background: rgba(255, 180, 171, 0.1);}
 
         @keyframes fadeInScale { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
         .animate-in { animation: fadeInScale 0.3s ease-out forwards; }
@@ -119,6 +119,7 @@
 
         <div class="split-right">
             <div class="google-login-box animate-in" id="card-selector">
+                <div class="md-linear-progress" id="init-progress"></div>
                 <img src="https://i.imgur.com/gRzOXM3.png" alt="Logo" class="logo">
                 <h1 style="font-family: 'Outfit', sans-serif; font-size: 1.5rem; margin-bottom: 8px; color: var(--md-sys-color-on-surface); font-weight: 500;">Scegli Reparto</h1>
                 <p>Seleziona il dipartimento per l'accesso</p>
@@ -175,8 +176,8 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-app.js";
         import { getFirestore, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-firestore.js";
-        // IMPORT FIREBASE AUTH GOOGLE
-        import { getAuth, GoogleAuthProvider, signInWithPopup, setPersistence, browserSessionPersistence, signOut } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-auth.js";
+        // IMPORT FIREBASE AUTH GOOGLE REDIRECT E RISULTATO
+        import { getAuth, GoogleAuthProvider, signInWithRedirect, getRedirectResult, setPersistence, browserSessionPersistence, signOut } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-auth.js";
 
         setInterval(() => { document.getElementById('live-clock').textContent = new Date().toLocaleTimeString('it-IT', { hour12: false }); }, 1000);
 
@@ -210,6 +211,8 @@
             document.getElementById('card-login').classList.remove('hidden');
             document.getElementById('card-login').classList.add('animate-in');
             document.getElementById('messaggio-errore').classList.add('hidden');
+            // Salviamo temporaneamente il reparto scelto prima di uscire dalla pagina per il redirect
+            sessionStorage.setItem('tempReparto', deptName);
         };
 
         window.showSelector = function() {
@@ -217,57 +220,96 @@
             document.getElementById('card-selector').classList.remove('hidden');
             document.getElementById('card-selector').classList.add('animate-in');
             document.getElementById('messaggio-errore').classList.add('hidden');
+            sessionStorage.removeItem('tempReparto');
         };
 
-        // ACCESSO VERO CON GOOGLE POPUP
+        // AL CARICAMENTO DELLA PAGINA: Controlliamo se stiamo tornando da un Redirect di Google
+        const loaderSelector = document.getElementById('init-progress');
+        const loaderLogin = document.getElementById('login-progress');
+        const errBox = document.getElementById('messaggio-errore');
+
+        // Mostriamo il loader iniziale per sicurezza finchè non controlla
+        loaderSelector.classList.add('active');
+
+        getRedirectResult(auth).then(async (result) => {
+            loaderSelector.classList.remove('active');
+            
+            if (result) {
+                // L'UTENTE È APPENA TORNATO DAL LOGIN DI GOOGLE CON SUCCESSO
+                const userEmail = result.user.email;
+                const repartoSelezionato = sessionStorage.getItem('tempReparto') || 'Squadra Mobile';
+
+                // Riportiamo la UI sul pannello di login visivamente
+                window.showLogin(repartoSelezionato);
+                loaderLogin.classList.add('active');
+                document.getElementById('btn-google-login').disabled = true;
+
+                // CONTROLLO WHITELIST NEL DATABASE FIRESTORE
+                try {
+                    const q = query(collection(db, "agenti"), where("email", "==", userEmail));
+                    const querySnapshot = await getDocs(q);
+
+                    if (!querySnapshot.empty) {
+                        const agenteData = querySnapshot.docs[0].data();
+                        
+                        // Salviamo la sessione ufficiale
+                        const sessionData = { 
+                            email: userEmail,
+                            matricola: agenteData.matricola, 
+                            reparto: repartoSelezionato
+                        };
+                        sessionStorage.setItem('sessioneAttiva', JSON.stringify(sessionData));
+                        sessionStorage.removeItem('tempReparto'); // pulizia
+                        
+                        // Finto ritardo per mostrare l'animazione e poi lo mandiamo alla dashboard
+                        setTimeout(() => { window.location.href = 'squadra-mobile.html'; }, 800);
+                        
+                    } else {
+                        // L'email ha fatto il login con google ma NON È nel DB
+                        await signOut(auth);
+                        loaderLogin.classList.remove('active');
+                        errBox.innerHTML = `<span><i class="fas fa-user-lock" style="font-size:1.5rem; margin-bottom:5px;"></i></span> <span style="text-align:center;"><strong>ACCESSO NEGATO</strong><br>L'email <em>${userEmail}</em> non è registrata nei nostri sistemi. Contatta il comando.</span>`;
+                        errBox.classList.remove('hidden');
+                        document.getElementById('btn-google-login').disabled = false;
+                    }
+                } catch (error) {
+                    console.error("Errore lettura DB:", error);
+                    loaderLogin.classList.remove('active');
+                    errBox.innerHTML = '<i class="fas fa-wifi"></i> Errore di connessione al database.';
+                    errBox.classList.remove('hidden');
+                    document.getElementById('btn-google-login').disabled = false;
+                }
+            }
+        }).catch((error) => {
+            // ERRORE DURANTE IL RITORNO DAL REDIRECT
+            loaderSelector.classList.remove('active');
+            const repartoSelezionato = sessionStorage.getItem('tempReparto');
+            if(repartoSelezionato) window.showLogin(repartoSelezionato);
+            
+            console.error("Auth Redirect Error:", error);
+            errBox.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Errore durante l\'autenticazione Google.';
+            errBox.classList.remove('hidden');
+            document.getElementById('btn-google-login').disabled = false;
+        });
+
+        // AZIONE SUL CLICK DEL BOTTONE: Inizia il Redirect verso Google
         document.getElementById('btn-google-login').addEventListener('click', async function() {
             const btnSubmit = this;
-            const errBox = document.getElementById('messaggio-errore');
-            const loader = document.getElementById('login-progress');
-
-            loader.classList.add('active');
+            loaderLogin.classList.add('active');
             btnSubmit.disabled = true; 
             errBox.classList.add('hidden');
 
             try {
-                // Imposta persistenza sicura (chiudi la scheda = logout automatico)
+                // Imposta persistenza sessione (logout chiudendo la scheda)
                 await setPersistence(auth, browserSessionPersistence);
                 
-                // Apre il popup ufficiale di Google
-                const result = await signInWithPopup(auth, provider);
-                const userEmail = result.user.email;
-
-                // CONTROLLO WHITELIST: L'email esiste nel database agenti?
-                const q = query(collection(db, "agenti"), where("email", "==", userEmail));
-                const querySnapshot = await getDocs(q);
-
-                if (!querySnapshot.empty) {
-                    const agenteData = querySnapshot.docs[0].data();
-                    
-                    const sessionData = { 
-                        email: userEmail,
-                        matricola: agenteData.matricola, 
-                        reparto: document.getElementById('login-dept-name').textContent 
-                    };
-                    sessionStorage.setItem('sessioneAttiva', JSON.stringify(sessionData));
-                    
-                    // Finestra di tempo per far vedere la grafica lineare
-                    setTimeout(() => { window.location.href = 'squadra-mobile.html'; }, 800);
-                    
-                } else {
-                    // Email NON autorizzata: Logout immediato!
-                    await signOut(auth);
-                    loader.classList.remove('active');
-                    errBox.innerHTML = `<span><i class="fas fa-user-lock" style="font-size:1.5rem; margin-bottom:5px;"></i></span> <span style="text-align:center;"><strong>ACCESSO NEGATO</strong><br>L'email <em>${userEmail}</em> non è registrata nei nostri sistemi. Contatta il comando.</span>`;
-                    errBox.classList.remove('hidden');
-                    btnSubmit.disabled = false;
-                }
+                // AVVIA IL REDIRECT ALLA PAGINA UFFICIALE DI GOOGLE
+                signInWithRedirect(auth, provider);
             } catch (error) {
-                loader.classList.remove('active');
-                if (error.code !== 'auth/popup-closed-by-user') {
-                    errBox.innerHTML = '<i class="fas fa-wifi"></i> Autenticazione annullata o Errore di rete.';
-                    errBox.classList.remove('hidden');
-                }
+                loaderLogin.classList.remove('active');
+                console.error(error);
+                errBox.innerHTML = '<i class="fas fa-wifi"></i> Impossibile contattare i server Google.';
+                errBox.classList.remove('hidden');
                 btnSubmit.disabled = false;
             }
         });
