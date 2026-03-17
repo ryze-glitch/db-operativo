@@ -53,6 +53,7 @@
 
         .google-login-box { background: var(--md-sys-color-surface); border-radius: 24px; width: 100%; max-width: 420px; padding: 40px 35px; border: 1px solid rgba(255,255,255,0.05); text-align: center; position: relative; overflow: hidden; }
         
+        /* GOOGLE LINEAR PROGRESS */
         .md-linear-progress { display: none; position: absolute; top: 0; left: 0; width: 100%; height: 4px; background: rgba(168, 199, 250, 0.2); overflow: hidden; }
         .md-linear-progress.active { display: block; }
         .md-linear-progress::before { content: ''; position: absolute; top: 0; left: 0; height: 100%; width: 50%; background: var(--md-sys-color-primary); animation: md-linear-anim 1.5s infinite ease-in-out; }
@@ -79,12 +80,14 @@
         .selected-dept:hover { background: rgba(255,255,255,0.05); color: var(--md-sys-color-on-surface); }
         
         .m3-input { position: relative; margin-bottom: 20px; text-align: left; }
-        .m3-input input { width: 100%; padding: 16px 20px; border: 1px solid var(--md-sys-color-outline); border-radius: 8px; background: transparent; color: var(--md-sys-color-on-surface); font-size: 1rem; outline: none; transition: 0.2s ease all; }
+        .m3-input input { width: 100%; padding: 16px 20px; border: 1px solid var(--md-sys-color-outline); border-radius: 8px; background: transparent; color: var(--md-sys-color-on-surface); font-size: 1rem; outline: none; transition: 0.2s ease all; text-transform: uppercase;}
+        .m3-input input[type="password"] { text-transform: none; }
         .m3-input input:focus { border-color: transparent; outline: 2px solid var(--md-sys-color-primary); outline-offset: -1px; background: rgba(168, 199, 250, 0.03); }
-        .m3-input label { position: absolute; left: 16px; top: 16px; background: var(--md-sys-color-surface); padding: 0 6px; color: var(--md-sys-color-on-surface-variant); font-size: 0.95rem; transition: 0.2s ease all; pointer-events: none; }
+        .m3-input label { position: absolute; left: 16px; top: 16px; background: var(--md-sys-color-surface); padding: 0 6px; color: var(--md-sys-color-on-surface-variant); font-size: 0.95rem; transition: 0.2s ease all; pointer-events: none; text-transform: none;}
         .m3-input input:focus ~ label, .m3-input input:not(:placeholder-shown) ~ label { top: -10px; left: 12px; font-size: 0.75rem; color: var(--md-sys-color-primary); font-weight: 500; }
 
         .actions-row { display: flex; justify-content: space-between; align-items: center; margin-top: 45px; }
+        
         .btn-text { background: transparent; border: none; color: var(--md-sys-color-primary); font-size: 0.9rem; font-weight: 500; cursor: pointer; padding: 10px 16px; border-radius: 100px; transition: 0.2s; font-family: 'Lexend', sans-serif; display: flex; align-items: center; gap: 8px;}
         .btn-text:hover { background: rgba(168, 199, 250, 0.08); }
         
@@ -93,6 +96,7 @@
         .btn-filled:disabled { opacity: 0.5; cursor: not-allowed; }
 
         #messaggio-errore { color: var(--md-sys-color-error); font-size: 0.85rem; margin-top: 15px; font-weight: 500; display: flex; align-items: center; justify-content: center; gap: 5px; }
+
         @keyframes fadeInScale { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
         .animate-in { animation: fadeInScale 0.3s ease-out forwards; }
     </style>
@@ -146,7 +150,7 @@
             <div class="google-login-box hidden" id="card-login">
                 <div class="md-linear-progress" id="login-progress"></div>
 
-                <img src="https://i.imgur.com/gRzOXM3.png" alt="Logo" class="logo">
+                <img src="https://i.imgur.com/gRzOXM3.png" alt="Logo" class="logo" style="width: 50px; margin-bottom: 15px;">
                 <h1>Verifica Identità</h1>
                 
                 <div class="selected-dept ripple-surface" onclick="window.showSelector()">
@@ -155,7 +159,7 @@
 
                 <form id="login-form">
                     <div class="m3-input">
-                        <input type="text" id="badge" placeholder=" " required autocomplete="off" style="text-transform: uppercase;">
+                        <input type="text" id="badge" placeholder=" " required autocomplete="off">
                         <label>Matricola (Es. SM-001)</label>
                     </div>
                     <div class="m3-input">
@@ -180,7 +184,7 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-app.js";
-        // IMPORT FIREBASE AUTHENTICATION
+        import { getFirestore } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-firestore.js";
         import { getAuth, signInWithEmailAndPassword, setPersistence, browserSessionPersistence } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-auth.js";
 
         setInterval(() => { document.getElementById('live-clock').textContent = new Date().toLocaleTimeString('it-IT', { hour12: false }); }, 1000);
@@ -225,33 +229,32 @@
 
         document.getElementById('login-form').addEventListener('submit', async function(e) {
             e.preventDefault();
-            const matricola = document.getElementById('badge').value.trim().toLowerCase(); // Usiamo minuscolo per email
+            const matricola = document.getElementById('badge').value.trim().toLowerCase(); // firebase auth usa email
             const password = document.getElementById('password').value;
             const btnSubmit = document.getElementById('btn-submit');
             const errBox = document.getElementById('messaggio-errore');
             const loader = document.getElementById('login-progress');
 
-            // Avvio Animazione Caricamento Google
             loader.classList.add('active');
             btnSubmit.disabled = true; errBox.innerText = "";
 
             try {
-                // IMPOSTIAMO LA PERSISTENZA SOLO PER QUESTA SCHEDA (Chiudi scheda = Logout)
+                // Imposta persistenza sicura (chiudi la scheda = logout)
                 await setPersistence(auth, browserSessionPersistence);
                 
-                // Mappiamo la matricola a un indirizzo email fittizio del sistema
+                // Mappiamo matricola a finta email
                 const emailToLogin = matricola + "@iprp.local";
 
-                // CHIAMATA A FIREBASE AUTH
+                // VERO LOGIN FIREBASE AUTH
                 await signInWithEmailAndPassword(auth, emailToLogin, password);
 
-                // Se va a buon fine, salviamo temporaneamente solo il nome del reparto per la UI visiva
-                sessionStorage.setItem('repartoScelto', document.getElementById('login-dept-name').textContent);
-                window.location.href = 'squadra-mobile.html';
+                // Reindirizzamento
+                setTimeout(() => {
+                    window.location.href = 'squadra-mobile.html';
+                }, 800);
                 
             } catch (error) {
                 loader.classList.remove('active');
-                console.error("Auth Error:", error.code);
                 if (error.code === 'auth/invalid-credential' || error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password') {
                     errBox.innerHTML = '<i class="fas fa-exclamation-circle"></i> Impossibile trovare il tuo account o password errata.';
                 } else {
