@@ -208,6 +208,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-app.js";
         import { getFirestore, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-firestore.js";
+        // IMPORT FIREBASE AUTH GOOGLE REDIRECT E RISULTATO
         import { getAuth, GoogleAuthProvider, signInWithRedirect, getRedirectResult, setPersistence, browserSessionPersistence, signOut } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-auth.js";
 
         setInterval(() => { document.getElementById('live-clock').textContent = new Date().toLocaleTimeString('it-IT', { hour12: false }); }, 1000);
@@ -243,6 +244,7 @@
             document.getElementById('card-login').classList.remove('hidden');
             document.getElementById('card-login').classList.add('animate-in');
             document.getElementById('messaggio-errore').classList.add('hidden');
+            // Salviamo temporaneamente il reparto scelto prima di uscire dalla pagina per il redirect
             sessionStorage.setItem('tempReparto', deptName);
         };
 
@@ -254,40 +256,49 @@
             sessionStorage.removeItem('tempReparto');
         };
 
+        // AL CARICAMENTO DELLA PAGINA: Controlliamo se stiamo tornando da un Redirect di Google
         const loaderSelector = document.getElementById('init-progress');
         const loaderLogin = document.getElementById('login-progress');
         const errBox = document.getElementById('messaggio-errore');
 
+        // Mostriamo il loader iniziale per sicurezza finchè non controlla
         loaderSelector.classList.add('active');
 
         getRedirectResult(auth).then(async (result) => {
             loaderSelector.classList.remove('active');
             
             if (result) {
+                // L'UTENTE È APPENA TORNATO DAL LOGIN DI GOOGLE CON SUCCESSO
                 const userEmail = result.user.email;
                 const repartoSelezionato = sessionStorage.getItem('tempReparto') || 'Squadra Mobile';
 
+                // Riportiamo la UI sul pannello di login visivamente
                 window.showLogin(repartoSelezionato);
                 loaderLogin.classList.add('active');
                 document.getElementById('btn-google-login').disabled = true;
 
+                // CONTROLLO WHITELIST NEL DATABASE FIRESTORE
                 try {
                     const q = query(collection(db, "agenti"), where("email", "==", userEmail));
                     const querySnapshot = await getDocs(q);
 
                     if (!querySnapshot.empty) {
                         const agenteData = querySnapshot.docs[0].data();
+                        
+                        // Salviamo la sessione ufficiale
                         const sessionData = { 
                             email: userEmail,
                             matricola: agenteData.matricola, 
                             reparto: repartoSelezionato
                         };
                         sessionStorage.setItem('sessioneAttiva', JSON.stringify(sessionData));
-                        sessionStorage.removeItem('tempReparto');
+                        sessionStorage.removeItem('tempReparto'); // pulizia
                         
+                        // Finto ritardo per mostrare l'animazione e poi lo mandiamo alla dashboard
                         setTimeout(() => { window.location.href = 'squadra-mobile.html'; }, 800);
                         
                     } else {
+                        // L'email ha fatto il login con google ma NON È nel DB
                         await signOut(auth);
                         loaderLogin.classList.remove('active');
                         errBox.innerHTML = `<span><i class="fas fa-user-lock" style="font-size:1.5rem; margin-bottom:5px;"></i></span> <span style="text-align:center;"><strong>ACCESSO NEGATO</strong><br>L'email <em>${userEmail}</em> non è registrata nei nostri sistemi. Contatta il comando.</span>`;
@@ -303,6 +314,7 @@
                 }
             }
         }).catch((error) => {
+            // ERRORE DURANTE IL RITORNO DAL REDIRECT
             loaderSelector.classList.remove('active');
             const repartoSelezionato = sessionStorage.getItem('tempReparto');
             if(repartoSelezionato) window.showLogin(repartoSelezionato);
@@ -313,6 +325,7 @@
             document.getElementById('btn-google-login').disabled = false;
         });
 
+        // AZIONE SUL CLICK DEL BOTTONE: Inizia il Redirect verso Google
         document.getElementById('btn-google-login').addEventListener('click', async function() {
             const btnSubmit = this;
             loaderLogin.classList.add('active');
@@ -320,7 +333,10 @@
             errBox.classList.add('hidden');
 
             try {
+                // Imposta persistenza sessione (logout chiudendo la scheda)
                 await setPersistence(auth, browserSessionPersistence);
+                
+                // AVVIA IL REDIRECT ALLA PAGINA UFFICIALE DI GOOGLE
                 signInWithRedirect(auth, provider);
             } catch (error) {
                 loaderLogin.classList.remove('active');
