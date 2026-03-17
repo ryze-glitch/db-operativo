@@ -29,7 +29,6 @@
         .ripple { position: absolute; border-radius: 50%; transform: scale(0); animation: ripple-anim 0.6s linear; background-color: rgba(255, 255, 255, 0.15); pointer-events: none; }
         @keyframes ripple-anim { to { transform: scale(4); opacity: 0; } }
 
-        /* NUOVA NAVBAR GOOGLE CLOUD */
         .top-bar { position: fixed; top: 0; left: 0; width: 100%; height: 56px; background-color: var(--md-sys-color-background); display: flex; justify-content: space-between; align-items: center; padding: 0 20px; border-bottom: 1px solid rgba(255,255,255,0.08); z-index: 1000;}
         .top-bar-left { display: flex; align-items: center; gap: 15px; color: var(--md-sys-color-on-surface); }
         .top-bar-left i.fa-bars { font-size: 1.2rem; cursor: pointer; padding: 10px; border-radius: 50%; transition: 0.2s; }
@@ -54,7 +53,6 @@
 
         .google-login-box { background: var(--md-sys-color-surface); border-radius: 24px; width: 100%; max-width: 420px; padding: 40px 35px; border: 1px solid rgba(255,255,255,0.05); text-align: center; position: relative; overflow: hidden; }
         
-        /* GOOGLE LINEAR PROGRESS (Nascoso di default) */
         .md-linear-progress { display: none; position: absolute; top: 0; left: 0; width: 100%; height: 4px; background: rgba(168, 199, 250, 0.2); overflow: hidden; }
         .md-linear-progress.active { display: block; }
         .md-linear-progress::before { content: ''; position: absolute; top: 0; left: 0; height: 100%; width: 50%; background: var(--md-sys-color-primary); animation: md-linear-anim 1.5s infinite ease-in-out; }
@@ -87,8 +85,6 @@
         .m3-input input:focus ~ label, .m3-input input:not(:placeholder-shown) ~ label { top: -10px; left: 12px; font-size: 0.75rem; color: var(--md-sys-color-primary); font-weight: 500; }
 
         .actions-row { display: flex; justify-content: space-between; align-items: center; margin-top: 45px; }
-        
-        /* PULSANTE INDIETRO GOOGLE STYLE */
         .btn-text { background: transparent; border: none; color: var(--md-sys-color-primary); font-size: 0.9rem; font-weight: 500; cursor: pointer; padding: 10px 16px; border-radius: 100px; transition: 0.2s; font-family: 'Lexend', sans-serif; display: flex; align-items: center; gap: 8px;}
         .btn-text:hover { background: rgba(168, 199, 250, 0.08); }
         
@@ -97,7 +93,6 @@
         .btn-filled:disabled { opacity: 0.5; cursor: not-allowed; }
 
         #messaggio-errore { color: var(--md-sys-color-error); font-size: 0.85rem; margin-top: 15px; font-weight: 500; display: flex; align-items: center; justify-content: center; gap: 5px; }
-
         @keyframes fadeInScale { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
         .animate-in { animation: fadeInScale 0.3s ease-out forwards; }
     </style>
@@ -119,7 +114,7 @@
             <div class="left-content">
                 <img src="https://i.imgur.com/gRzOXM3.png" alt="Logo IPRP" class="big-logo">
                 <h1>SISTEMA OPERATIVO<br><span>CENTRALE</span></h1>
-                <p>Accesso riservato al personale della Polizia di Stato. Autenticazione crittografata end-to-end con standard IPRP.</p>
+                <p>Accesso riservato al personale della Polizia di Stato. Autenticazione crittografata end-to-end tramite Firebase Auth.</p>
             </div>
         </div>
 
@@ -160,12 +155,12 @@
 
                 <form id="login-form">
                     <div class="m3-input">
-                        <input type="text" id="badge" placeholder=" " required autocomplete="off">
-                        <label>Matricola Operatore</label>
+                        <input type="text" id="badge" placeholder=" " required autocomplete="off" style="text-transform: uppercase;">
+                        <label>Matricola (Es. SM-001)</label>
                     </div>
                     <div class="m3-input">
                         <input type="password" id="password" placeholder=" " required>
-                        <label>Password di Rete</label>
+                        <label>Password</label>
                     </div>
 
                     <div id="messaggio-errore"></div>
@@ -185,7 +180,8 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-app.js";
-        import { getFirestore, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-firestore.js";
+        // IMPORT FIREBASE AUTHENTICATION
+        import { getAuth, signInWithEmailAndPassword, setPersistence, browserSessionPersistence } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-auth.js";
 
         setInterval(() => { document.getElementById('live-clock').textContent = new Date().toLocaleTimeString('it-IT', { hour12: false }); }, 1000);
 
@@ -209,7 +205,7 @@
 
         const firebaseConfig = { apiKey: "AIzaSyDPyEfr0KbWtYDeM5-EFTl3s3VGVB_8Yi8", authDomain: "database-dta.firebaseapp.com", projectId: "database-dta", storageBucket: "database-dta.firebasestorage.app", messagingSenderId: "229305773627", appId: "1:229305773627:web:ec3d17f5fcb3c65fdb761e" };
         const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
+        const auth = getAuth(app);
 
         window.showLogin = function(deptName) {
             document.getElementById('card-selector').classList.add('hidden');
@@ -229,39 +225,40 @@
 
         document.getElementById('login-form').addEventListener('submit', async function(e) {
             e.preventDefault();
-            const matricola = document.getElementById('badge').value.trim();
+            const matricola = document.getElementById('badge').value.trim().toLowerCase(); // Usiamo minuscolo per email
             const password = document.getElementById('password').value;
             const btnSubmit = document.getElementById('btn-submit');
             const errBox = document.getElementById('messaggio-errore');
             const loader = document.getElementById('login-progress');
 
-            // Avvio Animazione Caricamento
+            // Avvio Animazione Caricamento Google
             loader.classList.add('active');
             btnSubmit.disabled = true; errBox.innerText = "";
 
             try {
-                const q = query(collection(db, "agenti"), where("matricola", "==", matricola), where("password", "==", password));
-                const querySnapshot = await getDocs(q);
+                // IMPOSTIAMO LA PERSISTENZA SOLO PER QUESTA SCHEDA (Chiudi scheda = Logout)
+                await setPersistence(auth, browserSessionPersistence);
+                
+                // Mappiamo la matricola a un indirizzo email fittizio del sistema
+                const emailToLogin = matricola + "@iprp.local";
 
-                if (!querySnapshot.empty) {
-                    const sessionData = { matricola: matricola, reparto: document.getElementById('login-dept-name').textContent };
-                    sessionStorage.setItem('sessioneAttiva', JSON.stringify(sessionData));
-                    
-                    // Simula un tempo di decriptazione finto per mostrare il caricamento "Google"
-                    setTimeout(() => {
-                        window.location.href = 'squadra-mobile.html';
-                    }, 800);
-                    
-                } else {
-                    loader.classList.remove('active');
-                    errBox.innerHTML = '<i class="fas fa-exclamation-circle"></i> Impossibile trovare il tuo account o password errata.';
-                    btnSubmit.disabled = false;
-                    document.getElementById('password').value = "";
-                }
+                // CHIAMATA A FIREBASE AUTH
+                await signInWithEmailAndPassword(auth, emailToLogin, password);
+
+                // Se va a buon fine, salviamo temporaneamente solo il nome del reparto per la UI visiva
+                sessionStorage.setItem('repartoScelto', document.getElementById('login-dept-name').textContent);
+                window.location.href = 'squadra-mobile.html';
+                
             } catch (error) {
                 loader.classList.remove('active');
-                errBox.innerHTML = '<i class="fas fa-wifi"></i> Errore di rete con i server IPRP.';
+                console.error("Auth Error:", error.code);
+                if (error.code === 'auth/invalid-credential' || error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password') {
+                    errBox.innerHTML = '<i class="fas fa-exclamation-circle"></i> Impossibile trovare il tuo account o password errata.';
+                } else {
+                    errBox.innerHTML = '<i class="fas fa-wifi"></i> Errore di rete con i server IPRP Auth.';
+                }
                 btnSubmit.disabled = false;
+                document.getElementById('password').value = "";
             }
         });
     </script>
