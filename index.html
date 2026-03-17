@@ -430,28 +430,22 @@
         });
 
         // AZIONE: QUANDO L'UTENTE CLICCA SU "ACCEDI CON GOOGLE"
-        document.getElementById('btn-google-login').addEventListener('click', async function() {
+        document.getElementById('btn-google-login').addEventListener('click', function() {
             const btnSubmit = this;
             loaderLogin.classList.add('active');
             btnSubmit.disabled = true; 
             errBox.classList.add('hidden');
 
-            try {
-                // 1. TENTA PRIMA IL POPUP (Molto più elegante e veloce)
-                const result = await signInWithPopup(auth, provider);
-                handleAuthResult(result.user);
-            } catch (error) {
-                // 2. SE IL BROWSER O GITHUB BLOCCHIAMO IL POPUP, PASSA AL REDIRECT DI EMERGENZA
-                if (error.code === 'auth/popup-blocked' || error.message.includes('Cross-Origin') || error.code === 'auth/popup-closed-by-user') {
-                    console.log("Popup bloccato, tentativo con Redirect...");
-                    signInWithRedirect(auth, provider);
-                } else {
-                    loaderLogin.classList.remove('active');
-                    errBox.innerHTML = '<i class="fas fa-wifi"></i> Impossibile contattare i server Google.';
-                    errBox.classList.remove('hidden');
-                    btnSubmit.disabled = false;
-                }
-            }
+            console.log("Avvio autenticazione tramite Redirect...");
+            
+            // Saltiamo il popup e usiamo direttamente il redirect per aggirare il blocco COOP di Chrome
+            signInWithRedirect(auth, provider).catch((error) => {
+                console.error("Errore avvio Redirect:", error);
+                loaderLogin.classList.remove('active');
+                errBox.innerHTML = '<i class="fas fa-wifi"></i> Impossibile contattare i server Google.';
+                errBox.classList.remove('hidden');
+                btnSubmit.disabled = false;
+            });
         });
     </script>
 </body>
