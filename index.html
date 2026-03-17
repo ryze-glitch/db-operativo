@@ -61,20 +61,30 @@
         @keyframes md-linear-anim { 0% { left: -50%; width: 50%; } 50% { left: 25%; width: 80%; } 100% { left: 100%; width: 50%; } }
 
         .google-login-box h1 { font-family: 'Outfit', sans-serif; font-size: 1.5rem; margin-bottom: 8px; color: var(--md-sys-color-on-surface); font-weight: 500;}
-        .google-login-box p { color: var(--md-sys-color-on-surface-variant); margin-bottom: 30px; font-size: 0.95rem; }
+        .google-login-box p { color: var(--md-sys-color-on-surface-variant); margin-bottom: 25px; font-size: 0.95rem; }
 
         .dept-list { display: flex; flex-direction: column; gap: 12px; text-align: left; }
         .dept-item { display: flex; align-items: center; gap: 15px; padding: 12px 18px; border: 1px solid var(--md-sys-color-outline); border-radius: 12px; cursor: pointer; transition: 0.2s; background: transparent; position: relative;}
         .dept-item:not(.locked):hover { background: rgba(255,255,255,0.05); border-color: var(--md-sys-color-on-surface); }
-        .dept-item img { width: 28px; height: 28px; object-fit: contain; }
-        .dept-item div { flex: 1; }
+        .dept-item img { width: 32px; height: 32px; object-fit: contain; }
+        .dept-item div.dept-info { flex: 1; }
         .dept-item h3 { font-size: 1rem; font-weight: 500; color: var(--md-sys-color-on-surface); margin-bottom: 2px;}
-        .dept-item span { font-size: 0.8rem; color: var(--md-sys-color-on-surface-variant); }
+        .dept-item span { font-size: 0.8rem; color: var(--md-sys-color-on-surface-variant); display: block;}
         .dept-item i.fa-chevron-right { color: var(--md-sys-color-outline); transition: 0.2s; font-size: 0.9rem;}
         .dept-item:not(.locked):hover i.fa-chevron-right { color: var(--md-sys-color-on-surface); transform: translateX(3px); }
 
-        .dept-item.locked { opacity: 0.4; background: rgba(0,0,0,0.3); border-color: rgba(255,255,255,0.05); pointer-events: none; }
-        .locked-badge { position: absolute; right: 15px; font-size: 0.7rem; background: var(--md-sys-color-error); color: #690005; padding: 3px 8px; border-radius: 4px; font-weight: 700; letter-spacing: 0.5px;}
+        .dept-item.locked { opacity: 0.45; background: rgba(0,0,0,0.3); border-color: rgba(255,255,255,0.05); pointer-events: none; }
+        .locked-badge { position: absolute; right: 15px; top: 15px; font-size: 0.7rem; background: var(--md-sys-color-error); color: #690005; padding: 3px 8px; border-radius: 4px; font-weight: 700; letter-spacing: 0.5px;}
+
+        /* INDICATORI DI STATO (Pallini) */
+        .dept-status { display: flex; align-items: center; gap: 6px; font-size: 0.75rem; font-weight: 600; margin-top: 6px; }
+        .status-dot-sm { width: 8px; height: 8px; border-radius: 50%; }
+        .status-dot-sm.green { background-color: #81C995; box-shadow: 0 0 5px rgba(129,201,149,0.5); }
+        .status-dot-sm.yellow { background-color: #FFB951; box-shadow: 0 0 5px rgba(255,185,81,0.5); }
+        .status-dot-sm.red { background-color: #FFB4AB; box-shadow: 0 0 5px rgba(255,180,171,0.5); }
+        .text-green { color: #81C995; }
+        .text-yellow { color: #FFB951; }
+        .text-red { color: #FFB4AB; }
 
         .selected-dept { display: inline-flex; align-items: center; gap: 8px; border: 1px solid var(--md-sys-color-outline); border-radius: 100px; padding: 6px 16px; font-size: 0.85rem; font-weight: 500; cursor: pointer; margin-bottom: 25px; transition: 0.2s; color: var(--md-sys-color-on-surface-variant); }
         .selected-dept:hover { background: rgba(255,255,255,0.05); color: var(--md-sys-color-on-surface); }
@@ -128,17 +138,37 @@
                 <div class="dept-list">
                     <div class="dept-item ripple-surface" onclick="window.showLogin('Squadra Mobile')">
                         <img src="https://i.imgur.com/J3T1Kot.png" alt="SM">
-                        <div><h3>Squadra Mobile</h3><span>Sezione Investigativa</span></div>
+                        <div class="dept-info">
+                            <h3>Squadra Mobile</h3>
+                            <span>Sezione Investigativa</span>
+                            <div class="dept-status text-green">
+                                <div class="status-dot-sm green"></div> Operativo
+                            </div>
+                        </div>
                         <i class="fas fa-chevron-right"></i>
                     </div>
+                    
                     <div class="dept-item locked">
                         <img src="https://i.imgur.com/rgGjsgX.png" alt="DIGOS">
-                        <div><h3>D.I.G.O.S.</h3><span>Divisione Generale</span></div>
+                        <div class="dept-info">
+                            <h3>D.I.G.O.S.</h3>
+                            <span>Divisione Generale</span>
+                            <div class="dept-status text-yellow">
+                                <div class="status-dot-sm yellow"></div> In Fase di Sviluppo
+                            </div>
+                        </div>
                         <div class="locked-badge"><i class="fas fa-lock"></i> LOCKED</div>
                     </div>
+                    
                     <div class="dept-item locked">
                         <img src="https://i.imgur.com/gy3HsSH.png" alt="NOS">
-                        <div><h3>N.O.S.</h3><span>Nucleo Operativo Speciale</span></div>
+                        <div class="dept-info">
+                            <h3>N.O.S.</h3>
+                            <span>Nucleo Operativo Speciale</span>
+                            <div class="dept-status text-red">
+                                <div class="status-dot-sm red"></div> Sviluppo Futuro
+                            </div>
+                        </div>
                         <div class="locked-badge"><i class="fas fa-lock"></i> LOCKED</div>
                     </div>
                 </div>
