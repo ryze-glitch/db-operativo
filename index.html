@@ -25,7 +25,7 @@
         strong, b, h1, h2, h3, h4 { font-weight: 600; }
         .hidden { display: none !important; }
 
-        .ripple-surface { position: relative; overflow: hidden; }
+        .ripple-surface { position: relative; overflow: hidden; cursor: pointer; }
         .ripple { position: absolute; border-radius: 50%; transform: scale(0); animation: ripple-anim 0.6s linear; background-color: rgba(255, 255, 255, 0.15); pointer-events: none; }
         @keyframes ripple-anim { to { transform: scale(4); opacity: 0; } }
 
@@ -53,7 +53,6 @@
 
         .google-login-box { background: var(--md-sys-color-surface); border-radius: 24px; width: 100%; max-width: 420px; padding: 40px 35px; border: 1px solid rgba(255,255,255,0.05); text-align: center; position: relative; overflow: hidden; }
         
-        /* GOOGLE LINEAR PROGRESS */
         .md-linear-progress { display: none; position: absolute; top: 0; left: 0; width: 100%; height: 4px; background: rgba(168, 199, 250, 0.2); overflow: hidden; }
         .md-linear-progress.active { display: block; }
         .md-linear-progress::before { content: ''; position: absolute; top: 0; left: 0; height: 100%; width: 50%; background: var(--md-sys-color-primary); animation: md-linear-anim 1.5s infinite ease-in-out; }
@@ -79,23 +78,16 @@
         .selected-dept { display: inline-flex; align-items: center; gap: 8px; border: 1px solid var(--md-sys-color-outline); border-radius: 100px; padding: 6px 16px; font-size: 0.85rem; font-weight: 500; cursor: pointer; margin-bottom: 30px; transition: 0.2s; color: var(--md-sys-color-on-surface-variant); }
         .selected-dept:hover { background: rgba(255,255,255,0.05); color: var(--md-sys-color-on-surface); }
         
-        .m3-input { position: relative; margin-bottom: 20px; text-align: left; }
-        .m3-input input { width: 100%; padding: 16px 20px; border: 1px solid var(--md-sys-color-outline); border-radius: 8px; background: transparent; color: var(--md-sys-color-on-surface); font-size: 1rem; outline: none; transition: 0.2s ease all; text-transform: uppercase;}
-        .m3-input input[type="password"] { text-transform: none; }
-        .m3-input input:focus { border-color: transparent; outline: 2px solid var(--md-sys-color-primary); outline-offset: -1px; background: rgba(168, 199, 250, 0.03); }
-        .m3-input label { position: absolute; left: 16px; top: 16px; background: var(--md-sys-color-surface); padding: 0 6px; color: var(--md-sys-color-on-surface-variant); font-size: 0.95rem; transition: 0.2s ease all; pointer-events: none; text-transform: none;}
-        .m3-input input:focus ~ label, .m3-input input:not(:placeholder-shown) ~ label { top: -10px; left: 12px; font-size: 0.75rem; color: var(--md-sys-color-primary); font-weight: 500; }
+        .btn-google { background: white; color: #3c4043; border: 1px solid #dadce0; border-radius: 12px; padding: 12px 24px; font-size: 0.95rem; font-weight: 600; cursor: pointer; transition: 0.2s; font-family: 'Lexend', sans-serif; display: flex; gap: 12px; align-items: center; justify-content: center; width: 100%; margin-bottom: 20px;}
+        .btn-google:hover:not(:disabled) { background: #f8f9fa; box-shadow: 0 1px 3px rgba(0,0,0,0.2); }
+        .btn-google:disabled { opacity: 0.5; cursor: not-allowed; }
+        .btn-google img { width: 18px; }
 
-        .actions-row { display: flex; justify-content: space-between; align-items: center; margin-top: 45px; }
-        
+        .actions-row { display: flex; justify-content: center; align-items: center; margin-top: 15px; }
         .btn-text { background: transparent; border: none; color: var(--md-sys-color-primary); font-size: 0.9rem; font-weight: 500; cursor: pointer; padding: 10px 16px; border-radius: 100px; transition: 0.2s; font-family: 'Lexend', sans-serif; display: flex; align-items: center; gap: 8px;}
         .btn-text:hover { background: rgba(168, 199, 250, 0.08); }
         
-        .btn-filled { background: var(--md-sys-color-primary); color: var(--md-sys-color-on-primary); border: none; border-radius: 100px; padding: 10px 24px; font-size: 0.9rem; font-weight: 600; cursor: pointer; transition: 0.2s; font-family: 'Lexend', sans-serif; display: flex; gap: 8px; align-items: center;}
-        .btn-filled:hover:not(:disabled) { background: #b4cffa; box-shadow: 0 1px 3px rgba(0,0,0,0.3); }
-        .btn-filled:disabled { opacity: 0.5; cursor: not-allowed; }
-
-        #messaggio-errore { color: var(--md-sys-color-error); font-size: 0.85rem; margin-top: 15px; font-weight: 500; display: flex; align-items: center; justify-content: center; gap: 5px; }
+        #messaggio-errore { color: var(--md-sys-color-error); font-size: 0.9rem; margin-top: 15px; font-weight: 500; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; line-height: 1.4; padding: 10px; border-radius: 8px; background: rgba(255, 180, 171, 0.1);}
 
         @keyframes fadeInScale { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
         .animate-in { animation: fadeInScale 0.3s ease-out forwards; }
@@ -118,7 +110,7 @@
             <div class="left-content">
                 <img src="https://i.imgur.com/gRzOXM3.png" alt="Logo IPRP" class="big-logo">
                 <h1>SISTEMA OPERATIVO<br><span>CENTRALE</span></h1>
-                <p>Accesso riservato al personale della Polizia di Stato. Autenticazione crittografata end-to-end tramite Firebase Auth.</p>
+                <p>Accesso riservato al personale della Polizia di Stato. Autenticazione crittografata end-to-end tramite Google Workspace.</p>
             </div>
         </div>
 
@@ -157,35 +149,31 @@
                     <i class="fas fa-user-shield"></i> <span id="login-dept-name">Reparto</span> <i class="fas fa-caret-down"></i>
                 </div>
 
-                <form id="login-form">
-                    <div class="m3-input">
-                        <input type="text" id="badge" placeholder=" " required autocomplete="off">
-                        <label>Matricola (Es. SM-001)</label>
-                    </div>
-                    <div class="m3-input">
-                        <input type="password" id="password" placeholder=" " required>
-                        <label>Password</label>
-                    </div>
+                <p style="font-size: 0.9rem; color: var(--md-sys-color-on-surface-variant); margin-bottom: 25px;">
+                    Usa il tuo account email per accedere in sicurezza.
+                </p>
 
-                    <div id="messaggio-errore"></div>
+                <button id="btn-google-login" class="btn-google ripple-surface">
+                    <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="G">
+                    Accedi con Google
+                </button>
 
-                    <div class="actions-row">
-                        <button type="button" class="btn-text ripple-surface" onclick="window.showSelector()">
-                            <i class="fas fa-arrow-left" style="font-size:0.85rem;"></i> Indietro
-                        </button>
-                        <button type="submit" class="btn-filled ripple-surface" id="btn-submit">
-                            Avanti
-                        </button>
-                    </div>
-                </form>
+                <div id="messaggio-errore" class="hidden"></div>
+
+                <div class="actions-row">
+                    <button type="button" class="btn-text ripple-surface" onclick="window.showSelector()">
+                        <i class="fas fa-arrow-left"></i> Cambia Reparto
+                    </button>
+                </div>
             </div>
         </div>
     </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-app.js";
-        import { getFirestore } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-firestore.js";
-        import { getAuth, signInWithEmailAndPassword, setPersistence, browserSessionPersistence } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-auth.js";
+        import { getFirestore, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-firestore.js";
+        // IMPORT FIREBASE AUTH GOOGLE
+        import { getAuth, GoogleAuthProvider, signInWithPopup, setPersistence, browserSessionPersistence, signOut } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-auth.js";
 
         setInterval(() => { document.getElementById('live-clock').textContent = new Date().toLocaleTimeString('it-IT', { hour12: false }); }, 1000);
 
@@ -209,59 +197,75 @@
 
         const firebaseConfig = { apiKey: "AIzaSyDPyEfr0KbWtYDeM5-EFTl3s3VGVB_8Yi8", authDomain: "database-dta.firebaseapp.com", projectId: "database-dta", storageBucket: "database-dta.firebasestorage.app", messagingSenderId: "229305773627", appId: "1:229305773627:web:ec3d17f5fcb3c65fdb761e" };
         const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
         const auth = getAuth(app);
+        const provider = new GoogleAuthProvider();
 
         window.showLogin = function(deptName) {
             document.getElementById('card-selector').classList.add('hidden');
             document.getElementById('login-dept-name').textContent = deptName;
             document.getElementById('card-login').classList.remove('hidden');
             document.getElementById('card-login').classList.add('animate-in');
-            document.getElementById('messaggio-errore').innerText = "";
+            document.getElementById('messaggio-errore').classList.add('hidden');
         };
 
         window.showSelector = function() {
             document.getElementById('card-login').classList.add('hidden');
-            document.getElementById('login-form').reset();
             document.getElementById('card-selector').classList.remove('hidden');
             document.getElementById('card-selector').classList.add('animate-in');
-            document.getElementById('messaggio-errore').innerText = "";
+            document.getElementById('messaggio-errore').classList.add('hidden');
         };
 
-        document.getElementById('login-form').addEventListener('submit', async function(e) {
-            e.preventDefault();
-            const matricola = document.getElementById('badge').value.trim().toLowerCase(); // firebase auth usa email
-            const password = document.getElementById('password').value;
-            const btnSubmit = document.getElementById('btn-submit');
+        // ACCESSO CON GOOGLE (WHITELISTING)
+        document.getElementById('btn-google-login').addEventListener('click', async function() {
+            const btnSubmit = this;
             const errBox = document.getElementById('messaggio-errore');
             const loader = document.getElementById('login-progress');
 
             loader.classList.add('active');
-            btnSubmit.disabled = true; errBox.innerText = "";
+            btnSubmit.disabled = true; 
+            errBox.classList.add('hidden');
 
             try {
-                // Imposta persistenza sicura (chiudi la scheda = logout)
+                // Imposta persistenza sessione (logout chiudendo la scheda)
                 await setPersistence(auth, browserSessionPersistence);
                 
-                // Mappiamo matricola a finta email
-                const emailToLogin = matricola + "@iprp.local";
+                // Apre il popup di Google
+                const result = await signInWithPopup(auth, provider);
+                const userEmail = result.user.email;
 
-                // VERO LOGIN FIREBASE AUTH
-                await signInWithEmailAndPassword(auth, emailToLogin, password);
+                // CONTROLLO WHITELIST NEL DATABASE FIRESTORE
+                const q = query(collection(db, "agenti"), where("email", "==", userEmail));
+                const querySnapshot = await getDocs(q);
 
-                // Reindirizzamento
-                setTimeout(() => {
-                    window.location.href = 'squadra-mobile.html';
-                }, 800);
-                
+                if (!querySnapshot.empty) {
+                    const agenteData = querySnapshot.docs[0].data();
+                    
+                    // Salviamo le info base per avviare la UI dopo (La sicurezza la gestisce Firebase Auth ora)
+                    const sessionData = { 
+                        matricola: agenteData.matricola, 
+                        reparto: document.getElementById('login-dept-name').textContent 
+                    };
+                    sessionStorage.setItem('sessioneAttiva', JSON.stringify(sessionData));
+                    
+                    // Finto ritardo per mostrare l'animazione bella di Google
+                    setTimeout(() => { window.location.href = 'squadra-mobile.html'; }, 800);
+                    
+                } else {
+                    // Email NON autorizzata: disconnettiamo l'utente!
+                    await signOut(auth);
+                    loader.classList.remove('active');
+                    errBox.innerHTML = `<span><i class="fas fa-user-lock" style="font-size:1.5rem; margin-bottom:5px;"></i></span> <span><strong>ACCESSO NEGATO</strong><br>L'email ${userEmail} non è autorizzata.</span>`;
+                    errBox.classList.remove('hidden');
+                    btnSubmit.disabled = false;
+                }
             } catch (error) {
                 loader.classList.remove('active');
-                if (error.code === 'auth/invalid-credential' || error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password') {
-                    errBox.innerHTML = '<i class="fas fa-exclamation-circle"></i> Impossibile trovare il tuo account o password errata.';
-                } else {
-                    errBox.innerHTML = '<i class="fas fa-wifi"></i> Errore di rete con i server IPRP Auth.';
+                if (error.code !== 'auth/popup-closed-by-user') {
+                    errBox.innerHTML = '<i class="fas fa-wifi"></i> Autenticazione annullata o Errore di rete.';
+                    errBox.classList.remove('hidden');
                 }
                 btnSubmit.disabled = false;
-                document.getElementById('password').value = "";
             }
         });
     </script>
