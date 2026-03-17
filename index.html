@@ -82,16 +82,16 @@
         .selected-dept:hover { background: rgba(255,255,255,0.05); color: var(--md-sys-color-on-surface); }
         
         /* BOTTONE ACCEDI CON GOOGLE */
-        .btn-google { background: white; color: #3c4043; border: 1px solid #dadce0; border-radius: 100px; padding: 12px 24px; font-size: 0.95rem; font-weight: 600; cursor: pointer; transition: 0.2s; font-family: 'Lexend', sans-serif; display: flex; gap: 12px; align-items: center; justify-content: center; width: 100%; margin-bottom: 20px; margin-top: 10px;}
+        .btn-google { background: white; color: #3c4043; border: 1px solid #dadce0; border-radius: 100px; padding: 12px 24px; font-size: 0.95rem; font-weight: 500; cursor: pointer; transition: 0.2s; font-family: 'Lexend', sans-serif; display: flex; gap: 12px; align-items: center; justify-content: center; width: 100%; margin-bottom: 20px; margin-top: 10px;}
         .btn-google:hover:not(:disabled) { background: #f8f9fa; box-shadow: 0 1px 3px rgba(0,0,0,0.2); }
         .btn-google:disabled { opacity: 0.5; cursor: not-allowed; }
         .btn-google img { width: 18px; }
 
-        .actions-row { display: flex; justify-content: center; align-items: center; margin-top: 15px; }
+        .actions-row { display: flex; justify-content: center; align-items: center; margin-top: 20px; }
         .btn-text { background: transparent; border: none; color: var(--md-sys-color-primary); font-size: 0.9rem; font-weight: 500; cursor: pointer; padding: 10px 16px; border-radius: 100px; transition: 0.2s; font-family: 'Lexend', sans-serif; display: flex; align-items: center; gap: 8px;}
         .btn-text:hover { background: rgba(168, 199, 250, 0.08); }
 
-        #messaggio-errore { color: var(--md-sys-color-error); font-size: 0.9rem; margin-top: 15px; font-weight: 500; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; line-height: 1.4; padding: 12px; border-radius: 12px; background: rgba(255, 180, 171, 0.1);}
+        #messaggio-errore { color: var(--md-sys-color-error); font-size: 0.85rem; margin-top: 15px; font-weight: 500; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; line-height: 1.4; padding: 12px; border-radius: 12px; background: rgba(255, 180, 171, 0.1);}
 
         @keyframes fadeInScale { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
         .animate-in { animation: fadeInScale 0.3s ease-out forwards; }
@@ -294,7 +294,6 @@
                 signInWithRedirect(auth, provider);
             } catch (error) {
                 loaderLogin.classList.remove('active');
-                console.error(error);
                 errBox.innerHTML = '<i class="fas fa-wifi"></i> Impossibile contattare i server Google.';
                 errBox.classList.remove('hidden');
                 btnSubmit.disabled = false;
