@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Accedi - IPRP Google Cloud</title>
+    <title>DB Operativo - IPRP X</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600;700&family=Outfit:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
@@ -53,6 +53,7 @@
 
         .google-login-box { background: var(--md-sys-color-surface); border-radius: 24px; width: 100%; max-width: 420px; padding: 40px 35px; border: 1px solid rgba(255,255,255,0.05); text-align: center; position: relative; overflow: hidden; }
         
+        /* BARRA CARICAMENTO LINEARE GOOGLE */
         .md-linear-progress { display: none; position: absolute; top: 0; left: 0; width: 100%; height: 4px; background: rgba(168, 199, 250, 0.2); overflow: hidden; }
         .md-linear-progress.active { display: block; }
         .md-linear-progress::before { content: ''; position: absolute; top: 0; left: 0; height: 100%; width: 50%; background: var(--md-sys-color-primary); animation: md-linear-anim 1.5s infinite ease-in-out; }
@@ -75,19 +76,21 @@
         .dept-item.locked { opacity: 0.4; background: rgba(0,0,0,0.3); border-color: rgba(255,255,255,0.05); pointer-events: none; }
         .locked-badge { position: absolute; right: 15px; font-size: 0.7rem; background: var(--md-sys-color-error); color: #690005; padding: 3px 8px; border-radius: 4px; font-weight: 700; letter-spacing: 0.5px;}
 
-        .selected-dept { display: inline-flex; align-items: center; gap: 8px; border: 1px solid var(--md-sys-color-outline); border-radius: 100px; padding: 6px 16px; font-size: 0.85rem; font-weight: 500; cursor: pointer; margin-bottom: 30px; transition: 0.2s; color: var(--md-sys-color-on-surface-variant); }
+        .selected-dept { display: inline-flex; align-items: center; gap: 8px; border: 1px solid var(--md-sys-color-outline); border-radius: 100px; padding: 6px 16px; font-size: 0.85rem; font-weight: 500; cursor: pointer; margin-bottom: 25px; transition: 0.2s; color: var(--md-sys-color-on-surface-variant); }
         .selected-dept:hover { background: rgba(255,255,255,0.05); color: var(--md-sys-color-on-surface); }
         
-        .btn-google { background: white; color: #3c4043; border: 1px solid #dadce0; border-radius: 12px; padding: 12px 24px; font-size: 0.95rem; font-weight: 600; cursor: pointer; transition: 0.2s; font-family: 'Lexend', sans-serif; display: flex; gap: 12px; align-items: center; justify-content: center; width: 100%; margin-bottom: 20px;}
+        /* BOTTONE ACCEDI CON GOOGLE */
+        .btn-google { background: white; color: #3c4043; border: 1px solid #dadce0; border-radius: 100px; padding: 12px 24px; font-size: 0.95rem; font-weight: 500; cursor: pointer; transition: 0.2s; font-family: 'Lexend', sans-serif; display: flex; gap: 12px; align-items: center; justify-content: center; width: 100%; margin-bottom: 20px; margin-top: 10px;}
         .btn-google:hover:not(:disabled) { background: #f8f9fa; box-shadow: 0 1px 3px rgba(0,0,0,0.2); }
         .btn-google:disabled { opacity: 0.5; cursor: not-allowed; }
-        .btn-google img { width: 18px; }
+        .btn-google img { width: 20px; }
 
-        .actions-row { display: flex; justify-content: center; align-items: center; margin-top: 15px; }
+        .actions-row { display: flex; justify-content: center; align-items: center; margin-top: 20px; }
+        
         .btn-text { background: transparent; border: none; color: var(--md-sys-color-primary); font-size: 0.9rem; font-weight: 500; cursor: pointer; padding: 10px 16px; border-radius: 100px; transition: 0.2s; font-family: 'Lexend', sans-serif; display: flex; align-items: center; gap: 8px;}
         .btn-text:hover { background: rgba(168, 199, 250, 0.08); }
-        
-        #messaggio-errore { color: var(--md-sys-color-error); font-size: 0.9rem; margin-top: 15px; font-weight: 500; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; line-height: 1.4; padding: 10px; border-radius: 8px; background: rgba(255, 180, 171, 0.1);}
+
+        #messaggio-errore { color: var(--md-sys-color-error); font-size: 0.85rem; margin-top: 15px; font-weight: 500; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; line-height: 1.4; padding: 12px; border-radius: 12px; background: rgba(255, 180, 171, 0.1);}
 
         @keyframes fadeInScale { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
         .animate-in { animation: fadeInScale 0.3s ease-out forwards; }
@@ -117,7 +120,7 @@
         <div class="split-right">
             <div class="google-login-box animate-in" id="card-selector">
                 <img src="https://i.imgur.com/gRzOXM3.png" alt="Logo" class="logo">
-                <h1>Scegli Reparto</h1>
+                <h1 style="font-family: 'Outfit', sans-serif; font-size: 1.5rem; margin-bottom: 8px; color: var(--md-sys-color-on-surface); font-weight: 500;">Scegli Reparto</h1>
                 <p>Seleziona il dipartimento per l'accesso</p>
                 
                 <div class="dept-list">
@@ -142,18 +145,18 @@
             <div class="google-login-box hidden" id="card-login">
                 <div class="md-linear-progress" id="login-progress"></div>
 
-                <img src="https://i.imgur.com/gRzOXM3.png" alt="Logo" class="logo" style="width: 50px; margin-bottom: 15px;">
-                <h1>Verifica Identità</h1>
+                <img src="https://i.imgur.com/gRzOXM3.png" alt="Logo" class="logo" style="width: 40px; margin-bottom: 15px;">
+                <h1 style="font-family: 'Outfit', sans-serif; font-size: 1.5rem; margin-bottom: 8px; color: var(--md-sys-color-on-surface); font-weight: 500;">Verifica Identità</h1>
                 
                 <div class="selected-dept ripple-surface" onclick="window.showSelector()">
                     <i class="fas fa-user-shield"></i> <span id="login-dept-name">Reparto</span> <i class="fas fa-caret-down"></i>
                 </div>
 
-                <p style="font-size: 0.9rem; color: var(--md-sys-color-on-surface-variant); margin-bottom: 25px;">
-                    Usa il tuo account email per accedere in sicurezza.
+                <p style="font-size: 0.95rem; color: var(--md-sys-color-on-surface-variant); margin-bottom: 20px; line-height: 1.5;">
+                    Utilizza il tuo account Google autorizzato per sbloccare il terminale.
                 </p>
 
-                <button id="btn-google-login" class="btn-google ripple-surface">
+                <button type="button" class="btn-google ripple-surface" id="btn-google-login">
                     <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="G">
                     Accedi con Google
                 </button>
@@ -162,7 +165,7 @@
 
                 <div class="actions-row">
                     <button type="button" class="btn-text ripple-surface" onclick="window.showSelector()">
-                        <i class="fas fa-arrow-left"></i> Cambia Reparto
+                        <i class="fas fa-arrow-left"></i> Torna ai Reparti
                     </button>
                 </div>
             </div>
@@ -216,7 +219,7 @@
             document.getElementById('messaggio-errore').classList.add('hidden');
         };
 
-        // ACCESSO CON GOOGLE (WHITELISTING)
+        // ACCESSO VERO CON GOOGLE POPUP
         document.getElementById('btn-google-login').addEventListener('click', async function() {
             const btnSubmit = this;
             const errBox = document.getElementById('messaggio-errore');
@@ -227,35 +230,35 @@
             errBox.classList.add('hidden');
 
             try {
-                // Imposta persistenza sessione (logout chiudendo la scheda)
+                // Imposta persistenza sicura (chiudi la scheda = logout automatico)
                 await setPersistence(auth, browserSessionPersistence);
                 
-                // Apre il popup di Google
+                // Apre il popup ufficiale di Google
                 const result = await signInWithPopup(auth, provider);
                 const userEmail = result.user.email;
 
-                // CONTROLLO WHITELIST NEL DATABASE FIRESTORE
+                // CONTROLLO WHITELIST: L'email esiste nel database agenti?
                 const q = query(collection(db, "agenti"), where("email", "==", userEmail));
                 const querySnapshot = await getDocs(q);
 
                 if (!querySnapshot.empty) {
                     const agenteData = querySnapshot.docs[0].data();
                     
-                    // Salviamo le info base per avviare la UI dopo (La sicurezza la gestisce Firebase Auth ora)
                     const sessionData = { 
+                        email: userEmail,
                         matricola: agenteData.matricola, 
                         reparto: document.getElementById('login-dept-name').textContent 
                     };
                     sessionStorage.setItem('sessioneAttiva', JSON.stringify(sessionData));
                     
-                    // Finto ritardo per mostrare l'animazione bella di Google
+                    // Finestra di tempo per far vedere la grafica lineare
                     setTimeout(() => { window.location.href = 'squadra-mobile.html'; }, 800);
                     
                 } else {
-                    // Email NON autorizzata: disconnettiamo l'utente!
+                    // Email NON autorizzata: Logout immediato!
                     await signOut(auth);
                     loader.classList.remove('active');
-                    errBox.innerHTML = `<span><i class="fas fa-user-lock" style="font-size:1.5rem; margin-bottom:5px;"></i></span> <span><strong>ACCESSO NEGATO</strong><br>L'email ${userEmail} non è autorizzata.</span>`;
+                    errBox.innerHTML = `<span><i class="fas fa-user-lock" style="font-size:1.5rem; margin-bottom:5px;"></i></span> <span style="text-align:center;"><strong>ACCESSO NEGATO</strong><br>L'email <em>${userEmail}</em> non è registrata nei nostri sistemi. Contatta il comando.</span>`;
                     errBox.classList.remove('hidden');
                     btnSubmit.disabled = false;
                 }
