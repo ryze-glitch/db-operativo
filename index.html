@@ -36,10 +36,8 @@
         .top-bar-left i.fa-bars:hover { background: rgba(255,255,255,0.05); }
         .top-bar-left span { font-family: 'Outfit', sans-serif; font-size: 1.2rem; font-weight: 500; }
         
-        /* Risolto il layout shift posizionando il centro in modo assoluto */
         .top-bar-center { position: absolute; left: 50%; transform: translateX(-50%); display: flex; justify-content: center; align-items: center;}
         
-        /* OROLOGIO GOOGLE STYLE (Larghezza fissa per evitare vibrazioni) */
         .top-bar-right { display: flex; align-items: center; justify-content: center; gap: 8px; background: rgba(255,255,255,0.05); padding: 6px 14px; border-radius: 100px; border: 1px solid rgba(255,255,255,0.08); font-size: 0.9rem; font-weight: 500; color: var(--md-sys-color-on-surface); font-variant-numeric: tabular-nums; min-width: 105px;}
         .top-bar-right i { color: var(--md-sys-color-primary); font-size: 0.85rem;}
 
@@ -137,9 +135,13 @@
             </div>
             
             <div id="status-panel" class="status-panel">
-                <h3><i class="fas fa-satellite-dish" style="color: var(--md-sys-color-primary);"></i> Stato Servizi IPRP</h3>
+                <h3>
+                    <i class="fas fa-satellite-dish" style="color: var(--md-sys-color-primary);"></i> Stato Servizi IPRP
+                    <a href="https://db-operato-v10.instatus.com/" target="_blank" style="margin-left: auto; font-size: 0.75rem; color: var(--md-sys-color-primary); text-decoration: none; font-weight: 400;"><i class="fas fa-external-link-alt"></i> Dettagli</a>
+                </h3>
                 <div class="status-list" id="status-list-container">
-                    </div>
+                    <div style="text-align:center; padding: 10px; color: var(--md-sys-color-on-surface-variant);"><i class="fas fa-spinner fa-spin"></i> Caricamento stato...</div>
+                </div>
             </div>
         </div>
 
@@ -231,10 +233,9 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-app.js";
         import { getFirestore, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-firestore.js";
-        // Importiamo sia Popup che Redirect per renderlo 100% infallibile
         import { getAuth, GoogleAuthProvider, signInWithPopup, signInWithRedirect, getRedirectResult, signOut } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-auth.js";
 
-        // OROLOGIO - FIX PER EVITARE SPOSTAMENTI LAYOUT
+        // OROLOGIO
         function startClock() {
             const clockEl = document.getElementById('live-clock');
             function tick() {
@@ -245,62 +246,99 @@
         }
         startClock();
 
-        // GESTIONE LOGICA DELLO STATO SISTEMA (Calcolo automatico per la Navbar)
+        // GESTIONE STATUS AUTOMATICO DA INSTATUS
         const iconConnected = "data:image/png;base64,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";
         const iconDisconnected = "data:image/png;base64,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";
 
-        // Mappa dei servizi con i loro stati. NOS ha ignoreRed = true!
-        const services = [
-            { name: "API e Database", status: "green", label: "Operativo", ignoreRed: false },
-            { name: "Squadra Mobile", status: "green", label: "Operativo", ignoreRed: false },
-            { name: "D.I.G.O.S.", status: "yellow", label: "In Sviluppo", ignoreRed: false },
-            { name: "N.O.S.", status: "red", label: "Sviluppo Futuro", ignoreRed: true } 
-        ];
-
-        function checkGlobalStatus() {
-            let hasYellow = false;
-            let hasRed = false;
-
+        async function fetchInstatusData() {
             const listContainer = document.getElementById('status-list-container');
-            listContainer.innerHTML = '';
-
-            // 1. Popoliamo la lista nel pannello
-            services.forEach(s => {
-                if (s.status === 'yellow') hasYellow = true;
-                if (s.status === 'red' && !s.ignoreRed) hasRed = true;
-
-                const statusColorClass = `text-${s.status}`;
-                listContainer.innerHTML += `
-                    <div class="status-item">
-                        <div class="status-item-left">${s.name}</div>
-                        <div class="status-item-right ${statusColorClass}">
-                            <div class="status-dot-sm ${s.status}"></div> ${s.label}
-                        </div>
-                    </div>
-                `;
-            });
-
-            // 2. Aggiorniamo la barra superiore principale (Status Globale)
             const globalIconEl = document.getElementById('global-status-icon');
             const globalTextEl = document.getElementById('global-status-text');
 
-            if (hasRed) {
+            try {
+                // Colleghiamo direttamente al JSON riassuntivo pubblico di Instatus
+                const response = await fetch('https://db-operato-v10.instatus.com/summary.json');
+                if (!response.ok) throw new Error('Network response was not ok');
+                
+                const data = await response.json();
+                
+                listContainer.innerHTML = ''; // Pulisce il loader
+                let hasRed = false;
+                let hasYellow = false;
+
+                // Mostra tutti i componenti e il loro stato (ignora quelli senza nome)
+                if (data.components && data.components.length > 0) {
+                    data.components.forEach(c => {
+                        let sColor = "green";
+                        let sLabel = "Operativo";
+
+                        // Mappa gli status di Instatus ai nostri colori
+                        if (c.status === "OPERATIONAL") {
+                            sColor = "green";
+                            sLabel = "Operativo";
+                        } else if (c.status === "UNDERMAINTENANCE") {
+                            sColor = "yellow";
+                            sLabel = "Manutenzione";
+                            hasYellow = true;
+                        } else if (c.status === "DEGRADEDPERFORMANCE" || c.status === "PARTIALOUTAGE") {
+                            sColor = "yellow";
+                            sLabel = "Degradato";
+                            hasYellow = true;
+                        } else if (c.status === "MAJOROUTAGE") {
+                            sColor = "red";
+                            sLabel = "Interruzione";
+                            hasRed = true;
+                        }
+
+                        listContainer.innerHTML += `
+                            <div class="status-item">
+                                <div class="status-item-left">${c.name}</div>
+                                <div class="status-item-right text-${sColor}">
+                                    <div class="status-dot-sm ${sColor}"></div> ${sLabel}
+                                </div>
+                            </div>
+                        `;
+                    });
+                } else {
+                    listContainer.innerHTML = '<div class="status-item"><div class="status-item-left">Nessun servizio tracciato</div></div>';
+                }
+
+                // Aggiorna lo stato globale nella Navbar in alto in base allo status della pagina ("UP", "HASISSUES", "UNDERMAINTENANCE")
+                const pageStatus = data.page.status;
+                
+                if (pageStatus === "UP") {
+                    globalIconEl.src = iconConnected;
+                    globalTextEl.textContent = "Server Connesso";
+                    globalTextEl.style.color = "var(--md-sys-color-success)";
+                } else {
+                    // C'è un problema o una manutenzione in corso
+                    if (hasRed) {
+                        globalIconEl.src = iconDisconnected;
+                        globalTextEl.textContent = "Servizi Offline";
+                        globalTextEl.style.color = "var(--md-sys-color-error)";
+                    } else {
+                        globalIconEl.src = iconDisconnected;
+                        globalTextEl.textContent = "Servizi Limitati";
+                        globalTextEl.style.color = "var(--md-sys-color-warning)";
+                    }
+                }
+
+            } catch (error) {
+                console.error("Errore recupero status:", error);
+                
+                // Fallback in caso di errore di connessione API
                 globalIconEl.src = iconDisconnected;
-                globalTextEl.textContent = "Servizi Offline";
+                globalTextEl.textContent = "Errore Status";
                 globalTextEl.style.color = "var(--md-sys-color-error)";
-            } else if (hasYellow) {
-                globalIconEl.src = iconDisconnected;
-                globalTextEl.textContent = "Servizi Limitati";
-                globalTextEl.style.color = "var(--md-sys-color-warning)";
-            } else {
-                globalIconEl.src = iconConnected;
-                globalTextEl.textContent = "Server Connesso";
-                globalTextEl.style.color = "var(--md-sys-color-success)";
+                listContainer.innerHTML = `
+                    <div class="status-item" style="color:var(--md-sys-color-error); justify-content:center;">
+                        Impossibile recuperare lo stato live.
+                    </div>
+                `;
             }
         }
-        
-        // Lanciamo il controllo dello stato all'apertura del sito
-        checkGlobalStatus();
+
+        fetchInstatusData();
 
         // GESTIONE APERTURA/CHIUSURA PANNELLO STATUS
         const btnStatus = document.getElementById('btn-server-status');
@@ -411,14 +449,11 @@
         // CONTROLLO AUTOMATICO: SE L'UTENTE TORNA DAL REDIRECT DI GOOGLE
         getRedirectResult(auth).then((result) => {
             if (result) {
-                // Il Redirect è andato a buon fine, l'utente è tornato
                 handleAuthResult(result.user);
             } else {
-                // Non stiamo tornando da un redirect
                 loaderSelector.classList.remove('active');
             }
         }).catch((error) => {
-            // C'è stato un problema durante il rientro dal Redirect
             loaderSelector.classList.remove('active');
             const repartoSelezionato = localStorage.getItem('tempReparto');
             if(repartoSelezionato) window.showLogin(repartoSelezionato);
@@ -438,7 +473,6 @@
 
             console.log("Avvio autenticazione tramite Redirect...");
             
-            // Saltiamo il popup e usiamo direttamente il redirect per aggirare il blocco COOP di Chrome
             signInWithRedirect(auth, provider).catch((error) => {
                 console.error("Errore avvio Redirect:", error);
                 loaderLogin.classList.remove('active');
