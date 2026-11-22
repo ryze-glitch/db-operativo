@@ -1,0 +1,84 @@
+@import "@fontsource-variable/google-sans-flex/index.css";
+
+/* ===== Tema scuro (predefinito) ===== */
+:root {
+  --font: "Google Sans Flex Variable", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --md-ref-typeface-brand: var(--font);
+  --md-ref-typeface-plain: var(--font);
+  --md-icon-font: "Material Symbols Rounded";
+
+  --g-bg: #131314; --g-side: #1e1f20; --g-surface: #1e1f20; --g-raise: #282a2c; --g-hover: #333537;
+  --g-text: #e3e3e3; --g-muted: #a8abb0; --g-line: #3c4043; --g-blue: #a8c7fa; --g-scrim: rgba(0,0,0,.6);
+  --g-red: #f28b82; --g-yellow: #fdd663; --g-green: #81c995; --g-purple: #c58af9;
+  --g-danger-bg: #5c1d1b; --g-danger-fg: #ffdad6;
+
+  --md-sys-color-surface: #131314; --md-sys-color-on-surface: #e3e3e3; --md-sys-color-on-surface-variant: #c4c7c5;
+  --md-sys-color-outline: #8e918f; --md-sys-color-outline-variant: #444746;
+  --md-sys-color-surface-container: #1e1f20; --md-sys-color-surface-container-high: #282a2c; --md-sys-color-surface-container-highest: #333537;
+  --md-sys-color-primary: #a8c7fa; --md-sys-color-on-primary: #062e6f;
+  --md-sys-color-secondary-container: #004a77; --md-sys-color-on-secondary-container: #c2e7ff;
+  --md-sys-color-error: #f2b8b5; --md-sys-color-on-error: #601410;
+  color-scheme: dark;
+}
+
+/* ===== Tema chiaro ===== */
+:root[data-tema="chiaro"] {
+  --g-bg: #ffffff; --g-side: #f0f4f9; --g-surface: #f0f4f9; --g-raise: #e9eef6; --g-hover: #dde3ea;
+  --g-text: #1f1f1f; --g-muted: #5e6166; --g-line: #c4c7c5; --g-blue: #0b57d0; --g-scrim: rgba(0,0,0,.32);
+  --g-red: #c5221f; --g-yellow: #a05a00; --g-green: #137333; --g-purple: #8430ce;
+  --g-danger-bg: #fce8e6; --g-danger-fg: #5c1020;
+
+  --md-sys-color-surface: #ffffff; --md-sys-color-on-surface: #1f1f1f; --md-sys-color-on-surface-variant: #444746;
+  --md-sys-color-outline: #747775; --md-sys-color-outline-variant: #c4c7c5;
+  --md-sys-color-surface-container: #f0f4f9; --md-sys-color-surface-container-high: #e9eef6; --md-sys-color-surface-container-highest: #dde3ea;
+  --md-sys-color-primary: #0b57d0; --md-sys-color-on-primary: #ffffff;
+  --md-sys-color-secondary-container: #c2e7ff; --md-sys-color-on-secondary-container: #001d35;
+  --md-sys-color-error: #b3261e; --md-sys-color-on-error: #ffffff;
+  color-scheme: light;
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+body { background: var(--g-bg); color: var(--g-text); font-family: var(--font); -webkit-font-smoothing: antialiased; }
+h1, h2, h3, p { margin: 0; }
+a { color: inherit; }
+button { font: inherit; }
+
+.g-gradient {
+  background: linear-gradient(90deg, #4285f4 0%, #9b72cb 45%, #d96570 85%);
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+.g-ring { background: conic-gradient(from 200deg, #4285f4, #9b72cb, #d96570, #4285f4); }
+.muted { color: var(--g-muted); }
+
+/* Pulsanti e chip in stile Gemini */
+.g-chip {
+  position: relative; display: inline-flex; align-items: center; gap: 8px; height: 40px; padding: 0 16px;
+  border-radius: 20px; border: none; background: var(--g-raise); color: var(--g-text); font-size: 14px; cursor: pointer; white-space: nowrap;
+}
+.g-chip[aria-pressed="true"] { background: var(--md-sys-color-secondary-container); color: var(--md-sys-color-on-secondary-container); font-weight: 600; }
+.g-chip md-icon { font-size: 20px; width: 20px; height: 20px; }
+
+/* Campi dei moduli */
+.g-field { display: flex; flex-direction: column; gap: 6px; font-size: 13px; color: var(--g-muted); }
+.g-field input, .g-field textarea, .g-field select {
+  font: inherit; font-size: 15px; color: var(--g-text); background: var(--g-surface);
+  border: 1px solid var(--g-line); border-radius: 14px; padding: 12px 14px; outline: none; width: 100%;
+}
+.g-field textarea { resize: vertical; min-height: 90px; }
+.g-field input:focus, .g-field textarea:focus, .g-field select:focus { border-color: var(--g-blue); box-shadow: 0 0 0 1px var(--g-blue); }
+
+.g-card { position: relative; background: var(--g-surface); border-radius: 16px; }
+.g-table-row { display: grid; align-items: center; padding: 12px 16px; border-top: 1px solid var(--g-line); font-size: 14px; }
+.g-table-row.head { border-top: none; background: var(--g-surface); font-size: 12px; font-weight: 600; color: var(--g-muted); padding: 10px 16px; }
+.g-table-row.click { cursor: pointer; position: relative; }
+.g-table-row.click:hover { background: var(--g-surface); }
+
+.spin { animation: spin 1s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.fade-in { animation: fade .25s ease; }
+@keyframes fade { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+
+@media (max-width: 720px) {
+  .hide-mobile { display: none !important; }
+}

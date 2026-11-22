@@ -22,6 +22,14 @@ jobs:
           fi
         env:
           SA: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+      - uses: actions/setup-node@v4
+        if: ${{ env.HAS_SA == 'true' }}
+        with:
+          node-version: 22
+          cache: npm
+      - name: Compila il sito
+        if: ${{ env.HAS_SA == 'true' }}
+        run: npm ci && npm run build
       - uses: FirebaseExtended/action-hosting-deploy@v0
         if: ${{ env.HAS_SA == 'true' }}
         with:
