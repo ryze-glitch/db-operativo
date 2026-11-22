@@ -338,7 +338,7 @@
             </div>
             <ul class="sidebar-menu">
                 <li class="active ripple-surface" data-target="view-dashboard"><i class="fas fa-home"></i> Home Operativa</li>
-                <li class="ripple-surface" data-target="view-annunci" id="nav-btn-comunicazioni"><i class="fas fa-bullhorn"></i> Comunicazioni</li>
+                <li class="ripple-surface" data-target="view-annunci" id="nav-btn-comunicazioni"><i class="fas fa-bullhorn"></i> Comunicazioni <span id="unread-count" class="hidden" style="margin-left:auto; background:var(--md-sys-color-error); color:#690005; border-radius:100px; padding:2px 8px; font-size:0.75rem; font-weight:700;"></span></li>
                 
                 <li class="locked">
                     <i class="fas fa-crosshairs"></i> Foglio Investigativo <i class="fas fa-lock lock-icon"></i>
@@ -396,7 +396,7 @@
                             <p>Terminale Centrale connesso e operativo. L'accesso ai fascicoli e alle direttive è crittografato end-to-end con standard IPRP.</p>
                             
                             <div class="hero-actions">
-                                <button class="btn-fab ripple-surface" onclick="document.getElementById('btn-toggle-form-fas').click()">
+                                <button class="btn-fab ripple-surface" onclick="showToast('Sezione bloccata', 'I Fascicoli d\'Indagine sono ancora in sviluppo.', 'warning')">
                                     <i class="fas fa-folder-plus"></i> Nuovo Fascicolo
                                 </button>
                                 <div class="hero-clock">
@@ -610,6 +610,15 @@
         }
         window.showToast = showToast;
 
+        // HELPER ANTI-XSS: tutti i dati letti dal DB passano da qui prima di finire in innerHTML
+        function esc(v) {
+            return String(v ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+        }
+        function safeUrl(u) {
+            const s = String(u || '').trim();
+            return /^https?:\/\//i.test(s) ? s : '';
+        }
+
         let utenteCorrente = null; let matricolaPura = "---"; let isAdmin = false;
         let chartIndaginiInst = null; let chartRischioInst = null; let recentItemsData = [];
 
@@ -654,7 +663,9 @@
                     
                     if(snap.empty) { 
                         // L'email ha fatto login con google ma NON E' un agente registrato in IPRP
-                        signOut(auth); 
+                        // Rimuoviamo la sessione, altrimenti index.html rimanda qui all'infinito
+                        sessionStorage.removeItem('sessioneAttiva');
+                        await signOut(auth); 
                         window.location.href = 'index.html'; 
                         return; 
                     }
@@ -673,7 +684,7 @@
                     document.getElementById('set-nome').value = utenteCorrente.nome;
                     document.getElementById('set-matr').value = matricolaPura;
 
-                    if (utenteCorrente.admin && utenteCorrente.admin.toLowerCase().startsWith('s')) {
+                    if (utenteCorrente.admin === true || String(utenteCorrente.admin || '').toLowerCase().startsWith('s')) {
                         isAdmin = true; 
                         document.getElementById('btn-toggle-form-ann').classList.remove('hidden');
                         document.getElementById('set-grado').value = "Super Admin";
@@ -691,9 +702,14 @@
                 } catch(e) { 
                     console.error(e);
                     // Non reindirizzare subito, mostra errore se il DB fallisce ma Auth va a buon fine
+                    const overlay = document.getElementById('loading-overlay');
+                    overlay.classList.remove('fade-out');
+                    overlay.style.display = 'flex';
+                    overlay.innerHTML = `<i class="fas fa-database" style="font-size:3rem; color:var(--md-sys-color-error); margin-bottom:20px;"></i><h2>Errore Database</h2><p>Impossibile caricare il profilo operatore (${esc(e && e.code ? e.code : (e && e.message) || 'errore sconosciuto')}).</p><button class="btn-fab ripple-surface" style="margin-top:20px;" onclick="location.reload()"><i class="fas fa-redo"></i> Riprova</button>`;
                 }
             } else {
-                // User is signed out
+                // User is signed out: rimuoviamo la sessione, altrimenti index.html rimanda qui all'infinito
+                sessionStorage.removeItem('sessioneAttiva');
                 window.location.href = 'index.html';
             }
         });
@@ -707,7 +723,7 @@
         function updateRecentFeed() {
             const feed = document.getElementById('feed-recenti'); feed.innerHTML = '';
             recentItemsData.sort((a,b) => b.id - a.id).slice(0,5).forEach(item => {
-                feed.innerHTML += `<div class="recent-item"><i class="fas ${item.tipo === 'fascicolo' ? 'fa-folder' : 'fa-user-secret'}"></i><div class="recent-info"><strong>${item.titolo}</strong><span>${item.data} - ${item.autore}</span></div></div>`;
+                feed.innerHTML += `<div class="recent-item"><i class="fas ${item.tipo === 'fascicolo' ? 'fa-folder' : 'fa-user-secret'}"></i><div class="recent-info"><strong>${esc(item.titolo)}</strong><span>${esc(item.data)} - ${esc(item.autore)}</span></div></div>`;
             });
         }
 
@@ -719,7 +735,7 @@
                 if(snapshot.empty) { container.innerHTML = `<div class="nessun-dato">Nessun log.</div>`; return; }
                 snapshot.forEach(docSnap => {
                     const data = docSnap.data();
-                    container.innerHTML += `<div class="log-item ${data.azione.includes('Elimina') ? 'eliminazione' : ''}"><div class="log-info"><h4><i class="fas fa-terminal"></i> ${data.azione}</h4><p>${data.dettaglio}</p></div><div class="log-meta"><div>${data.autore}</div>${data.dataOra}</div></div>`;
+                    container.innerHTML += `<div class="log-item ${String(data.azione || '').includes('Elimina') ? 'eliminazione' : ''}"><div class="log-info"><h4><i class="fas fa-terminal"></i> ${esc(data.azione)}</h4><p>${esc(data.dettaglio)}</p></div><div class="log-meta"><div>${esc(data.autore)}</div>${esc(data.dataOra)}</div></div>`;
                 });
             });
 
@@ -740,18 +756,19 @@
 
                         if(data.durata !== "SCADUTO" && data.durata !== "PERMANENTE" && data.dataApplicazione) {
                             let dataAppDate = new Date(data.dataApplicazione);
-                            let matchG = data.durata.match(/(\d+) GIORNI/); let matchO = data.durata.match(/(\d+) ORE/);
+                            let matchG = String(data.durata || '').match(/(\d+) GIORNI/); let matchO = String(data.durata || '').match(/(\d+) ORE/);
                             if (matchG) dataAppDate.setDate(dataAppDate.getDate() + parseInt(matchG[1]));
                             if (matchO) dataAppDate.setHours(dataAppDate.getHours() + parseInt(matchO[1]));
                             if(new Date() > dataAppDate) { uiDurataText = "SCADUTO ⛔"; durataClass = "chip-gray"; }
                         }
 
                         const isAuth = (isAdmin || utenteCorrente.matricola === data.firmaMatricolaCompleta);
-                        let fotoHtml = data.fotoUrl ? `<img src="${data.fotoUrl}" class="card-img">` : `<div class="card-img"><i class="fas fa-user-secret"></i></div>`;
+                        const fotoAtt = safeUrl(data.fotoUrl);
+                        let fotoHtml = fotoAtt ? `<img src="${esc(fotoAtt)}" class="card-img">` : `<div class="card-img"><i class="fas fa-user-secret"></i></div>`;
                         let btnDelEdit = isAuth ? `<button class="icon-btn edit ripple-surface" onclick="modificaAttenzionato('${id}')"><i class="fas fa-pen"></i></button><button class="icon-btn delete ripple-surface" onclick="richiediEliminazione('${id}', 'attenzionati')"><i class="fas fa-trash"></i></button>` : '';
                         
                         const card = document.createElement('div'); card.className = 'data-card';
-                        card.innerHTML = `<div class="status-chip ${durataClass}">${uiDurataText}</div><div class="card-top">${fotoHtml}<div class="card-title"><h3>${data.nome}</h3><p>${data.motivazione.substring(0,25)}...</p></div></div><div class="card-body"><p><strong>Nascita:</strong> ${data.dataNascita}</p><p style="margin-top:10px;">${data.commenti.substring(0, 60)}...</p></div><div class="card-footer"><span class="card-author"><i class="fas fa-id-badge"></i> ${data.firmaNome}</span><div class="card-btns"><button class="icon-btn ripple-surface" onclick="apriDettaglio('${id}', 'attenzionati')"><i class="fas fa-eye"></i></button>${btnDelEdit}</div></div>`;
+                        card.innerHTML = `<div class="status-chip ${durataClass}">${esc(uiDurataText)}</div><div class="card-top">${fotoHtml}<div class="card-title"><h3>${esc(data.nome)}</h3><p>${esc(String(data.motivazione || '').substring(0,25))}...</p></div></div><div class="card-body"><p><strong>Nascita:</strong> ${esc(data.dataNascita)}</p><p style="margin-top:10px;">${esc(String(data.commenti || '').substring(0, 60))}...</p></div><div class="card-footer"><span class="card-author"><i class="fas fa-id-badge"></i> ${esc(data.firmaNome)}</span><div class="card-btns"><button class="icon-btn ripple-surface" onclick="apriDettaglio('${id}', 'attenzionati')"><i class="fas fa-eye"></i></button>${btnDelEdit}</div></div>`;
                         gridAtt.appendChild(card);
                     });
                 }
@@ -775,11 +792,12 @@
                         recentItemsData.push({ id: id, tipo: 'fascicolo', titolo: data.titolo, autore: data.firmaNome, data: data.dataInserimento });
 
                         const isAuth = (isAdmin || utenteCorrente.matricola === data.firmaMatricolaCompleta);
-                        let fotoHtml = data.fotoUrl ? `<img src="${data.fotoUrl}" class="card-img" style="border-radius:8px;">` : `<div class="card-img"><i class="fas fa-folder"></i></div>`;
+                        const fotoFas = safeUrl(data.fotoUrl);
+                        let fotoHtml = fotoFas ? `<img src="${esc(fotoFas)}" class="card-img" style="border-radius:8px;">` : `<div class="card-img"><i class="fas fa-folder"></i></div>`;
                         let btnDelEdit = isAuth ? `<button class="icon-btn edit ripple-surface" onclick="modificaFascicolo('${id}')"><i class="fas fa-pen"></i></button><button class="icon-btn delete ripple-surface" onclick="richiediEliminazione('${id}', 'fascicoli')"><i class="fas fa-trash"></i></button>` : '';
                         
                         const card = document.createElement('div'); card.className = 'data-card';
-                        card.innerHTML = `<div class="status-chip ${data.stato==='aperto'?'chip-green':'chip-gray'}">${data.stato}</div><div class="card-top">${fotoHtml}<div class="card-title"><h3>${data.titolo}</h3><p>${data.reati}</p></div></div><div class="card-body"><p>${data.dettagli.substring(0, 60)}...</p></div><div class="card-footer"><span class="card-author"><i class="fas fa-id-badge"></i> ${data.firmaNome}</span><div class="card-btns"><button class="icon-btn ripple-surface" onclick="apriDettaglio('${id}', 'fascicoli')"><i class="fas fa-eye"></i></button>${btnDelEdit}</div></div>`;
+                        card.innerHTML = `<div class="status-chip ${data.stato==='aperto'?'chip-green':'chip-gray'}">${esc(data.stato)}</div><div class="card-top">${fotoHtml}<div class="card-title"><h3>${esc(data.titolo)}</h3><p>${esc(data.reati)}</p></div></div><div class="card-body"><p>${esc(String(data.dettagli || '').substring(0, 60))}...</p></div><div class="card-footer"><span class="card-author"><i class="fas fa-id-badge"></i> ${esc(data.firmaNome)}</span><div class="card-btns"><button class="icon-btn ripple-surface" onclick="apriDettaglio('${id}', 'fascicoli')"><i class="fas fa-eye"></i></button>${btnDelEdit}</div></div>`;
                         gridFas.appendChild(card);
                     });
                 }
@@ -787,6 +805,27 @@
                 document.getElementById('kpi-indagini').innerText = fAperti;
                 if(chartIndaginiInst) { chartIndaginiInst.data.datasets[0].data = [fAperti, fAtt, fCh]; chartIndaginiInst.update(); }
                 updateRecentFeed();
+            });
+
+            // BACHECA COMUNICAZIONI
+            onSnapshot(query(collection(db, "annunci"), orderBy("timestamp", "desc")), (snapshot) => {
+                const gridAnn = document.getElementById('grid-annunci'); gridAnn.innerHTML = '';
+                currentAnnunciIds = [];
+                if(snapshot.empty) { gridAnn.innerHTML = `<div class="nessun-dato">Nessuna comunicazione.</div>`; }
+                else {
+                    snapshot.forEach((docSnap) => {
+                        const data = docSnap.data(); const id = docSnap.id;
+                        currentAnnunciIds.push(id);
+                        const priorita = String(data.priorita || '').toLowerCase();
+                        const badge = (priorita === 'urgente' || priorita === 'alta') ? `<span class="badge-urgent">${esc(priorita)}</span>` : '';
+                        const btnLetto = annunciLetti.includes(id) ? '' : `<button class="btn-tonal ripple-surface" id="btn-letto-${id}" onclick="segnaComeLetto('${id}')"><i class="fas fa-check"></i> Segna come letto</button>`;
+                        const item = document.createElement('div');
+                        item.className = 'annuncio-item' + (priorita === 'urgente' ? ' urgente' : '');
+                        item.innerHTML = `<div class="ann-head"><h3>${esc(data.titolo)} ${badge}</h3></div><div class="ann-body">${esc(data.testo)}</div><div class="ann-foot"><span><i class="fas fa-user-shield"></i> ${esc(data.autore)} · ${esc(data.dataOra)}</span>${btnLetto}</div>`;
+                        gridAnn.appendChild(item);
+                    });
+                }
+                updateBadgeNotifiche();
             });
         }
 
@@ -810,24 +849,64 @@
         });
 
         /* --- MODAL DETTAGLI --- */
+        let dettaglioAperto = { id: null, col: null };
         window.apriDettaglio = async function(id, collectionName) {
             const docSnap = await getDoc(doc(db, collectionName, id));
             if(docSnap.exists()) {
                 const data = docSnap.data(); 
                 document.getElementById('detail-title').innerText = collectionName === 'attenzionati' ? `Foglio: ${data.nome}` : `Fascicolo: ${data.titolo}`;
-                let img = data.fotoUrl ? `<img src="${data.fotoUrl}">` : `<i class="fas fa-image" style="font-size:4rem; color:var(--md-sys-color-text-muted)"></i>`;
+                const fotoDet = safeUrl(data.fotoUrl);
+                let img = fotoDet ? `<img src="${esc(fotoDet)}">` : `<i class="fas fa-image" style="font-size:4rem; color:var(--md-sys-color-text-muted)"></i>`;
                 
                 let textHtml = ``;
                 if(collectionName === 'attenzionati') { 
-                    textHtml = `<p><strong>Nascita:</strong> ${data.dataNascita}</p><p><strong>Motivazione:</strong> <span style="color:var(--md-sys-color-primary)">${data.motivazione}</span></p><p><strong>Durata:</strong> ${data.durata}</p><p><strong>Applicazione:</strong> ${data.dataApplicazione}</p><hr style="border-top:1px solid rgba(255,255,255,0.1); margin:15px 0;"><p>${data.commenti}</p>`; 
+                    textHtml = `<p><strong>Nascita:</strong> ${esc(data.dataNascita)}</p><p><strong>Motivazione:</strong> <span style="color:var(--md-sys-color-primary)">${esc(data.motivazione)}</span></p><p><strong>Durata:</strong> ${esc(data.durata)}</p><p><strong>Applicazione:</strong> ${esc(data.dataApplicazione)}</p><hr style="border-top:1px solid rgba(255,255,255,0.1); margin:15px 0;"><p>${esc(data.commenti)}</p>`; 
                 } else { 
-                    textHtml = `<p><strong>Reati:</strong> ${data.reati}</p><p><strong>Stato:</strong> ${data.stato}</p><p><strong>Soggetti:</strong> ${data.soggetti}</p><hr style="border-top:1px solid rgba(255,255,255,0.1); margin:15px 0;"><p>${data.dettagli}</p>`; 
+                    textHtml = `<p><strong>Reati:</strong> ${esc(data.reati)}</p><p><strong>Stato:</strong> ${esc(data.stato)}</p><p><strong>Soggetti:</strong> ${esc(data.soggetti)}</p><hr style="border-top:1px solid rgba(255,255,255,0.1); margin:15px 0;"><p>${esc(data.dettagli)}</p>`; 
                 }
 
-                document.getElementById('detail-info').innerHTML = `<div class="dettaglio-layout"><div class="img-col">${img}</div><div class="text-col">${textHtml}<br><small style="font-family:monospace; color:gray">Compilato da: ${data.firmaNome}</small></div></div>`;
+                document.getElementById('detail-info').innerHTML = `<div class="dettaglio-layout"><div class="img-col">${img}</div><div class="text-col">${textHtml}<br><small style="font-family:monospace; color:gray">Compilato da: ${esc(data.firmaNome)}</small></div></div>`;
+                dettaglioAperto = { id: id, col: collectionName };
+                renderProve(data.prove);
+                document.getElementById('input-nuova-prova').value = '';
                 document.getElementById('detail-modal').classList.add('active');
             }
         };
+
+        /* --- PROVE E ANNOTAZIONI --- */
+        function renderProve(prove) {
+            const list = document.getElementById('detail-prove-list'); list.innerHTML = '';
+            if (!Array.isArray(prove) || prove.length === 0) { list.innerHTML = `<div class="nessun-dato" style="padding:20px;">Nessuna prova allegata.</div>`; return; }
+            prove.forEach(p => {
+                const testo = String((p && p.testo) || '');
+                const url = safeUrl(testo);
+                const contenuto = url ? `<a href="${esc(url)}" target="_blank" rel="noopener noreferrer" style="color:var(--md-sys-color-primary); word-break:break-all;">${esc(testo)}</a>` : esc(testo);
+                list.innerHTML += `<div class="prova-item"><p>${contenuto}</p><small>${esc(p && p.autore)} · ${esc(p && p.dataOra)}</small></div>`;
+            });
+        }
+
+        document.getElementById('btn-add-prova').addEventListener('click', async (e) => {
+            const btn = e.currentTarget;
+            const input = document.getElementById('input-nuova-prova');
+            const testo = input.value.trim();
+            if (!dettaglioAperto.id) return;
+            if (!testo) return showToast("Attenzione", "Scrivi una nota o un link da allegare.", "warning");
+            btn.disabled = true;
+            try {
+                const ref = doc(db, dettaglioAperto.col, dettaglioAperto.id);
+                await updateDoc(ref, { prove: arrayUnion({ testo: testo, autore: `${utenteCorrente.nome} - ${matricolaPura}`, dataOra: new Date().toLocaleString('it-IT'), ts: Date.now() }) });
+                const snap = await getDoc(ref);
+                if (snap.exists()) renderProve(snap.data().prove);
+                input.value = '';
+                registraLog("Prova allegata", `${dettaglioAperto.col}/${dettaglioAperto.id}: ${testo.substring(0, 60)}`);
+                showToast("Prova allegata", "Annotazione salvata nel record.", "success");
+            } catch (err) {
+                console.error(err);
+                showToast("Errore", "Impossibile allegare la prova.", "error");
+            } finally {
+                btn.disabled = false;
+            }
+        });
 
         /* --- ELIMINAZIONE GLOBALE & DISCORD --- */
         let deleteInfo = { id: null, col: null };

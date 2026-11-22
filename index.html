@@ -231,8 +231,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-app.js";
         import { getFirestore, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-firestore.js";
-        // Importiamo sia Popup che Redirect per renderlo 100% infallibile
-        import { getAuth, GoogleAuthProvider, signInWithPopup, signInWithRedirect, getRedirectResult, signOut } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-auth.js";
+        import { getAuth, GoogleAuthProvider, signInWithPopup, getRedirectResult, signOut } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-auth.js";
 
         // OROLOGIO - FIX PER EVITARE SPOSTAMENTI LAYOUT
         function startClock() {
@@ -342,6 +341,7 @@
         const db = getFirestore(app);
         const auth = getAuth(app);
         const provider = new GoogleAuthProvider();
+        provider.setCustomParameters({ prompt: 'select_account' });
 
         window.showLogin = function(deptName) {
             document.getElementById('card-selector').classList.add('hidden');
@@ -400,7 +400,7 @@
                     // L'email esiste su Google, ma NON l'hai autorizzata nel DB!
                     await signOut(auth);
                     loaderLogin.classList.remove('active');
-                    errBox.innerHTML = `<span><i class="fas fa-user-lock" style="font-size:1.5rem; margin-bottom:5px;"></i></span> <span style="text-align:center;"><strong>ACCESSO NEGATO</strong><br>L'email <em>${userEmail}</em> non è registrata nei nostri sistemi. Contatta il comando.</span>`;
+                    errBox.innerHTML = `<span><i class="fas fa-user-lock" style="font-size:1.5rem; margin-bottom:5px;"></i></span> <span style="text-align:center;"><strong>ACCESSO NEGATO</strong><br>L'email <em>${String(userEmail || '').replace(/[<>&"']/g, '')}</em> non è registrata nei nostri sistemi. Contatta il comando.</span>`;
                     errBox.classList.remove('hidden');
                     document.getElementById('btn-google-login').disabled = false;
                 }
@@ -413,44 +413,58 @@
             }
         }
 
-        // CONTROLLO AUTOMATICO: SE L'UTENTE TORNA DAL REDIRECT DI GOOGLE
-        getRedirectResult(auth).then((result) => {
-            if (result) {
-                // Il Redirect è andato a buon fine, l'utente è tornato
-                handleAuthResult(result.user);
-            } else {
-                // Non stiamo tornando da un redirect
-                loaderSelector.classList.remove('active');
-            }
-        }).catch((error) => {
-            // C'è stato un problema durante il rientro dal Redirect
-            loaderSelector.classList.remove('active');
-            const repartoSelezionato = localStorage.getItem('tempReparto');
-            if(repartoSelezionato) window.showLogin(repartoSelezionato);
-            
-            console.error("Auth Redirect Error:", error);
-            errBox.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Errore durante l\'autenticazione Google.';
+        function mostraErroreLogin(html) {
+            loaderLogin.classList.remove('active');
+            errBox.innerHTML = html;
             errBox.classList.remove('hidden');
             document.getElementById('btn-google-login').disabled = false;
+        }
+
+        // COMPATIBILITÀ: getRedirectResult resta solo per eventuali rientri da vecchi redirect.
+        // Non usiamo più signInWithRedirect: il sito è su ryze-glitch.github.io mentre authDomain è
+        // database-dta.firebaseapp.com, quindi sui browser che bloccano lo storage di terze parti
+        // (Safari, Firefox, Chrome con blocco cookie) il redirect fallisce in silenzio e
+        // getRedirectResult restituisce sempre null. Il popup non ha questo problema.
+        getRedirectResult(auth).then((result) => {
+            loaderSelector.classList.remove('active');
+            if (result) handleAuthResult(result.user);
+        }).catch((error) => {
+            loaderSelector.classList.remove('active');
+            console.error("Auth Redirect Error:", error);
         });
 
         // AZIONE: QUANDO L'UTENTE CLICCA SU "ACCEDI CON GOOGLE"
-        document.getElementById('btn-google-login').addEventListener('click', function() {
+        document.getElementById('btn-google-login').addEventListener('click', async function() {
             const btnSubmit = this;
             loaderLogin.classList.add('active');
-            btnSubmit.disabled = true; 
+            btnSubmit.disabled = true;
             errBox.classList.add('hidden');
 
-            console.log("Avvio autenticazione tramite Redirect...");
-            
-            // Saltiamo il popup e usiamo direttamente il redirect per aggirare il blocco COOP di Chrome
-            signInWithRedirect(auth, provider).catch((error) => {
-                console.error("Errore avvio Redirect:", error);
-                loaderLogin.classList.remove('active');
-                errBox.innerHTML = '<i class="fas fa-wifi"></i> Impossibile contattare i server Google.';
-                errBox.classList.remove('hidden');
-                btnSubmit.disabled = false;
-            });
+            try {
+                const result = await signInWithPopup(auth, provider);
+                await handleAuthResult(result.user);
+            } catch (error) {
+                console.error("Errore login Google:", error);
+                switch (error.code) {
+                    case 'auth/popup-closed-by-user':
+                    case 'auth/cancelled-popup-request':
+                        // L'utente ha chiuso il popup: reset silenzioso
+                        loaderLogin.classList.remove('active');
+                        btnSubmit.disabled = false;
+                        break;
+                    case 'auth/popup-blocked':
+                        mostraErroreLogin('<i class="fas fa-window-restore"></i> Il browser ha bloccato il popup di Google. Consenti i popup per questo sito e riprova.');
+                        break;
+                    case 'auth/unauthorized-domain':
+                        mostraErroreLogin('<i class="fas fa-ban"></i> Dominio non autorizzato in Firebase (Authentication → Settings → Authorized domains).');
+                        break;
+                    case 'auth/network-request-failed':
+                        mostraErroreLogin('<i class="fas fa-wifi"></i> Impossibile contattare i server Google.');
+                        break;
+                    default:
+                        mostraErroreLogin(`<i class="fas fa-exclamation-triangle"></i> Errore durante l'autenticazione Google (${String(error.code || 'sconosciuto').replace(/[<>&"']/g, '')}).`);
+                }
+            }
         });
     </script>
 </body>
