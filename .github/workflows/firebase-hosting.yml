@@ -1,0 +1,31 @@
+# Pubblica il sito su Firebase Hosting (https://db-operativo.web.app)
+# a ogni push su main, oppure a mano da Actions → "Deploy Firebase Hosting" → Run workflow.
+# Richiede il secret FIREBASE_SERVICE_ACCOUNT (JSON della chiave dell'account di servizio).
+name: Deploy Firebase Hosting
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    env:
+      HAS_SA: ${{ secrets.FIREBASE_SERVICE_ACCOUNT != '' }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Controllo secret
+        run: |
+          if [ -z "$SA" ]; then
+            echo "::warning::Secret FIREBASE_SERVICE_ACCOUNT non configurato: deploy saltato."
+          fi
+        env:
+          SA: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+      - uses: FirebaseExtended/action-hosting-deploy@v0
+        if: ${{ env.HAS_SA == 'true' }}
+        with:
+          repoToken: ${{ secrets.GITHUB_TOKEN }}
+          firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+          channelId: live
+          projectId: db-operativo
