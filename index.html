@@ -109,6 +109,13 @@
         .btn-google:hover:not(:disabled) { background: #f8f9fa; box-shadow: 0 1px 3px rgba(0,0,0,0.2); }
         .btn-google:disabled { opacity: 0.5; cursor: not-allowed; }
         .btn-google img { width: 18px; }
+        .login-form { display: flex; flex-direction: column; gap: 12px; width: 100%; margin-top: 10px; }
+        .login-input { width: 100%; padding: 13px 18px; border-radius: 100px; border: 1px solid var(--md-sys-color-outline); background: var(--md-sys-color-surface-variant); color: var(--md-sys-color-on-surface); font-family: 'Lexend', sans-serif; font-size: 0.95rem; outline: none; transition: border-color 0.2s; box-sizing: border-box; }
+        .login-input:focus { border-color: var(--md-sys-color-primary); }
+        .login-input::placeholder { color: var(--md-sys-color-on-surface-variant); }
+        .btn-login { background: var(--md-sys-color-primary); color: var(--md-sys-color-on-primary); border: none; border-radius: 100px; padding: 12px 24px; font-size: 0.95rem; font-weight: 600; cursor: pointer; font-family: 'Lexend', sans-serif; display: flex; gap: 10px; align-items: center; justify-content: center; width: 100%; margin-top: 4px; transition: 0.2s; }
+        .btn-login:hover:not(:disabled) { filter: brightness(1.08); }
+        .btn-login:disabled { opacity: 0.5; cursor: not-allowed; }
 
         .actions-row { display: flex; justify-content: center; align-items: center; margin-top: 20px; }
         .btn-text { background: transparent; border: none; color: var(--md-sys-color-primary); font-size: 0.9rem; font-weight: 500; cursor: pointer; padding: 10px 16px; border-radius: 100px; transition: 0.2s; font-family: 'Lexend', sans-serif; display: flex; align-items: center; gap: 8px;}
@@ -209,10 +216,17 @@
                 </div>
 
                 <p style="font-size: 0.95rem; color: var(--md-sys-color-on-surface-variant); margin-bottom: 20px; line-height: 1.5;">
-                    Utilizza il tuo account Google autorizzato per sbloccare il terminale.
+                    Inserisci le credenziali del tuo account operatore per sbloccare il terminale.
                 </p>
 
-                <button type="button" class="btn-google ripple-surface" id="btn-google-login">
+                <form id="form-login" class="login-form" autocomplete="on">
+                    <input type="email" id="login-email" class="login-input" placeholder="Email" autocomplete="username" required>
+                    <input type="password" id="login-password" class="login-input" placeholder="Password" autocomplete="current-password" required>
+                    <button type="submit" class="btn-login ripple-surface" id="btn-login"><i class="fas fa-sign-in-alt"></i> Accedi</button>
+                </form>
+
+                <!-- Login Google temporaneamente disattivato: per riattivarlo togli la classe "hidden" e abilita il provider Google in Firebase -->
+                <button type="button" class="btn-google ripple-surface hidden" id="btn-google-login">
                     <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="G">
                     Accedi con Google
                 </button>
@@ -231,7 +245,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-app.js";
         import { getFirestore, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-firestore.js";
-        import { getAuth, GoogleAuthProvider, signInWithPopup, getRedirectResult, signOut } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-auth.js";
+        import { getAuth, GoogleAuthProvider, signInWithPopup, signInWithEmailAndPassword, getRedirectResult, signOut } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-auth.js";
 
         // OROLOGIO - FIX PER EVITARE SPOSTAMENTI LAYOUT
         function startClock() {
@@ -336,7 +350,7 @@
         });
 
         // FIREBASE SETUP
-        const firebaseConfig = { apiKey: "AIzaSyDPyEfr0KbWtYDeM5-EFTl3s3VGVB_8Yi8", authDomain: "database-dta.firebaseapp.com", projectId: "database-dta", storageBucket: "database-dta.firebasestorage.app", messagingSenderId: "229305773627", appId: "1:229305773627:web:ec3d17f5fcb3c65fdb761e" };
+        const firebaseConfig = { apiKey: "AIzaSyBFO-Zhg8c4XJzLDejtk66DZyPWqwuiN20", authDomain: "db-operativo.firebaseapp.com", projectId: "db-operativo", storageBucket: "db-operativo.firebasestorage.app", messagingSenderId: "449158035368", appId: "1:449158035368:web:bb2f8dc74d44c019c24f9d", measurementId: "G-D5YSYPKHXX" };
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
         const auth = getAuth(app);
@@ -364,6 +378,11 @@
         const loaderLogin = document.getElementById('login-progress');
         const errBox = document.getElementById('messaggio-errore');
 
+        function setLoginDisabled(disabled) {
+            document.getElementById('btn-login').disabled = disabled;
+            document.getElementById('btn-google-login').disabled = disabled;
+        }
+
         // FIX CARICAMENTO: Se l'utente ha già una sessione attiva, rimandalo subito alla dashboard senza caricamenti
         if (sessionStorage.getItem('sessioneAttiva')) {
             window.location.replace('squadra-mobile.html');
@@ -379,7 +398,7 @@
 
             window.showLogin(repartoSelezionato);
             loaderLogin.classList.add('active');
-            document.getElementById('btn-google-login').disabled = true;
+            setLoginDisabled(true);
 
             try {
                 const q = query(collection(db, "agenti"), where("email", "==", userEmail));
@@ -402,14 +421,14 @@
                     loaderLogin.classList.remove('active');
                     errBox.innerHTML = `<span><i class="fas fa-user-lock" style="font-size:1.5rem; margin-bottom:5px;"></i></span> <span style="text-align:center;"><strong>ACCESSO NEGATO</strong><br>L'email <em>${String(userEmail || '').replace(/[<>&"']/g, '')}</em> non è registrata nei nostri sistemi. Contatta il comando.</span>`;
                     errBox.classList.remove('hidden');
-                    document.getElementById('btn-google-login').disabled = false;
+                    setLoginDisabled(false);
                 }
             } catch (error) {
                 console.error("Errore lettura DB:", error);
                 loaderLogin.classList.remove('active');
                 errBox.innerHTML = '<i class="fas fa-wifi"></i> Errore di connessione al database.';
                 errBox.classList.remove('hidden');
-                document.getElementById('btn-google-login').disabled = false;
+                setLoginDisabled(false);
             }
         }
 
@@ -417,12 +436,12 @@
             loaderLogin.classList.remove('active');
             errBox.innerHTML = html;
             errBox.classList.remove('hidden');
-            document.getElementById('btn-google-login').disabled = false;
+            setLoginDisabled(false);
         }
 
         // COMPATIBILITÀ: getRedirectResult resta solo per eventuali rientri da vecchi redirect.
         // Non usiamo più signInWithRedirect: il sito è su ryze-glitch.github.io mentre authDomain è
-        // database-dta.firebaseapp.com, quindi sui browser che bloccano lo storage di terze parti
+        // <progetto>.firebaseapp.com, quindi sui browser che bloccano lo storage di terze parti
         // (Safari, Firefox, Chrome con blocco cookie) il redirect fallisce in silenzio e
         // getRedirectResult restituisce sempre null. Il popup non ha questo problema.
         getRedirectResult(auth).then((result) => {
@@ -433,11 +452,58 @@
             console.error("Auth Redirect Error:", error);
         });
 
-        // AZIONE: QUANDO L'UTENTE CLICCA SU "ACCEDI CON GOOGLE"
-        document.getElementById('btn-google-login').addEventListener('click', async function() {
-            const btnSubmit = this;
+        // AZIONE: LOGIN CON EMAIL E PASSWORD
+        // Gli account si creano da Firebase (Authentication → Users → Add user) e l'email
+        // deve essere presente anche nella collezione "agenti" di Firestore.
+        document.getElementById('form-login').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('login-email').value.trim();
+            const passwordInput = document.getElementById('login-password');
             loaderLogin.classList.add('active');
-            btnSubmit.disabled = true;
+            setLoginDisabled(true);
+            errBox.classList.add('hidden');
+
+            try {
+                const result = await signInWithEmailAndPassword(auth, email, passwordInput.value);
+                await handleAuthResult(result.user);
+            } catch (error) {
+                console.error("Errore login email/password:", error);
+                passwordInput.value = '';
+                switch (error.code) {
+                    case 'auth/invalid-credential':
+                    case 'auth/invalid-login-credentials':
+                    case 'auth/wrong-password':
+                    case 'auth/user-not-found':
+                        mostraErroreLogin('<i class="fas fa-user-lock"></i> Email o password non corretti.');
+                        break;
+                    case 'auth/invalid-email':
+                        mostraErroreLogin('<i class="fas fa-at"></i> Formato email non valido.');
+                        break;
+                    case 'auth/missing-password':
+                        mostraErroreLogin('<i class="fas fa-key"></i> Inserisci la password.');
+                        break;
+                    case 'auth/user-disabled':
+                        mostraErroreLogin('<i class="fas fa-ban"></i> Account disabilitato. Contatta il comando.');
+                        break;
+                    case 'auth/too-many-requests':
+                        mostraErroreLogin('<i class="fas fa-hourglass-half"></i> Troppi tentativi falliti. Riprova tra qualche minuto.');
+                        break;
+                    case 'auth/operation-not-allowed':
+                        mostraErroreLogin('<i class="fas fa-ban"></i> Accesso con email/password non attivo in Firebase (Authentication → Sign-in method).');
+                        break;
+                    case 'auth/network-request-failed':
+                        mostraErroreLogin('<i class="fas fa-wifi"></i> Impossibile contattare i server di autenticazione.');
+                        break;
+                    default:
+                        mostraErroreLogin(`<i class="fas fa-exclamation-triangle"></i> Errore durante l'accesso (${String(error.code || 'sconosciuto').replace(/[<>&"']/g, '')}).`);
+                }
+            }
+        });
+
+        // AZIONE: QUANDO L'UTENTE CLICCA SU "ACCEDI CON GOOGLE" (bottone attualmente nascosto)
+        document.getElementById('btn-google-login').addEventListener('click', async function() {
+            loaderLogin.classList.add('active');
+            setLoginDisabled(true);
             errBox.classList.add('hidden');
 
             try {
@@ -450,7 +516,7 @@
                     case 'auth/cancelled-popup-request':
                         // L'utente ha chiuso il popup: reset silenzioso
                         loaderLogin.classList.remove('active');
-                        btnSubmit.disabled = false;
+                        setLoginDisabled(false);
                         break;
                     case 'auth/popup-blocked':
                         mostraErroreLogin('<i class="fas fa-window-restore"></i> Il browser ha bloccato il popup di Google. Consenti i popup per questo sito e riprova.');
