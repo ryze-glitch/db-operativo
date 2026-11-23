@@ -46,7 +46,13 @@ import f_shield_lock from "@material-symbols/svg-400/rounded/shield_lock-fill.sv
 import f_local_police from "@material-symbols/svg-400/rounded/local_police-fill.svg?raw"
 import f_shield from "@material-symbols/svg-400/rounded/shield-fill.svg?raw"
 
+import i_settings from "@material-symbols/svg-400/rounded/settings.svg?raw"
+import i_history from "@material-symbols/svg-400/rounded/history.svg?raw"
+import i_chevron_right from "@material-symbols/svg-400/rounded/chevron_right.svg?raw"
 export const ICONE: Record<string, string> = {
+  "chevron_right": i_chevron_right,
+  "history": i_history,
+  "settings": i_settings,
   "add": i_add,
   "arrow_upward": i_arrow_upward,
   "attach_file": i_attach_file,

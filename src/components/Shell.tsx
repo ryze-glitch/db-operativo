@@ -1,8 +1,9 @@
-import { createContext, useCallback, useContext, useEffect, useState, type CSSProperties, type ReactNode } from "react"
+import { createContext, useCallback, useContext, useEffect, useState, type ReactNode } from "react"
 import { useStore } from "@/store"
 import { vai } from "@/router"
 import { isAdmin, matricolaPura } from "@/model"
 import { Icona, Toast } from "./ui"
+import { Sidebar, type Variante } from "./Sidebar"
 
 // ===== Notifiche toast condivise =====
 type ToastFn = (msg: string, tipo?: "ok" | "errore") => void
@@ -18,23 +19,13 @@ const turnoAttuale = () => {
   return h >= 6 && h < 14 ? "Turno mattina" : h >= 14 && h < 22 ? "Turno pomeriggio" : "Turno notte"
 }
 
-const voci = [
-  { icon: "home", t: "Panoramica", path: "/home" },
-  { icon: "campaign", t: "Comunicazioni", path: "/comunicazioni", badge: true },
-  { icon: "person_search", t: "Foglio investigativo", path: "/foglio" },
-  { icon: "folder", t: "Fascicoli", path: "", lock: "In arrivo" },
-  { icon: "shield_lock", t: "Log di sicurezza", path: "", lock: "In arrivo" },
-]
-
-const iconaLog = (azione: string) => /elimin/i.test(azione) ? "delete" : /prova/i.test(azione) ? "attach_file" : /comunica/i.test(azione) ? "campaign" : /modific/i.test(azione) ? "edit" : "person_add"
-
-const voce: CSSProperties = { position: "relative", display: "flex", alignItems: "center", gap: 12, minHeight: 40, padding: "0 16px", borderRadius: 20, textDecoration: "none", fontSize: 14, color: "var(--g-text)", border: "none", background: "transparent", cursor: "pointer", width: "100%", textAlign: "left" }
-
 export function Shell({ attiva, children, bottom }: { attiva: string; children: ReactNode; bottom?: ReactNode }) {
   const { agente, annunci, letti, logs, esci } = useStore()
-  const [tema, setTema] = useState(leggiTema)
+  const [tema, setTema] = useState<"scuro" | "chiaro">(leggiTema)
   const [stretto, setStretto] = useState(() => window.innerWidth < 900)
-  const [aperta, setAperta] = useState(() => window.innerWidth >= 900)
+  // Variante del menu laterale in prova (a = Gemini espanso, b = binario di icone, c = pannello flottante)
+  const [variante] = useState<Variante>(() => { try { const v = localStorage.getItem("menuVariante"); return v === "b" || v === "c" ? v : "a" } catch { return "a" } })
+  const [aperta, setAperta] = useState(() => window.innerWidth >= 900 && variante !== "b")
   const [menuProfilo, setMenuProfilo] = useState(false)
   const [toast, setToast] = useState<{ m: string; t: "ok" | "errore" } | null>(null)
   const mostraToast = useCallback<ToastFn>((m, t = "ok") => setToast({ m, t }), [])
@@ -56,47 +47,11 @@ export function Shell({ attiva, children, bottom }: { attiva: string; children: 
 
   const nonLetti = annunci.filter((a) => !letti.includes(a.id)).length
   const naviga = (p: string) => { vai(p); if (stretto) setAperta(false) }
-  const larghezza = aperta ? 288 : 72
-
-  const sidebar = (
-    <aside style={{ width: stretto ? 288 : larghezza, flex: "none", background: "var(--g-side)", display: "flex", flexDirection: "column", padding: "12px 12px 16px", gap: 4, transition: "width .2s", overflow: "hidden", ...(stretto ? { position: "fixed", inset: "0 auto 0 0", zIndex: 40, transform: aperta ? "none" : "translateX(-100%)", transition: "transform .2s" } : { position: "sticky", top: 0, height: "100vh" }) }}>
-      <md-icon-button aria-label={aperta ? "Comprimi menu" : "Espandi menu"} style={{ margin: "0 0 20px 4px" }} onClick={() => setAperta(!aperta)}><Icona n="menu" /></md-icon-button>
-      <button onClick={() => naviga("/foglio?nuovo=1")} style={{ ...voce, background: "var(--g-raise)", alignSelf: "flex-start", width: aperta || stretto ? "auto" : 48, height: 44, padding: aperta || stretto ? "0 20px 0 14px" : "0 12px", color: "var(--g-muted)", fontWeight: 500 }}>
-        <md-ripple /><Icona n="edit_square" />{(aperta || stretto) && "Nuova identificazione"}
-      </button>
-      <div style={{ height: 16 }} />
-      {voci.map((v) => {
-        const att = attiva === v.path
-        const espansa = aperta || stretto
-        return (
-          <button key={v.t} disabled={!!v.lock} title={v.lock ? `${v.t} · ${v.lock}` : v.t} onClick={() => v.path && naviga(v.path)} aria-current={att ? "page" : undefined}
-            style={{ ...voce, background: att ? "var(--md-sys-color-secondary-container)" : "transparent", color: att ? "var(--md-sys-color-on-secondary-container)" : v.lock ? "var(--g-muted)" : "var(--g-text)", fontWeight: att ? 600 : 400, cursor: v.lock ? "default" : "pointer", padding: espansa ? "0 16px" : "0 12px" }}>
-            {!v.lock && <md-ripple />}<Icona n={v.icon} fill={att} />
-            {espansa && <span style={{ flex: 1 }}>{v.t}</span>}
-            {v.badge && nonLetti > 0 && <span style={{ minWidth: 20, height: 20, padding: "0 6px", borderRadius: 10, background: "#d96570", color: "#fff", fontSize: 12, fontWeight: 600, display: "grid", placeItems: "center", ...(espansa ? {} : { position: "absolute", top: 2, left: 30 }) }}>{nonLetti}</span>}
-            {v.lock && espansa && <Icona n="lock" size={18} />}
-          </button>
-        )
-      })}
-      {(aperta || stretto) && logs.length > 0 && <>
-        <div style={{ fontSize: 14, fontWeight: 500, padding: "24px 16px 8px" }}>Recenti</div>
-        {logs.slice(0, 6).map((l) => (
-          <div key={l.id} title={`${l.dataOra} · ${l.autore}`} style={{ ...voce, cursor: "default" }}>
-            <Icona n={iconaLog(l.azione)} size={18} style={{ color: "var(--g-muted)" }} />
-            <span style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{l.dettaglio || l.azione}</span>
-          </div>
-        ))}
-      </>}
-      <button onClick={() => setTema(tema === "scuro" ? "chiaro" : "scuro")} style={{ ...voce, marginTop: "auto", padding: aperta || stretto ? "0 16px" : "0 12px" }}>
-        <md-ripple /><Icona n={tema === "scuro" ? "light_mode" : "dark_mode"} />{(aperta || stretto) && (tema === "scuro" ? "Tema chiaro" : "Tema scuro")}
-      </button>
-    </aside>
-  )
 
   return (
     <ToastCtx.Provider value={mostraToast}>
       <div style={{ display: "flex", minHeight: "100vh", background: "var(--g-bg)" }}>
-        {sidebar}
+        <Sidebar variante={variante} aperta={aperta} stretto={stretto} setAperta={setAperta} attiva={attiva} naviga={naviga} nonLetti={nonLetti} logs={logs} tema={tema} setTema={setTema} agente={agente} />
         {stretto && aperta && <div onClick={() => setAperta(false)} style={{ position: "fixed", inset: 0, zIndex: 30, background: "var(--g-scrim)" }} />}
 
         <div style={{ flex: 1, minWidth: 0, display: "flex", flexDirection: "column" }}>
