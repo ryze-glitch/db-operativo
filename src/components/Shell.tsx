@@ -3,7 +3,7 @@ import { useStore } from "@/store"
 import { vai } from "@/router"
 import { isAdmin, matricolaPura } from "@/model"
 import { Icona, Toast } from "./ui"
-import { Sidebar, type Variante } from "./Sidebar"
+import { Sidebar, turnoAttuale } from "./Sidebar"
 
 // ===== Notifiche toast condivise =====
 type ToastFn = (msg: string, tipo?: "ok" | "errore") => void
@@ -14,18 +14,11 @@ export const useToast = () => useContext(ToastCtx)
 const leggiTema = () => { try { return localStorage.getItem("tema") === "chiaro" ? "chiaro" : "scuro" } catch { return "scuro" } }
 export function applicaTemaSalvato() { document.documentElement.dataset.tema = leggiTema() }
 
-const turnoAttuale = () => {
-  const h = new Date().getHours()
-  return h >= 6 && h < 14 ? "Turno mattina" : h >= 14 && h < 22 ? "Turno pomeriggio" : "Turno notte"
-}
-
 export function Shell({ attiva, children, bottom }: { attiva: string; children: ReactNode; bottom?: ReactNode }) {
   const { agente, annunci, letti, logs, esci } = useStore()
   const [tema, setTema] = useState<"scuro" | "chiaro">(leggiTema)
   const [stretto, setStretto] = useState(() => window.innerWidth < 900)
-  // Variante del menu laterale in prova (a = Gemini espanso, b = binario di icone, c = pannello flottante)
-  const [variante] = useState<Variante>(() => { try { const v = localStorage.getItem("menuVariante"); return v === "b" || v === "c" ? v : "a" } catch { return "a" } })
-  const [aperta, setAperta] = useState(() => window.innerWidth >= 900 && variante !== "b")
+  const [aperta, setAperta] = useState(() => window.innerWidth >= 900)
   const [menuProfilo, setMenuProfilo] = useState(false)
   const [toast, setToast] = useState<{ m: string; t: "ok" | "errore" } | null>(null)
   const mostraToast = useCallback<ToastFn>((m, t = "ok") => setToast({ m, t }), [])
@@ -51,14 +44,17 @@ export function Shell({ attiva, children, bottom }: { attiva: string; children: 
   return (
     <ToastCtx.Provider value={mostraToast}>
       <div style={{ display: "flex", minHeight: "100vh", background: "var(--g-bg)" }}>
-        <Sidebar variante={variante} aperta={aperta} stretto={stretto} setAperta={setAperta} attiva={attiva} naviga={naviga} nonLetti={nonLetti} logs={logs} tema={tema} setTema={setTema} agente={agente} />
+        <Sidebar aperta={aperta} stretto={stretto} setAperta={setAperta} attiva={attiva} naviga={naviga} nonLetti={nonLetti} logs={logs} tema={tema} setTema={setTema} agente={agente} />
         {stretto && aperta && <div onClick={() => setAperta(false)} style={{ position: "fixed", inset: 0, zIndex: 30, background: "var(--g-scrim)" }} />}
 
         <div style={{ flex: 1, minWidth: 0, display: "flex", flexDirection: "column" }}>
           <header style={{ position: "sticky", top: 0, zIndex: 20, background: "var(--g-bg)", display: "flex", alignItems: "center", gap: 8, height: 64, padding: "0 12px 0 16px" }}>
             {stretto && <md-icon-button aria-label="Apri menu" onClick={() => setAperta(true)}><Icona n="menu" /></md-icon-button>}
-            <button onClick={() => vai("/home")} style={{ background: "none", border: "none", color: "var(--g-text)", fontSize: 22, cursor: "pointer", padding: "0 8px" }}>Squadra Mobile</button>
-            <span className="hide-mobile" style={{ color: "var(--g-muted)", fontSize: 14 }}>{turnoAttuale()}</span>
+            {/* Con il pannello aperto nome e turno sono già nel menu */}
+            {(!aperta || stretto) && <>
+              <button onClick={() => vai("/home")} style={{ background: "none", border: "none", color: "var(--g-text)", fontSize: 22, cursor: "pointer", padding: "0 8px" }}>Squadra Mobile</button>
+              <span className="hide-mobile" style={{ color: "var(--g-muted)", fontSize: 14 }}>{turnoAttuale()}</span>
+            </>}
             <div style={{ marginLeft: "auto", display: "flex", alignItems: "center", gap: 4, position: "relative" }}>
               <span style={{ position: "relative" }}>
                 <md-icon-button aria-label="Comunicazioni" onClick={() => vai("/comunicazioni")}><Icona n="notifications" /></md-icon-button>
